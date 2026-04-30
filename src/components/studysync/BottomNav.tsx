@@ -1,10 +1,10 @@
-import { Home, Users, MapPin, CalendarCheck, User } from "lucide-react";
+import { Home, Users, MapPin, CalendarCheck, User, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
 export type Tab = "home" | "buddies" | "spots" | "groups" | "profile";
 
-const items: { id: Tab; label: string; icon: React.ComponentType<{ className?: string; strokeWidth?: number }> }[] = [
+const items: { id: Tab; label: string; icon: LucideIcon }[] = [
   { id: "home", label: "Home", icon: Home },
   { id: "buddies", label: "Buddies", icon: Users },
   { id: "spots", label: "Spots", icon: MapPin },

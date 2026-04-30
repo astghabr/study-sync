@@ -1,16 +1,46 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { PhoneFrame } from "@/components/studysync/PhoneFrame";
+import { BottomNav, type Tab } from "@/components/studysync/BottomNav";
+import { Onboarding } from "@/components/studysync/Onboarding";
+import { HomePage } from "@/components/studysync/HomePage";
+import { BuddiesPage } from "@/components/studysync/BuddiesPage";
+import { SpotsPage } from "@/components/studysync/SpotsPage";
+import { GroupsPage } from "@/components/studysync/GroupsPage";
+import { ProfilePage } from "@/components/studysync/ProfilePage";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+const Index = () => {
+  const [authed, setAuthed] = useState(false);
+  const [tab, setTab] = useState<Tab>("home");
+
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
-    </div>
+    <PhoneFrame>
+      {!authed ? (
+        <Onboarding onComplete={() => setAuthed(true)} />
+      ) : (
+        <>
+          <main className="flex-1 overflow-y-auto">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={tab}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
+              >
+                {tab === "home" && <HomePage onNavigate={setTab} />}
+                {tab === "buddies" && <BuddiesPage />}
+                {tab === "spots" && <SpotsPage />}
+                {tab === "groups" && <GroupsPage />}
+                {tab === "profile" && <ProfilePage onSignOut={() => setAuthed(false)} />}
+              </motion.div>
+            </AnimatePresence>
+          </main>
+          <BottomNav active={tab} onChange={setTab} />
+        </>
+      )}
+    </PhoneFrame>
   );
 };
-
-const Index = PlaceholderIndex;
 
 export default Index;

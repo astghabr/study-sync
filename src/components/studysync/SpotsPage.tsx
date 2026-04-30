@@ -1,0 +1,369 @@
+import { useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Search, MapPin, Wifi, Plug, Coffee, Volume2, VolumeX, Users, X, Calendar, Map as MapIcon, List, Sparkles } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { StatusBadge } from "./Badge";
+import { SPOTS, type Spot } from "@/data/mockData";
+import { cn } from "@/lib/utils";
+
+const TYPE_FILTERS = ["All", "Cafe", "Library", "University Hub"] as const;
+
+const AmenityIcon = ({ name }: { name: string }) => {
+  const map: Record<string, React.ReactNode> = {
+    wifi: <Wifi className="h-3.5 w-3.5" />,
+    power: <Plug className="h-3.5 w-3.5" />,
+    coffee: <Coffee className="h-3.5 w-3.5" />,
+    quiet: <VolumeX className="h-3.5 w-3.5" />,
+    food: <span className="text-xs">🍽</span>,
+    groups: <Users className="h-3.5 w-3.5" />,
+  };
+  return (
+    <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-secondary text-foreground">
+      {map[name] ?? "•"}
+    </span>
+  );
+};
+
+export function SpotsPage() {
+  const [view, setView] = useState<"list" | "map">("list");
+  const [query, setQuery] = useState("");
+  const [type, setType] = useState<(typeof TYPE_FILTERS)[number]>("All");
+  const [laptopOnly, setLaptopOnly] = useState(false);
+  const [quietOnly, setQuietOnly] = useState(false);
+  const [selected, setSelected] = useState<Spot | null>(null);
+
+  const filtered = useMemo(() => {
+    return SPOTS.filter((s) => {
+      if (query && !s.name.toLowerCase().includes(query.toLowerCase())) return false;
+      if (type !== "All" && s.type !== type) return false;
+      if (laptopOnly && s.laptopPolicy !== "Allowed") return false;
+      if (quietOnly && s.noise !== "Quiet") return false;
+      return true;
+    });
+  }, [query, type, laptopOnly, quietOnly]);
+
+  return (
+    <div className="flex flex-col pb-6">
+      <header className="px-6 pt-8">
+        <div className="flex items-end justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Around you</p>
+            <h1 className="mt-1 font-display text-[28px] font-semibold leading-tight">Study spots</h1>
+          </div>
+
+          {/* List/Map toggle */}
+          <div className="relative flex rounded-full border border-border bg-card p-1">
+            {(["list", "map"] as const).map((v) => (
+              <button
+                key={v}
+                onClick={() => setView(v)}
+                className="relative z-10 flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium"
+              >
+                {view === v && (
+                  <motion.span layoutId="view-pill" className="absolute inset-0 rounded-full bg-primary" />
+                )}
+                <span className={cn("relative z-10", view === v ? "text-primary-foreground" : "text-muted-foreground")}>
+                  {v === "list" ? <List className="h-3.5 w-3.5" /> : <MapIcon className="h-3.5 w-3.5" />}
+                </span>
+                <span className={cn("relative z-10 capitalize", view === v ? "text-primary-foreground" : "text-muted-foreground")}>
+                  {v}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="relative mt-4">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search a spot"
+            className="h-11 rounded-xl bg-card pl-9 text-sm"
+          />
+        </div>
+      </header>
+
+      {/* Filters */}
+      <div className="mt-4 flex gap-2 overflow-x-auto px-6 pb-1 scrollbar-hide">
+        {TYPE_FILTERS.map((t) => (
+          <button
+            key={t}
+            onClick={() => setType(t)}
+            className={cn(
+              "shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-medium",
+              type === t ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-foreground"
+            )}
+          >
+            {t}
+          </button>
+        ))}
+        <button
+          onClick={() => setLaptopOnly((v) => !v)}
+          className={cn(
+            "shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-medium",
+            laptopOnly ? "border-accent bg-accent text-accent-foreground" : "border-border bg-card text-foreground"
+          )}
+        >
+          💻 Laptop friendly
+        </button>
+        <button
+          onClick={() => setQuietOnly((v) => !v)}
+          className={cn(
+            "shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-medium",
+            quietOnly ? "border-accent bg-accent text-accent-foreground" : "border-border bg-card text-foreground"
+          )}
+        >
+          🤫 Quiet
+        </button>
+      </div>
+
+      <AnimatePresence mode="wait">
+        {view === "list" ? (
+          <motion.div
+            key="list"
+            initial={{ opacity: 0, x: -16 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -16 }}
+            transition={{ duration: 0.25 }}
+            className="mt-4 flex flex-col gap-3 px-6"
+          >
+            {filtered.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => setSelected(s)}
+                className="overflow-hidden rounded-2xl border border-border bg-card text-left shadow-soft transition hover:shadow-card"
+              >
+                <div className={`relative h-28 w-full bg-gradient-to-br ${s.hero}`}>
+                  <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
+                    {s.official && <StatusBadge variant="official">Official Hub</StatusBadge>}
+                    {s.laptopPolicy === "Not Allowed" && <StatusBadge variant="no-laptop">No laptops</StatusBadge>}
+                    {s.noise === "Quiet" && <StatusBadge variant="quiet">Quiet zone</StatusBadge>}
+                  </div>
+                  <div className="absolute bottom-3 right-3">
+                    <span className={cn(
+                      "rounded-full px-2.5 py-1 text-[10px] font-semibold",
+                      s.status === "Open" && "bg-success text-success-foreground",
+                      s.status === "Busy" && "bg-warning text-warning-foreground",
+                      s.status === "Closing soon" && "bg-foreground/80 text-background"
+                    )}>
+                      {s.status}
+                    </span>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className="font-display text-base font-semibold">{s.name}</p>
+                      <p className="text-xs text-muted-foreground">{s.type} · {s.distance} · {s.pricing}</p>
+                    </div>
+                    <span className="text-xs font-semibold text-foreground">{s.wifi}</span>
+                  </div>
+                  <div className="mt-3 flex items-center gap-1.5">
+                    {s.amenities.map((a) => (
+                      <AmenityIcon key={a} name={a} />
+                    ))}
+                  </div>
+                  {s.laptopNote && (
+                    <p className="mt-3 text-[11px] font-medium text-foreground/70">📋 {s.laptopNote}</p>
+                  )}
+                </div>
+              </button>
+            ))}
+          </motion.div>
+        ) : (
+          <motion.div
+            key="map"
+            initial={{ opacity: 0, x: 16 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 16 }}
+            transition={{ duration: 0.25 }}
+            className="mt-4 px-6"
+          >
+            <div className="relative h-[460px] overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-emerald-50 via-blue-50 to-amber-50 shadow-soft">
+              {/* Decorative grid */}
+              <svg className="absolute inset-0 h-full w-full opacity-40" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+                    <path d="M 32 0 L 0 0 0 32" fill="none" stroke="hsl(var(--primary))" strokeOpacity="0.08" strokeWidth="1" />
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid)" />
+              </svg>
+              {/* Mock streets */}
+              <div className="absolute left-0 right-0 top-1/3 h-[3px] bg-foreground/15" />
+              <div className="absolute bottom-1/4 left-0 right-0 h-[3px] bg-foreground/10" />
+              <div className="absolute bottom-0 left-1/2 top-0 w-[3px] bg-foreground/15" />
+
+              {filtered.map((s, i) => {
+                const positions = [
+                  { top: "20%", left: "30%" },
+                  { top: "35%", left: "70%" },
+                  { top: "55%", left: "20%" },
+                  { top: "60%", left: "65%" },
+                  { top: "78%", left: "40%" },
+                  { top: "25%", left: "55%" },
+                ];
+                const pos = positions[i % positions.length];
+                return (
+                  <motion.button
+                    key={s.id}
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: i * 0.06, type: "spring", damping: 18 }}
+                    onClick={() => setSelected(s)}
+                    className="absolute -translate-x-1/2 -translate-y-full"
+                    style={pos}
+                  >
+                    <div className="relative">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-elevated ring-4 ring-background">
+                        <MapPin className="h-5 w-5 fill-accent text-accent" strokeWidth={2} />
+                      </div>
+                      <div className="absolute left-1/2 top-full -translate-x-1/2 whitespace-nowrap rounded-md bg-card px-2 py-0.5 text-[10px] font-semibold shadow-soft">
+                        {s.name}
+                      </div>
+                    </div>
+                  </motion.button>
+                );
+              })}
+
+              {/* You marker */}
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                <div className="relative">
+                  <div className="absolute -inset-3 animate-ping rounded-full bg-accent/40" />
+                  <div className="relative h-4 w-4 rounded-full border-2 border-background bg-accent shadow-peach" />
+                </div>
+              </div>
+            </div>
+            <p className="mt-3 text-center text-xs text-muted-foreground">Tap a pin to view details</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Spot detail modal */}
+      <AnimatePresence>
+        {selected && <SpotDetail spot={selected} onClose={() => setSelected(null)} />}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function SpotDetail({ spot, onClose }: { spot: Spot; onClose: () => void }) {
+  const [reserved, setReserved] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-end justify-center bg-primary/40 backdrop-blur-sm md:items-center"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ y: 60, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 60, opacity: 0 }}
+        transition={{ type: "spring", damping: 28, stiffness: 280 }}
+        onClick={(e) => e.stopPropagation()}
+        className="relative max-h-[88vh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-card shadow-elevated md:rounded-3xl"
+      >
+        <div className={`relative h-40 w-full bg-gradient-to-br ${spot.hero}`}>
+          <button
+            onClick={onClose}
+            className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-card/90 backdrop-blur"
+          >
+            <X className="h-4 w-4" />
+          </button>
+          <div className="absolute bottom-3 left-4 flex flex-wrap gap-1.5">
+            {spot.official && <StatusBadge variant="official">Official Hub</StatusBadge>}
+            {spot.laptopPolicy === "Not Allowed" && <StatusBadge variant="no-laptop">No laptops</StatusBadge>}
+            {spot.noise === "Quiet" && <StatusBadge variant="quiet">Quiet zone</StatusBadge>}
+          </div>
+        </div>
+
+        <div className="p-6">
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <h2 className="font-display text-2xl font-semibold">{spot.name}</h2>
+              <p className="text-sm text-muted-foreground">{spot.type} · {spot.distance} away · {spot.pricing}</p>
+            </div>
+            <span className={cn(
+              "rounded-full px-2.5 py-1 text-[10px] font-semibold",
+              spot.status === "Open" && "bg-success/15 text-success",
+              spot.status === "Busy" && "bg-warning/15 text-warning",
+              spot.status === "Closing soon" && "bg-muted text-muted-foreground"
+            )}>
+              {spot.status}
+            </span>
+          </div>
+
+          {/* Laptop policy callout */}
+          <div className={cn(
+            "mt-5 rounded-2xl border p-4",
+            spot.laptopPolicy === "Allowed" && "border-success/20 bg-success/5",
+            spot.laptopPolicy === "Restricted" && "border-warning/20 bg-warning/5",
+            spot.laptopPolicy === "Not Allowed" && "border-destructive/20 bg-destructive/5"
+          )}>
+            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Laptop policy</p>
+            <p className="mt-1 text-sm font-semibold">{spot.laptopPolicy}</p>
+            {spot.laptopNote && <p className="mt-1 text-xs text-foreground/80">{spot.laptopNote}</p>}
+          </div>
+
+          {/* Vibes grid */}
+          <div className="mt-4 grid grid-cols-3 gap-2">
+            <div className="rounded-xl border border-border bg-background p-3">
+              <Wifi className="h-4 w-4 text-foreground" />
+              <p className="mt-2 text-[10px] uppercase tracking-wider text-muted-foreground">Wifi</p>
+              <p className="text-sm font-semibold">{spot.wifi}</p>
+            </div>
+            <div className="rounded-xl border border-border bg-background p-3">
+              <Volume2 className="h-4 w-4 text-foreground" />
+              <p className="mt-2 text-[10px] uppercase tracking-wider text-muted-foreground">Noise</p>
+              <p className="text-sm font-semibold">{spot.noise}</p>
+            </div>
+            <div className="rounded-xl border border-border bg-background p-3">
+              <Plug className="h-4 w-4 text-foreground" />
+              <p className="mt-2 text-[10px] uppercase tracking-wider text-muted-foreground">Outlets</p>
+              <p className="text-sm font-semibold">{spot.amenities.includes("power") ? "Many" : "Few"}</p>
+            </div>
+          </div>
+
+          {/* Student menu */}
+          {spot.studentMenu && (
+            <div className="mt-4 rounded-2xl bg-accent-soft p-4">
+              <p className="text-xs font-medium uppercase tracking-wider text-primary/70">Student menu</p>
+              <p className="mt-1 font-display text-lg font-semibold text-primary">{spot.studentMenu}</p>
+            </div>
+          )}
+
+          {/* Amenities full */}
+          <div className="mt-4">
+            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Amenities</p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {spot.amenities.map((a) => (
+                <span key={a} className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-xs font-medium capitalize">
+                  <AmenityIcon name={a} /> {a}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {spot.reservationAvailable && (
+            <Button
+              onClick={() => setReserved(true)}
+              disabled={reserved}
+              className={cn("mt-6 h-12 w-full rounded-xl text-sm font-semibold", reserved && "bg-success hover:bg-success/90")}
+            >
+              {reserved ? (
+                <><Sparkles className="mr-1 h-4 w-4" /> Table reserved</>
+              ) : (
+                <><Calendar className="mr-1 h-4 w-4" /> Book a table for group</>
+              )}
+            </Button>
+          )}
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
