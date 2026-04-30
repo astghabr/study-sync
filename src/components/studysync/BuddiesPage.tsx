@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 const MAJORS = ["All", "Computer Science", "Economics", "Psychology", "Engineering", "Law", "Mathematics", "Biology"];
 const HOBBIES = ["Gaming", "Reading", "Coffee", "Hiking", "Music", "Chess", "Photography"];
 const GENDERS = ["All", "Male", "Female", "Non-binary"] as const;
+const YEARS = ["All", "1st Year", "2nd Year", "3rd Year", "1st Year Master", "2nd Year Master"];
 
 const REPORT_REASONS = [
   "Inappropriate behaviour",
@@ -26,6 +27,7 @@ export function BuddiesPage() {
   const [query, setQuery] = useState("");
   const [major, setMajor] = useState("All");
   const [gender, setGender] = useState<(typeof GENDERS)[number]>("All");
+  const [year, setYear] = useState("All");
   const [hobby, setHobby] = useState<string | null>(null);
   const [selected, setSelected] = useState<Buddy | null>(null);
   const [requested, setRequested] = useState<Set<string>>(new Set());
@@ -36,10 +38,23 @@ export function BuddiesPage() {
       if (query && !b.name.toLowerCase().includes(query.toLowerCase()) && !b.major.toLowerCase().includes(query.toLowerCase())) return false;
       if (major !== "All" && b.major !== major) return false;
       if (gender !== "All" && b.gender !== gender) return false;
+      if (year !== "All" && b.year !== year) return false;
       if (hobby && !b.hobbies.includes(hobby)) return false;
       return true;
     });
-  }, [query, major, gender, hobby]);
+  }, [query, major, gender, year, hobby]);
+
+  const activeFilterCount =
+    (major !== "All" ? 1 : 0) +
+    (gender !== "All" ? 1 : 0) +
+    (year !== "All" ? 1 : 0) +
+    (hobby ? 1 : 0);
+  const clearFilters = () => {
+    setMajor("All");
+    setGender("All");
+    setYear("All");
+    setHobby(null);
+  };
 
   const toggleRequest = (id: string) => {
     setRequested((prev) => {
