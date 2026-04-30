@@ -75,14 +75,16 @@ function formatHM(sec: number) {
 }
 
 const modeMeta: Record<Mode, { label: string; icon: typeof TimerIcon; desc: string }> = {
-  pomodoro: { label: "Pomodoro", icon: TimerIcon, desc: "25 / 5 cycles" },
   timer: { label: "Timer", icon: Clock, desc: "Custom duration" },
+  pomodoro: { label: "Pomodoro", icon: TimerIcon, desc: "25 / 5 cycles" },
   stopwatch: { label: "Stopwatch", icon: Activity, desc: "Open-ended" },
 };
 
+const MODE_ORDER: Mode[] = ["timer", "pomodoro", "stopwatch"];
+
 export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) => void }) {
   const { isPro } = useSubscription();
-  const [mode, setMode] = useState<Mode>("pomodoro");
+  const [mode, setMode] = useState<Mode>("timer");
   const [timerMinutes, setTimerMinutes] = useState(45);
   const [invitees, setInvitees] = useState<string[]>([]);
   const [showInvite, setShowInvite] = useState(false);
@@ -217,10 +219,10 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
             Mode
           </p>
           <div className="mt-3 grid grid-cols-3 gap-2">
-            {(Object.keys(modeMeta) as Mode[]).map((m) => {
+            {MODE_ORDER.map((m) => {
               const Icon = modeMeta[m].icon;
               const active = mode === m;
-              const locked = !isPro && m !== "pomodoro";
+              const locked = !isPro && m !== "timer";
               return (
                 <button
                   key={m}
