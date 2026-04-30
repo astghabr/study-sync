@@ -9,6 +9,7 @@ import { SpotsPage } from "@/components/studysync/SpotsPage";
 import { GroupsPage } from "@/components/studysync/GroupsPage";
 import { ProfilePage } from "@/components/studysync/ProfilePage";
 import { FocusPage } from "@/components/studysync/FocusPage";
+import { GuidedTour } from "@/components/studysync/GuidedTour";
 
 const Index = () => {
   const [authed, setAuthed] = useState(false);
@@ -47,6 +48,7 @@ const Index = () => {
             }}
             locked={focusLocked}
           />
+          {!focusLocked && <GuidedTour onNavigate={setTab} />}
         </>
       )}
     </PhoneFrame>
