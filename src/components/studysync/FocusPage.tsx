@@ -889,7 +889,17 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
-function SessionHistory({ history }: { history: SessionLog[] }) {
+function SessionHistory({
+  history,
+  isPro,
+  onUpgrade,
+}: {
+  history: SessionLog[];
+  isPro: boolean;
+  onUpgrade: () => void;
+}) {
+  const visible = isPro ? history.slice(0, 6) : history.slice(0, 3);
+  const hidden = history.length - visible.length;
   return (
     <div className="rounded-3xl bg-card p-5 shadow-card">
       <div className="flex items-center gap-2">
@@ -897,7 +907,7 @@ function SessionHistory({ history }: { history: SessionLog[] }) {
         <p className="text-sm font-semibold text-foreground">Session history</p>
       </div>
       <div className="mt-3 divide-y divide-border">
-        {history.slice(0, 6).map((h) => {
+        {visible.map((h) => {
           const Icon = modeMeta[h.mode].icon;
           const d = new Date(h.endedAt);
           const when = d.toLocaleDateString(undefined, {
