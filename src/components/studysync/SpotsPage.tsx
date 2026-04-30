@@ -521,3 +521,226 @@ function SpotDetail({
     </motion.div>
   );
 }
+
+function FavoriteButton({ spotId }: { spotId: string }) {
+  const { favorites } = useSpotsExtra();
+  const isFav = favorites.has(spotId);
+  return (
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        spotsExtraStore.toggleFavorite(spotId);
+      }}
+      aria-label={isFav ? "Remove from saved" : "Save spot"}
+      className="absolute left-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-card/90 text-foreground shadow-soft backdrop-blur transition hover:scale-105"
+    >
+      {isFav ? (
+        <BookmarkCheck className="h-4 w-4 fill-primary text-primary" />
+      ) : (
+        <Bookmark className="h-4 w-4" />
+      )}
+    </button>
+  );
+}
+
+/** Mock photo strip — uses gradient swatches as faux photos. */
+const PHOTO_GRADIENTS = [
+  "from-amber-200 via-orange-200 to-rose-200",
+  "from-slate-200 via-blue-200 to-indigo-200",
+  "from-emerald-200 via-teal-200 to-cyan-200",
+  "from-yellow-100 via-amber-200 to-orange-200",
+];
+
+function ReviewsSection({ spotId, spotHero }: { spotId: string; spotHero: string }) {
+  // subscribe so new reviews re-render
+  useSpotsExtra();
+  const reviews = getSpotReviews(spotId);
+  const avg = spotAverageRating(spotId);
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="mt-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            Photos
+          </p>
+        </div>
+        <button className="inline-flex items-center gap-1 text-[11px] font-medium text-primary">
+          <Camera className="h-3 w-3" /> Add photo
+        </button>
+      </div>
+      <div className="mt-2 flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+        <div className={cn("h-24 w-32 shrink-0 rounded-xl bg-gradient-to-br", spotHero)} />
+        {PHOTO_GRADIENTS.map((g, i) => (
+          <div key={i} className={cn("h-24 w-32 shrink-0 rounded-xl bg-gradient-to-br", g)} />
+        ))}
+      </div>
+
+      <div className="mt-5 flex items-center justify-between">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            Student reviews
+          </p>
+          {avg != null ? (
+            <p className="mt-0.5 inline-flex items-center gap-1 text-sm font-semibold text-foreground">
+              <Star className="h-3.5 w-3.5 fill-accent text-accent" />
+              {avg.toFixed(1)}
+              <span className="text-xs font-normal text-muted-foreground">
+                · {reviews.length} review{reviews.length === 1 ? "" : "s"}
+              </span>
+            </p>
+          ) : (
+            <p className="mt-0.5 text-sm text-muted-foreground">No reviews yet</p>
+          )}
+        </div>
+        <button
+          onClick={() => setOpen(true)}
+          className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-[11px] font-semibold text-primary-foreground"
+        >
+          Write a review
+        </button>
+      </div>
+
+      <div className="mt-3 space-y-2">
+        {reviews.slice(0, 3).map((r) => (
+          <div key={r.id} className="rounded-2xl border border-border bg-background p-3">
+            <div className="flex items-center gap-2">
+              <AnimalAvatar animal={r.authorAnimal} size="sm" />
+              <div className="flex-1">
+                <p className="text-xs font-semibold text-foreground">{r.authorName}</p>
+                <div className="flex items-center gap-0.5">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star
+                      key={i}
+                      className={cn(
+                        "h-3 w-3",
+                        i < r.rating ? "fill-accent text-accent" : "text-border"
+                      )}
+                    />
+                  ))}
+                </div>
+              </div>
+              <p className="text-[10px] text-muted-foreground">
+                {timeAgo(r.createdAt)}
+              </p>
+            </div>
+            <p className="mt-2 text-sm leading-snug text-foreground">{r.text}</p>
+          </div>
+        ))}
+        {reviews.length === 0 && (
+          <p className="rounded-2xl border border-dashed border-border bg-card/40 p-4 text-center text-xs text-muted-foreground">
+            Be the first to share what this spot is like.
+          </p>
+        )}
+      </div>
+
+      <AnimatePresence>
+        {open && (
+          <ReviewModal spotId={spotId} onClose={() => setOpen(false)} />
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function ReviewModal({ spotId, onClose }: { spotId: string; onClose: () => void }) {
+  const [rating, setRating] = useState(5);
+  const [text, setText] = useState("");
+  const { toast } = useToast();
+  const valid = rating >= 1 && text.trim().length >= 10 && text.length <= 400;
+
+  const handleSubmit = () => {
+    if (!valid) return;
+    spotsExtraStore.addReview({
+      spotId,
+      authorName: CURRENT_USER.name.split(" ")[0] + " " + CURRENT_USER.name.split(" ")[1][0] + ".",
+      authorAnimal: CURRENT_USER.animal,
+      rating,
+      text: text.trim(),
+    });
+    toast({ title: "Review posted", description: "Thanks for helping fellow students." });
+    onClose();
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+      className="fixed inset-0 z-[60] flex items-end justify-center bg-primary/50 backdrop-blur-sm md:items-center"
+    >
+      <motion.div
+        initial={{ y: 40, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 40, opacity: 0 }}
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-md rounded-t-3xl bg-card p-6 shadow-elevated md:rounded-3xl"
+      >
+        <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-border md:hidden" />
+        <button
+          onClick={onClose}
+          className="absolute right-5 top-5 flex h-8 w-8 items-center justify-center rounded-full bg-secondary"
+        >
+          <X className="h-4 w-4" />
+        </button>
+        <h3 className="font-display text-xl font-semibold">Write a review</h3>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Help other students decide. Be specific & kind.
+        </p>
+        <div className="mt-5">
+          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Rating</p>
+          <div className="mt-2 flex gap-1">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setRating(i + 1)}
+                aria-label={`${i + 1} star${i ? "s" : ""}`}
+                className="p-1"
+              >
+                <Star
+                  className={cn(
+                    "h-7 w-7 transition",
+                    i < rating ? "fill-accent text-accent" : "text-border"
+                  )}
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="mt-4">
+          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Your review</p>
+          <Textarea
+            value={text}
+            onChange={(e) => setText(e.target.value.slice(0, 400))}
+            placeholder="Wifi, vibe, seating, food — what should others know?"
+            className="mt-2 min-h-[110px] rounded-2xl text-sm"
+            maxLength={400}
+          />
+          <div className="mt-1 flex items-center justify-between text-[11px] text-muted-foreground">
+            <span>{text.trim().length < 10 ? "At least 10 characters" : "Looks good"}</span>
+            <span>{text.length}/400</span>
+          </div>
+        </div>
+        <Button
+          onClick={handleSubmit}
+          disabled={!valid}
+          className="mt-5 h-12 w-full rounded-xl text-sm font-semibold"
+        >
+          <Send className="mr-1 h-4 w-4" /> Post review
+        </Button>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function timeAgo(ms: number) {
+  const diff = Date.now() - ms;
+  const day = 86400000;
+  if (diff < day) return "today";
+  if (diff < 2 * day) return "yesterday";
+  const days = Math.floor(diff / day);
+  if (days < 7) return `${days}d ago`;
+  return `${Math.floor(days / 7)}w ago`;
+}
