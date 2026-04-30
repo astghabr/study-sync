@@ -66,7 +66,7 @@ export const subscriptionStore = {
 };
 
 export const PLAN_PRICING = {
-  monthly: { price: 4.99, currency: "€", label: "Monthly" },
+  monthly: { price: 4.90, currency: "€", label: "Monthly" },
   yearly: { price: 39.99, currency: "€", label: "Yearly", perMonth: 3.33, savings: "Save 33%" },
 } as const;
 
