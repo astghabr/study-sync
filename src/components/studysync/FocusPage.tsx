@@ -80,10 +80,18 @@ const modeMeta: Record<Mode, { label: string; icon: typeof TimerIcon; desc: stri
 };
 
 export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) => void }) {
+  const { isPro } = useSubscription();
   const [mode, setMode] = useState<Mode>("pomodoro");
   const [timerMinutes, setTimerMinutes] = useState(45);
   const [invitees, setInvitees] = useState<string[]>([]);
   const [showInvite, setShowInvite] = useState(false);
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
+  const [upgradeReason, setUpgradeReason] = useState<string | undefined>();
+
+  const requestUpgrade = (reason: string) => {
+    setUpgradeReason(reason);
+    setUpgradeOpen(true);
+  };
 
   // session state
   const [running, setRunning] = useState(false);
