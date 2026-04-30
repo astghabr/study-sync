@@ -117,18 +117,15 @@ export const CURRENT_USER = {
 export const BUDDIES: Buddy[] = [
   { id: "1", name: "Liam Janssens", initials: "LJ", major: "Computer Science", year: "3rd Year", university: "KU Leuven", gender: "Male", hobbies: ["Gaming", "Chess", "Coffee"], bio: "ML enthusiast looking for algorithm study partners. Coffee fueled.", avatarColor: "from-amber-200 to-orange-300", animal: "bear", prompts: [
     { question: "I knew my major was for me when…", answer: "I spent a whole weekend optimizing a sorting algorithm for fun." },
-    { question: "My ideal study session looks like…", answer: "two coffees, one whiteboard, zero small talk." },
   ] },
   { id: "2", name: "Sofia Peeters", initials: "SP", major: "Economics", year: "2nd Year", university: "KU Leuven", gender: "Female", hobbies: ["Reading", "Yoga", "Hiking"], bio: "Macroeconomics & finance. Prefer quiet libraries in the morning.", avatarColor: "from-rose-200 to-pink-300", animal: "rabbit", prompts: [
     { question: "This year, I really want to…", answer: "land an internship at a central bank." },
-    { question: "The snack that gets me through finals is…", answer: "dark chocolate and way too many clementines." },
   ] },
   { id: "3", name: "Noah De Smet", initials: "ND", major: "Computer Science", year: "1st Year Master", university: "KU Leuven", gender: "Male", hobbies: ["Gaming", "Music", "Cycling"], bio: "Distributed systems nerd. Love a good whiteboard session.", avatarColor: "from-blue-200 to-indigo-300", animal: "penguin", prompts: [
     { question: "My weirdest study habit is…", answer: "explaining concepts out loud to my plant." },
   ] },
   { id: "4", name: "Emma Vermeulen", initials: "EV", major: "Psychology", year: "3rd Year", university: "KU Leuven", gender: "Female", hobbies: ["Coffee", "Films", "Painting"], bio: "Neuropsych research. Find me at Onder de Toren most afternoons.", avatarColor: "from-emerald-200 to-teal-300", animal: "frog", prompts: [
     { question: "A class that changed how I think was…", answer: "Cognitive Neuroscience — I haven't shut up about it since." },
-    { question: "After graduation, you'll find me…", answer: "in a research lab or somewhere with great coffee." },
   ] },
   { id: "5", name: "Lucas Maes", initials: "LM", major: "Engineering", year: "2nd Year Master", university: "KU Leuven", gender: "Male", hobbies: ["Hiking", "Tech", "Coffee"], bio: "Mechanical eng. Group sessions > solo grinding.", avatarColor: "from-violet-200 to-purple-300", animal: "owl", prompts: [
     { question: "My ideal study session looks like…", answer: "four people, one big table, snacks in the middle." },

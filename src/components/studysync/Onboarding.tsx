@@ -105,7 +105,7 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
                 </p>
               </div>
               <p className="mt-2 text-sm text-muted-foreground">
-                Students-only community. We'll check your institutional email to keep things safe.
+                We'll check your institutional email to keep things safe.
               </p>
 
               <div className="relative mt-5">
