@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, SlidersHorizontal, X, MessageCircle, Check, Flag, ShieldAlert } from "lucide-react";
 import { GradientAvatar } from "./Avatar";
 import { StatusBadge } from "./Badge";
+import { ChatModal } from "./ChatModal";
 import { BUDDIES, type Buddy } from "@/data/mockData";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,7 @@ export function BuddiesPage() {
   const [selected, setSelected] = useState<Buddy | null>(null);
   const [requested, setRequested] = useState<Set<string>>(new Set());
   const [reporting, setReporting] = useState<Buddy | null>(null);
+  const [chatting, setChatting] = useState<Buddy | null>(null);
 
   const filtered = useMemo(() => {
     return BUDDIES.filter((b) => {
@@ -250,7 +252,15 @@ export function BuddiesPage() {
               </div>
 
               <div className="mt-6 grid grid-cols-2 gap-2">
-                <Button variant="outline" className="h-12 rounded-xl">
+                <Button
+                  variant="outline"
+                  className="h-12 rounded-xl"
+                  onClick={() => {
+                    const b = selected;
+                    setSelected(null);
+                    setChatting(b);
+                  }}
+                >
                   <MessageCircle className="mr-1 h-4 w-4" /> Message
                 </Button>
                 <Button
@@ -277,6 +287,15 @@ export function BuddiesPage() {
       </AnimatePresence>
 
       <ReportModal target={reporting} onClose={() => setReporting(null)} />
+
+      <ChatModal
+        buddy={chatting}
+        onClose={() => setChatting(null)}
+        onReportProfile={(b) => {
+          setChatting(null);
+          setReporting(b);
+        }}
+      />
     </div>
   );
 }
