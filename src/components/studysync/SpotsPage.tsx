@@ -492,6 +492,9 @@ function SpotDetail({
             </div>
           </div>
 
+          {/* Photos & reviews */}
+          <ReviewsSection spotId={spot.id} spotHero={spot.hero} />
+
           {spot.reservationAvailable && (
             <Button
               onClick={() => {
