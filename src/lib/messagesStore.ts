@@ -114,6 +114,3 @@ export function useMessages(buddyId: string | null): ChatMessage[] {
     () => getStableSnapshot(buddyId),
   );
 }
-
-  );
-}
