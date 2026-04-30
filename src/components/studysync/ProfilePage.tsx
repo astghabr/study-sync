@@ -72,6 +72,11 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
         </div>
       </div>
 
+      {/* Focus stats — streaks + weekly */}
+      <div className="px-6 pt-4">
+        <FocusStatsCard />
+      </div>
+
       <div className="mt-6 space-y-4 px-6">
         <Section
           title="Prompts"
