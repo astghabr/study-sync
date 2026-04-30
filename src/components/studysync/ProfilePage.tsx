@@ -18,7 +18,7 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
     <div className="flex flex-col pb-6">
       <div className="relative gradient-hero px-6 pb-16 pt-10 text-primary-foreground">
         <div className="flex items-start justify-between">
-          <p className="text-xs uppercase tracking-[0.18em] text-primary-foreground/85">My profile</p>
+          <p className="text-xs uppercase tracking-[0.18em] text-primary-foreground">My profile</p>
           <button className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-foreground/10">
             <Settings className="h-4 w-4" />
           </button>
@@ -39,7 +39,7 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
               </span>
             </button>
             <div className="flex-1 pt-1">
-              <h2 className="font-display text-xl font-semibold">{CURRENT_USER.name}</h2>
+              <h2 className="font-display text-xl font-semibold text-foreground">{CURRENT_USER.name}</h2>
               <p className="text-xs text-muted-foreground">{CURRENT_USER.email}</p>
               <div className="mt-2 flex flex-wrap items-center gap-1.5">
                 <StatusBadge variant="verified">Verified @ {CURRENT_USER.university}</StatusBadge>
