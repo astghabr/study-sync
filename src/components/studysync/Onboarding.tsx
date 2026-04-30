@@ -109,16 +109,39 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
             </p>
 
             <div className="mt-auto rounded-3xl bg-card p-6 shadow-elevated">
-              <div className="flex items-center gap-2">
+              {/* Login / Register switcher */}
+              <div className="flex rounded-full bg-secondary p-1">
+                {(["register", "login"] as const).map((m) => (
+                  <button
+                    key={m}
+                    onClick={() => {
+                      setMode(m);
+                      setError("");
+                    }}
+                    className={cn(
+                      "flex-1 rounded-full px-3 py-2 text-xs font-semibold transition-colors",
+                      mode === m
+                        ? "bg-card text-foreground shadow-soft"
+                        : "text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    {m === "register" ? "Create account" : "Log in"}
+                  </button>
+                ))}
+              </div>
+
+              <div className="mt-5 flex items-center gap-2">
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent-soft text-primary">
                   <ShieldCheck className="h-4 w-4" />
                 </div>
                 <p className="font-display text-2xl font-semibold text-foreground">
-                  Verify your university
+                  {mode === "register" ? "Verify your university" : "Welcome back"}
                 </p>
               </div>
               <p className="mt-2 text-sm text-muted-foreground">
-                We'll check your institutional email to keep things safe.
+                {mode === "register"
+                  ? "We'll check your institutional email to keep things safe."
+                  : "Sign in with your university email to pick up where you left off."}
               </p>
 
               <div className="relative mt-5">
@@ -139,8 +162,24 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
                   <Check className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-success" strokeWidth={3} />
                 )}
               </div>
+
+              {mode === "login" && (
+                <Input
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (error) setError("");
+                  }}
+                  placeholder="Password"
+                  className="mt-2 h-12 rounded-xl text-sm"
+                  type="password"
+                  autoComplete="current-password"
+                  disabled={verifying || verified}
+                />
+              )}
+
               {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
-              {!error && (
+              {!error && mode === "register" && (
                 <p className="mt-2 text-[11px] text-muted-foreground">
                   Accepted: @kuleuven.be, @ugent.be, .edu, .ac.uk and other academic domains.
                 </p>
@@ -152,11 +191,11 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
                 className="mt-4 h-12 w-full rounded-xl text-sm font-semibold"
               >
                 {verifying ? (
-                  <><Loader2 className="mr-1 h-4 w-4 animate-spin" /> Verifying…</>
+                  <><Loader2 className="mr-1 h-4 w-4 animate-spin" /> {mode === "login" ? "Signing in…" : "Verifying…"}</>
                 ) : verified ? (
-                  <><Check className="mr-1 h-4 w-4" strokeWidth={3} /> Verified</>
+                  <><Check className="mr-1 h-4 w-4" strokeWidth={3} /> {mode === "login" ? "Signed in" : "Verified"}</>
                 ) : (
-                  <>Verify email <ArrowRight className="ml-1 h-4 w-4" /></>
+                  <>{mode === "login" ? "Log in" : "Verify email"} <ArrowRight className="ml-1 h-4 w-4" /></>
                 )}
               </Button>
 
