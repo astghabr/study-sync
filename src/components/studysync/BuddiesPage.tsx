@@ -133,10 +133,11 @@ export function BuddiesPage() {
               <p className="mt-3 line-clamp-1 font-display text-sm font-semibold">{b.name}</p>
               <p className="line-clamp-1 text-[11px] text-muted-foreground">{b.major}</p>
               <p className="text-[11px] text-muted-foreground">{b.year}</p>
-              <div className="mt-2 flex flex-wrap gap-1">
-                <StatusBadge variant="verified">Verified</StatusBadge>
-                {isReq && <StatusBadge variant="success">Requested</StatusBadge>}
-              </div>
+              {isReq && (
+                <div className="mt-2 flex flex-wrap gap-1">
+                  <StatusBadge variant="success">Requested</StatusBadge>
+                </div>
+              )}
             </motion.button>
           );
         })}
@@ -177,9 +178,7 @@ export function BuddiesPage() {
                 <GradientAvatar animal={selected.animal} initials={selected.initials} size="xl" />
                 <h2 className="mt-4 font-display text-2xl font-semibold">{selected.name}</h2>
                 <p className="text-sm text-muted-foreground">{selected.major} · {selected.year}</p>
-                <div className="mt-2 flex items-center gap-2">
-                  <StatusBadge variant="verified">Verified @ {selected.university}</StatusBadge>
-                </div>
+                <p className="mt-1 text-xs text-muted-foreground">{selected.university}</p>
               </div>
 
               <p className="mt-5 text-center text-sm leading-relaxed text-foreground">

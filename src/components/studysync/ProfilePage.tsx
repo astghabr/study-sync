@@ -47,9 +47,7 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
             <div className="flex-1 pt-1">
               <h2 className="font-display text-xl font-semibold text-foreground">{CURRENT_USER.name}</h2>
               <p className="text-xs text-muted-foreground">{CURRENT_USER.email}</p>
-              <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                <StatusBadge variant="verified">Verified @ {CURRENT_USER.university}</StatusBadge>
-              </div>
+              <p className="mt-1 text-xs text-muted-foreground">{CURRENT_USER.university}</p>
             </div>
           </div>
 
