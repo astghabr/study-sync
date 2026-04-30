@@ -403,7 +403,6 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
           />
         )}
       </AnimatePresence>
-      </AnimatePresence>
 
       <UpgradeModal
         open={upgradeOpen}
