@@ -51,8 +51,6 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
       </div>
 
       <div className="-mt-12 px-6">
-
-      <div className="-mt-10 px-6">
         <div className="rounded-3xl bg-card p-5 shadow-elevated">
           <div className="grid grid-cols-2 gap-2">
             <Stat label="Sessions" value="24" />
