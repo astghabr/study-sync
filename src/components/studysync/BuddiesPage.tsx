@@ -35,6 +35,36 @@ export function BuddiesPage() {
   const [requested, setRequested] = useState<Set<string>>(new Set());
   const [reporting, setReporting] = useState<Buddy | null>(null);
   const [chatting, setChatting] = useState<Buddy | null>(null);
+  const [inboxOpen, setInboxOpen] = useState(false);
+  const inboxRef = useRef<HTMLDivElement | null>(null);
+  const allMessages = useAllMessages();
+
+  // Build conversation summary list (latest message per buddy, most recent first)
+  const conversations = useMemo(() => {
+    const latest = new Map<string, ChatMessage>();
+    for (const m of allMessages) {
+      const cur = latest.get(m.buddyId);
+      if (!cur || m.sentAt > cur.sentAt) latest.set(m.buddyId, m);
+    }
+    return Array.from(latest.values())
+      .map((m) => ({ msg: m, buddy: BUDDIES.find((b) => b.id === m.buddyId) }))
+      .filter((c) => c.buddy)
+      .sort((a, b) => b.msg.sentAt - a.msg.sentAt);
+  }, [allMessages]);
+
+  const unreadCount = conversations.filter((c) => c.msg.from === "them").length;
+
+  // Close on outside click
+  useEffect(() => {
+    if (!inboxOpen) return;
+    const onClick = (e: MouseEvent) => {
+      if (inboxRef.current && !inboxRef.current.contains(e.target as Node)) {
+        setInboxOpen(false);
+      }
+    };
+    window.addEventListener("mousedown", onClick);
+    return () => window.removeEventListener("mousedown", onClick);
+  }, [inboxOpen]);
 
   // Open the chat modal when another part of the app (e.g. a notification click) requests it.
   useEffect(() => {
