@@ -243,17 +243,32 @@ export function GroupsPage() {
                     {capped ? `/${g.spotsTotal}` : ""}
                   </div>
                 </div>
-                <Button
-                  size="sm"
-                  disabled={isJoined || full}
-                  onClick={() => setConfirming(g)}
-                  className={cn(
-                    "h-9 rounded-full px-4 text-xs font-semibold",
-                    isJoined && "bg-success hover:bg-success/90"
-                  )}
-                >
-                  {isJoined ? (<><Check className="mr-1 h-3.5 w-3.5" strokeWidth={3} /> Joined</>) : full ? "Full" : "Join table"}
-                </Button>
+                {isJoined ? (
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setCancelling(g)}
+                      className="h-9 rounded-full border border-border bg-card px-3 text-xs font-semibold text-muted-foreground transition hover:border-destructive hover:text-destructive"
+                    >
+                      Cancel
+                    </button>
+                    <Button
+                      size="sm"
+                      disabled
+                      className="h-9 rounded-full bg-success px-4 text-xs font-semibold hover:bg-success/90"
+                    >
+                      <Check className="mr-1 h-3.5 w-3.5" strokeWidth={3} /> Joined
+                    </Button>
+                  </div>
+                ) : (
+                  <Button
+                    size="sm"
+                    disabled={full}
+                    onClick={() => setConfirming(g)}
+                    className="h-9 rounded-full px-4 text-xs font-semibold"
+                  >
+                    {full ? "Full" : "Join table"}
+                  </Button>
+                )}
               </div>
 
               {g.atRisk && isJoined && (
