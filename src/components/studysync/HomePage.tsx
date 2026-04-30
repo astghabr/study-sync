@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Bell, Calendar, MapPin, Users, ArrowRight, Sparkles, AlertTriangle, MessageSquare } from "lucide-react";
+import { Bell, Calendar, MapPin, Users, ArrowRight, Sparkles, AlertTriangle } from "lucide-react";
 import { GradientAvatar } from "./Avatar";
 import { StatusBadge } from "./Badge";
 import { AdSlot } from "./AdSlot";
