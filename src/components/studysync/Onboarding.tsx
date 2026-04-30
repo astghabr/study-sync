@@ -1,14 +1,18 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { GraduationCap, Mail, ArrowRight, Check, X } from "lucide-react";
+import { GraduationCap, Mail, ArrowRight, Check, X, ShieldCheck, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { AnimalAvatar } from "./Avatar";
 import { ANIMALS, PROFILE_PROMPTS } from "@/data/mockData";
+import { tourStore } from "@/lib/tourStore";
 import { cn } from "@/lib/utils";
 
-const ALLOWED_DOMAINS = ["kuleuven.be", "ugent.be", "vub.be", "uantwerpen.be", "ulb.be"];
+// Allowed institutional domains. We accept exact match or any subdomain (e.g. student.kuleuven.be).
+// Generic .edu / .ac.* TLDs are also accepted as a catch-all for international students.
+const ALLOWED_DOMAINS = ["kuleuven.be", "ugent.be", "vub.be", "uantwerpen.be", "ulb.be", "uliege.be", "uhasselt.be"];
+const ACADEMIC_TLDS = [".edu", ".ac.uk", ".ac.be", ".ac.nl", ".edu.au", ".ac.jp"];
 
 const HOBBIES = ["Gaming", "Reading", "Coffee", "Hiking", "Music", "Films", "Yoga", "Cycling", "Chess", "Photography", "Painting", "Tea"];
 
@@ -18,44 +22,51 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
   const [step, setStep] = useState<Step>(0);
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const [verifying, setVerifying] = useState(false);
+  const [verified, setVerified] = useState(false);
   const [picked, setPicked] = useState<string[]>(["Gaming", "Coffee"]);
   const [animal, setAnimal] = useState<string>("fox");
-  const [prompts, setPrompts] = useState<{ question: string; answer: string }[]>([
-    { question: PROFILE_PROMPTS[0], answer: "" },
-    { question: PROFILE_PROMPTS[2], answer: "" },
-  ]);
+  const [prompt, setPrompt] = useState<{ question: string; answer: string }>({
+    question: PROFILE_PROMPTS[0],
+    answer: "",
+  });
 
-  const handleVerify = () => {
-    const lower = email.trim().toLowerCase();
-    if (!lower.includes("@")) {
-      setError("Please enter a valid email.");
-      return;
+  const validEmail = (raw: string): { ok: boolean; reason?: string } => {
+    const lower = raw.trim().toLowerCase();
+    // basic shape
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lower)) {
+      return { ok: false, reason: "Please enter a valid email address." };
     }
     const domain = lower.split("@")[1];
-    if (!ALLOWED_DOMAINS.some((d) => domain === d || domain.endsWith("." + d))) {
-      setError("Only verified university emails are accepted (e.g. @kuleuven.be).");
+    const domainOk =
+      ALLOWED_DOMAINS.some((d) => domain === d || domain.endsWith("." + d)) ||
+      ACADEMIC_TLDS.some((tld) => domain.endsWith(tld));
+    if (!domainOk) {
+      return { ok: false, reason: "Use your university email (e.g. @kuleuven.be or .edu)." };
+    }
+    return { ok: true };
+  };
+
+  const handleVerify = () => {
+    const check = validEmail(email);
+    if (!check.ok) {
+      setError(check.reason ?? "Invalid email.");
       return;
     }
     setError("");
-    setStep(1);
+    setVerifying(true);
+    // Simulated verification delay (in production: send magic link / OTP)
+    window.setTimeout(() => {
+      setVerifying(false);
+      setVerified(true);
+      window.setTimeout(() => setStep(1), 600);
+    }, 900);
   };
 
   const togglePick = (h: string) =>
     setPicked((p) => (p.includes(h) ? p.filter((x) => x !== h) : [...p, h]));
 
-  const setQ = (i: number, q: string) =>
-    setPrompts((arr) => arr.map((p, idx) => (idx === i ? { ...p, question: q } : p)));
-  const setA = (i: number, a: string) =>
-    setPrompts((arr) => arr.map((p, idx) => (idx === i ? { ...p, answer: a } : p)));
-  const removePrompt = (i: number) => setPrompts((arr) => arr.filter((_, idx) => idx !== i));
-  const addPrompt = () => {
-    if (prompts.length >= 3) return;
-    const used = new Set(prompts.map((p) => p.question));
-    const next = PROFILE_PROMPTS.find((q) => !used.has(q)) ?? PROFILE_PROMPTS[0];
-    setPrompts((arr) => [...arr, { question: next, answer: "" }]);
-  };
-
-  const promptsValid = prompts.length >= 1 && prompts.every((p) => p.answer.trim().length >= 3);
+  const promptValid = prompt.answer.trim().length >= 3;
 
   return (
     <div className="relative flex min-h-full flex-1 flex-col gradient-warm">
