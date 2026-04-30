@@ -151,50 +151,83 @@ export function SpotsPage() {
             transition={{ duration: 0.25 }}
             className="mt-4 flex flex-col gap-3 px-6"
           >
-            {filtered.map((s, idx) => (
-              <Fragment key={s.id}>
-                <button
-                  onClick={() => setSelected(s)}
-                  className="overflow-hidden rounded-2xl border border-border bg-card text-left shadow-soft transition hover:shadow-card"
-                >
-                  <div className={`relative h-28 w-full bg-gradient-to-br ${s.hero}`}>
-                    <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
-                      {s.official && <StatusBadge variant="official">Official Hub</StatusBadge>}
-                      {s.laptopPolicy === "Not Allowed" && <StatusBadge variant="no-laptop">No laptops</StatusBadge>}
-                      {s.noise === "Quiet" && <StatusBadge variant="quiet">Quiet zone</StatusBadge>}
-                    </div>
-                    <div className="absolute bottom-3 right-3">
-                      <span className={cn(
-                        "rounded-full px-2.5 py-1 text-[10px] font-semibold",
-                        s.status === "Open" && "bg-success text-success-foreground",
-                        s.status === "Busy" && "bg-warning text-warning-foreground",
-                        s.status === "Closing soon" && "bg-foreground/80 text-background"
-                      )}>
-                        {s.status}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <p className="font-display text-base font-semibold">{s.name}</p>
-                        <p className="text-xs text-muted-foreground">{s.type} · {s.distance} · {s.pricing}</p>
+            {filtered.map((s, idx) => {
+              const isFav = favorites.has(s.id);
+              const avg = spotAverageRating(s.id);
+              const reviewCount = getSpotReviews(s.id).length;
+              return (
+                <Fragment key={s.id}>
+                  <div className="relative overflow-hidden rounded-2xl border border-border bg-card text-left shadow-soft transition hover:shadow-card">
+                    <button onClick={() => setSelected(s)} className="block w-full text-left">
+                      <div className={`relative h-28 w-full bg-gradient-to-br ${s.hero}`}>
+                        <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
+                          {s.official && <StatusBadge variant="official">Official Hub</StatusBadge>}
+                          {s.laptopPolicy === "Not Allowed" && <StatusBadge variant="no-laptop">No laptops</StatusBadge>}
+                          {s.noise === "Quiet" && <StatusBadge variant="quiet">Quiet zone</StatusBadge>}
+                        </div>
+                        <div className="absolute bottom-3 right-3">
+                          <span className={cn(
+                            "rounded-full px-2.5 py-1 text-[10px] font-semibold",
+                            s.status === "Open" && "bg-success text-success-foreground",
+                            s.status === "Busy" && "bg-warning text-warning-foreground",
+                            s.status === "Closing soon" && "bg-foreground/80 text-background"
+                          )}>
+                            {s.status}
+                          </span>
+                        </div>
                       </div>
-                      <span className="text-xs font-semibold text-foreground">{s.wifi}</span>
-                    </div>
-                    <div className="mt-3 flex items-center gap-1.5">
-                      {s.amenities.map((a) => (
-                        <AmenityIcon key={a} name={a} />
-                      ))}
-                    </div>
-                    {s.laptopNote && (
-                      <p className="mt-3 text-[11px] font-medium text-foreground/70">📋 {s.laptopNote}</p>
-                    )}
+                      <div className="p-4">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0">
+                            <p className="font-display text-base font-semibold">{s.name}</p>
+                            <p className="text-xs text-muted-foreground">{s.type} · {s.distance} · {s.pricing}</p>
+                          </div>
+                          <div className="flex flex-col items-end gap-1">
+                            <span className="text-xs font-semibold text-foreground">{s.wifi}</span>
+                            {avg != null && (
+                              <span className="inline-flex items-center gap-0.5 text-[11px] font-medium text-foreground">
+                                <Star className="h-3 w-3 fill-accent text-accent" /> {avg.toFixed(1)}
+                                <span className="text-muted-foreground">({reviewCount})</span>
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="mt-3 flex items-center gap-1.5">
+                          {s.amenities.map((a) => (
+                            <AmenityIcon key={a} name={a} />
+                          ))}
+                        </div>
+                        {s.laptopNote && (
+                          <p className="mt-3 text-[11px] font-medium text-foreground/70">📋 {s.laptopNote}</p>
+                        )}
+                      </div>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        spotsExtraStore.toggleFavorite(s.id);
+                      }}
+                      aria-label={isFav ? "Remove from saved" : "Save spot"}
+                      className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-card/90 text-foreground shadow-soft backdrop-blur transition hover:scale-105"
+                    >
+                      {isFav ? (
+                        <BookmarkCheck className="h-4 w-4 fill-primary text-primary" />
+                      ) : (
+                        <Bookmark className="h-4 w-4" />
+                      )}
+                    </button>
                   </div>
-                </button>
-                {idx === 1 && <AdSlot variant="spots" />}
-              </Fragment>
-            ))}
+                  {idx === 1 && <AdSlot variant="spots" />}
+                </Fragment>
+              );
+            })}
+            {filtered.length === 0 && (
+              <div className="rounded-2xl border border-dashed border-border bg-card/50 p-8 text-center">
+                <p className="text-sm text-muted-foreground">
+                  {savedOnly ? "No saved spots yet — tap the bookmark on a card to save it." : "No spots match these filters."}
+                </p>
+              </div>
+            )}
           </motion.div>
         ) : (
           <motion.div
