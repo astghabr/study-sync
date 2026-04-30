@@ -208,7 +208,7 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
           Focus, together or solo.
         </h1>
         <p className="mt-2 max-w-xs text-sm text-primary-foreground/95">
-          Pick a mode, lock in, and let the timer do the rest.
+          Pick a mode and lock in.
         </p>
       </div>
 
