@@ -1,4 +1,4 @@
-import { Home, Users, MapPin, CalendarCheck, User, Timer, type LucideIcon } from "lucide-react";
+import { Home, Users, MapPin, CalendarCheck, Timer, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
@@ -10,7 +10,6 @@ const items: { id: Tab; label: string; icon: LucideIcon }[] = [
   { id: "spots", label: "Spots", icon: MapPin },
   { id: "focus", label: "Focus", icon: Timer },
   { id: "groups", label: "Groups", icon: CalendarCheck },
-  { id: "profile", label: "Profile", icon: User },
 ];
 
 export function BottomNav({
@@ -24,7 +23,7 @@ export function BottomNav({
 }) {
   return (
     <nav className="sticky bottom-0 z-40 mx-auto w-full max-w-md border-t border-border/60 bg-background/85 backdrop-blur-xl">
-      <ul className="grid grid-cols-6 px-1 pb-[env(safe-area-inset-bottom)] pt-2">
+      <ul className="grid grid-cols-5 px-1 pb-[env(safe-area-inset-bottom)] pt-2">
         {items.map((it) => {
           const Icon = it.icon;
           const isActive = active === it.id;
