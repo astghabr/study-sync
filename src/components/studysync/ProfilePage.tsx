@@ -110,6 +110,12 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
           </div>
         </Section>
 
+        {(CURRENT_USER.role === "admin" || CURRENT_USER.role === "moderator") && (
+          <div className="mb-3">
+            <AdminAnalytics />
+          </div>
+        )}
+
         <button
           onClick={onSignOut}
           className="flex w-full items-center justify-center gap-2 rounded-2xl border border-border bg-card py-3.5 text-sm font-medium text-destructive shadow-soft"
