@@ -23,7 +23,7 @@ export function BottomNav({
 }) {
   return (
     <nav className="sticky bottom-0 z-40 mx-auto w-full max-w-md border-t border-border/60 bg-background/85 backdrop-blur-xl">
-      <ul className="grid grid-cols-6 px-1 pb-[env(safe-area-inset-bottom)] pt-2">
+      <ul className="grid grid-cols-5 px-1 pb-[env(safe-area-inset-bottom)] pt-2">
         {items.map((it) => {
           const Icon = it.icon;
           const isActive = active === it.id;
