@@ -36,12 +36,29 @@ export type Spot = {
 export type StudyGroup = {
   id: string;
   spotName: string;
+  spotType: "Cafe" | "Library" | "University Hub";
   time: string;
   date: string;
-  spotsTotal: number;
-  spotsRemaining: number;
+  /** null = no fixed limit (open table). Number = hard cap (e.g. 4 for cafes). */
+  spotsTotal: number | null;
+  spotsRemaining: number | null;
   noisePreference: "Quiet" | "Moderate" | "Lively";
   anonymousMembers: number;
+  subject?: string;
+  /** True when too many people cancelled and the session needs a refill. */
+  atRisk?: boolean;
+  /** Booked at least 24h in advance. */
+  bookedAt?: string;
+};
+
+export type RefillCandidate = {
+  id: string;
+  initials: string;
+  animal: string;
+  subject: string;
+  availability: string;
+  distance: string;
+  online: boolean;
 };
 
 /** Cute animal options for profile pictures */
@@ -133,9 +150,21 @@ export const SPOTS: Spot[] = [
 ];
 
 export const GROUPS: StudyGroup[] = [
-  { id: "g1", spotName: "Café Nero Leuven", time: "14:00", date: "Today", spotsTotal: 4, spotsRemaining: 1, noisePreference: "Lively", anonymousMembers: 3 },
-  { id: "g2", spotName: "Agora Learning Center", time: "10:30", date: "Tomorrow", spotsTotal: 5, spotsRemaining: 3, noisePreference: "Quiet", anonymousMembers: 2 },
-  { id: "g3", spotName: "Maurits Sabbe Library", time: "16:00", date: "Today", spotsTotal: 3, spotsRemaining: 2, noisePreference: "Quiet", anonymousMembers: 1 },
-  { id: "g4", spotName: "Onder de Toren", time: "09:00", date: "Fri 3 May", spotsTotal: 4, spotsRemaining: 2, noisePreference: "Moderate", anonymousMembers: 2 },
-  { id: "g5", spotName: "Erasmushuis Hub", time: "13:00", date: "Tomorrow", spotsTotal: 4, spotsRemaining: 4, noisePreference: "Moderate", anonymousMembers: 0 },
+  // Cafe → 4-person hard limit. AT RISK: was 4/4, two cancelled overnight.
+  { id: "g1", spotName: "Café Nero Leuven", spotType: "Cafe", time: "14:00", date: "Today", spotsTotal: 4, spotsRemaining: 3, noisePreference: "Lively", anonymousMembers: 1, subject: "Microeconomics", atRisk: true, bookedAt: "Yesterday 14:00" },
+  // Library → no limit
+  { id: "g2", spotName: "Agora Learning Center", spotType: "University Hub", time: "10:30", date: "Tomorrow", spotsTotal: null, spotsRemaining: null, noisePreference: "Quiet", anonymousMembers: 6, subject: "Algorithms", bookedAt: "Yesterday 10:00" },
+  { id: "g3", spotName: "Maurits Sabbe Library", spotType: "Library", time: "16:00", date: "Today", spotsTotal: null, spotsRemaining: null, noisePreference: "Quiet", anonymousMembers: 4, subject: "EU Law", bookedAt: "Yesterday 16:00" },
+  // Cafe → 4 cap
+  { id: "g4", spotName: "Onder de Toren", spotType: "Cafe", time: "09:00", date: "Fri 3 May", spotsTotal: 4, spotsRemaining: 2, noisePreference: "Moderate", anonymousMembers: 2, subject: "Statistics", bookedAt: "Wed 1 May 09:00" },
+  // Hub → no limit
+  { id: "g5", spotName: "Erasmushuis Hub", spotType: "University Hub", time: "13:00", date: "Tomorrow", spotsTotal: null, spotsRemaining: null, noisePreference: "Moderate", anonymousMembers: 0, subject: "Mech Eng", bookedAt: "Yesterday 13:00" },
+];
+
+/** Mock pool of nearby/online students used by the refill flow. */
+export const REFILL_POOL: RefillCandidate[] = [
+  { id: "r1", initials: "TV", animal: "fox", subject: "Microeconomics", availability: "Free 14:00–16:00", distance: "0.4 km", online: true },
+  { id: "r2", initials: "KB", animal: "rabbit", subject: "Microeconomics", availability: "Free 13:30–17:00", distance: "0.8 km", online: true },
+  { id: "r3", initials: "RM", animal: "owl", subject: "Economics", availability: "Free this afternoon", distance: "Online", online: true },
+  { id: "r4", initials: "AD", animal: "panda", subject: "Microeconomics", availability: "Free 14:00–15:30", distance: "1.2 km", online: false },
 ];
