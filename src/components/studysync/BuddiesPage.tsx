@@ -38,10 +38,13 @@ export function BuddiesPage() {
 
   // Open the chat modal when another part of the app (e.g. a notification click) requests it.
   useEffect(() => {
-    return chatOpener.subscribe((buddyId) => {
+    const unsubscribe = chatOpener.subscribe((buddyId) => {
       const b = BUDDIES.find((x) => x.id === buddyId);
       if (b) setChatting(b);
     });
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   const filtered = useMemo(() => {
