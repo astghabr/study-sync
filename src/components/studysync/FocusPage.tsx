@@ -21,6 +21,9 @@ import { Button } from "@/components/ui/button";
 import { AnimalAvatar } from "./Avatar";
 import { BUDDIES } from "@/data/mockData";
 import { cn } from "@/lib/utils";
+import { useSubscription } from "@/lib/subscriptionStore";
+import { UpgradeModal } from "./UpgradeModal";
+import { Crown } from "lucide-react";
 
 type Mode = "pomodoro" | "timer" | "stopwatch";
 type Phase = "focus" | "break";
@@ -77,10 +80,18 @@ const modeMeta: Record<Mode, { label: string; icon: typeof TimerIcon; desc: stri
 };
 
 export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) => void }) {
+  const { isPro } = useSubscription();
   const [mode, setMode] = useState<Mode>("pomodoro");
   const [timerMinutes, setTimerMinutes] = useState(45);
   const [invitees, setInvitees] = useState<string[]>([]);
   const [showInvite, setShowInvite] = useState(false);
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
+  const [upgradeReason, setUpgradeReason] = useState<string | undefined>();
+
+  const requestUpgrade = (reason: string) => {
+    setUpgradeReason(reason);
+    setUpgradeOpen(true);
+  };
 
   // session state
   const [running, setRunning] = useState(false);
@@ -202,17 +213,30 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
             {(Object.keys(modeMeta) as Mode[]).map((m) => {
               const Icon = modeMeta[m].icon;
               const active = mode === m;
+              const locked = !isPro && m !== "pomodoro";
               return (
                 <button
                   key={m}
-                  onClick={() => setMode(m)}
+                  onClick={() => {
+                    if (locked) {
+                      requestUpgrade(`${modeMeta[m].label} mode is part of Pro.`);
+                      return;
+                    }
+                    setMode(m);
+                  }}
                   className={cn(
-                    "flex flex-col items-center gap-1.5 rounded-2xl border px-2 py-3 transition",
+                    "relative flex flex-col items-center gap-1.5 rounded-2xl border px-2 py-3 transition",
                     active
                       ? "border-primary bg-primary text-primary-foreground"
-                      : "border-border bg-card text-foreground hover:border-primary/40"
+                      : "border-border bg-card text-foreground hover:border-primary/40",
+                    locked && !active && "opacity-80"
                   )}
                 >
+                  {locked && (
+                    <span className="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-accent-foreground">
+                      <Crown className="h-2.5 w-2.5" />
+                    </span>
+                  )}
                   <Icon className="h-5 w-5" strokeWidth={2.2} />
                   <span className="text-xs font-semibold">{modeMeta[m].label}</span>
                   <span
@@ -258,9 +282,15 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
             </div>
           )}
 
-          {/* invite buddies */}
+          {/* invite buddies (Pro) */}
           <button
-            onClick={() => setShowInvite(true)}
+            onClick={() => {
+              if (!isPro) {
+                requestUpgrade("Group focus sessions with buddies are part of Pro.");
+                return;
+              }
+              setShowInvite(true);
+            }}
             className="mt-4 flex w-full items-center justify-between rounded-2xl border border-border bg-card px-4 py-3 text-left transition hover:border-primary/40"
           >
             <div className="flex items-center gap-3">
@@ -268,7 +298,14 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
                 <Users className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-foreground">Invite study buddies</p>
+                <p className="flex items-center gap-1.5 text-sm font-semibold text-foreground">
+                  Invite study buddies
+                  {!isPro && (
+                    <span className="inline-flex items-center gap-0.5 rounded-full bg-accent px-1.5 py-0.5 text-[9px] font-bold text-accent-foreground">
+                      <Crown className="h-2.5 w-2.5" /> PRO
+                    </span>
+                  )}
+                </p>
                 <p className="text-[11px] text-muted-foreground">
                   {invitees.length === 0
                     ? "Solo session"
@@ -307,7 +344,11 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
 
       {/* HISTORY */}
       <div className="mt-6 px-6">
-        <SessionHistory history={history} />
+        <SessionHistory
+          history={history}
+          isPro={isPro}
+          onUpgrade={() => requestUpgrade("Full session history is part of Pro.")}
+        />
       </div>
 
       {/* ACTIVE FOCUS LOCK OVERLAY */}
@@ -362,6 +403,12 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
           />
         )}
       </AnimatePresence>
+
+      <UpgradeModal
+        open={upgradeOpen}
+        onClose={() => setUpgradeOpen(false)}
+        highlight={upgradeReason}
+      />
     </div>
   );
 }
@@ -842,7 +889,17 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
-function SessionHistory({ history }: { history: SessionLog[] }) {
+function SessionHistory({
+  history,
+  isPro,
+  onUpgrade,
+}: {
+  history: SessionLog[];
+  isPro: boolean;
+  onUpgrade: () => void;
+}) {
+  const visible = isPro ? history.slice(0, 6) : history.slice(0, 3);
+  const hidden = history.length - visible.length;
   return (
     <div className="rounded-3xl bg-card p-5 shadow-card">
       <div className="flex items-center gap-2">
@@ -850,7 +907,7 @@ function SessionHistory({ history }: { history: SessionLog[] }) {
         <p className="text-sm font-semibold text-foreground">Session history</p>
       </div>
       <div className="mt-3 divide-y divide-border">
-        {history.slice(0, 6).map((h) => {
+        {visible.map((h) => {
           const Icon = modeMeta[h.mode].icon;
           const d = new Date(h.endedAt);
           const when = d.toLocaleDateString(undefined, {
@@ -876,6 +933,15 @@ function SessionHistory({ history }: { history: SessionLog[] }) {
           );
         })}
       </div>
+      {!isPro && hidden > 0 && (
+        <button
+          onClick={onUpgrade}
+          className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-primary/40 bg-accent-soft/40 py-3 text-xs font-semibold text-primary"
+        >
+          <Crown className="h-3.5 w-3.5" />
+          Unlock full history ({hidden} more) with Pro
+        </button>
+      )}
     </div>
   );
 }

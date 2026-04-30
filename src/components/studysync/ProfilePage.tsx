@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Settings, GraduationCap, BookOpen, Heart, Calendar, LogOut, ChevronRight, Pencil, X, Check, Plus } from "lucide-react";
+import { Settings, GraduationCap, BookOpen, Heart, Calendar, LogOut, ChevronRight, Pencil, X, Check, Plus, Crown, Sparkles } from "lucide-react";
 import { GradientAvatar, AnimalAvatar } from "./Avatar";
 import { StatusBadge } from "./Badge";
 import { Button } from "@/components/ui/button";
@@ -8,12 +8,17 @@ import { CURRENT_USER, ANIMALS, PROFILE_PROMPTS } from "@/data/mockData";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { AdminAnalytics } from "./AdminAnalytics";
+import { useSubscription, subscriptionStore } from "@/lib/subscriptionStore";
+import { UpgradeModal } from "./UpgradeModal";
+import { toast } from "@/hooks/use-toast";
 
 export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
   const [animal, setAnimal] = useState(CURRENT_USER.animal);
   const [prompts, setPrompts] = useState(CURRENT_USER.prompts);
   const [editingAnimal, setEditingAnimal] = useState(false);
   const [editingPrompts, setEditingPrompts] = useState(false);
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
+  const sub = useSubscription();
 
   return (
     <div className="flex flex-col pb-6">
@@ -110,6 +115,67 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
           </div>
         </Section>
 
+        {/* Subscription */}
+        <Section title="Subscription">
+          {sub.isPro ? (
+            <div className="p-4">
+              <div className="flex items-start gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+                  <Crown className="h-5 w-5" />
+                </div>
+                <div className="flex-1">
+                  <p className="flex items-center gap-1.5 font-display text-base font-semibold text-foreground">
+                    StudySync Pro
+                    <span className="rounded-full bg-accent px-1.5 py-0.5 text-[9px] font-bold text-accent-foreground">
+                      {sub.plan === "pro-yearly" ? "YEARLY" : "MONTHLY"}
+                    </span>
+                  </p>
+                  <p className="text-[11px] text-muted-foreground">
+                    Renews{" "}
+                    {sub.renewsAt
+                      ? new Date(sub.renewsAt).toLocaleDateString(undefined, {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })
+                      : "—"}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  subscriptionStore.cancel();
+                  toast({
+                    title: "Subscription cancelled",
+                    description: "You're back on the Free plan.",
+                  });
+                }}
+                className="mt-3 w-full rounded-xl border border-border bg-card py-2.5 text-xs font-medium text-muted-foreground"
+              >
+                Cancel subscription
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setUpgradeOpen(true)}
+              className="flex w-full items-center gap-3 p-4 text-left"
+            >
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent text-accent-foreground">
+                <Sparkles className="h-5 w-5" />
+              </div>
+              <div className="flex-1">
+                <p className="font-display text-base font-semibold text-foreground">
+                  Upgrade to Pro
+                </p>
+                <p className="text-[11px] text-muted-foreground">
+                  Advanced Focus, spot reservations & insights — from €3.33/mo
+                </p>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            </button>
+          )}
+        </Section>
+
         {(CURRENT_USER.role === "admin" || CURRENT_USER.role === "moderator") && (
           <div className="mb-3">
             <AdminAnalytics />
@@ -143,6 +209,8 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
           setEditingPrompts(false);
         }}
       />
+
+      <UpgradeModal open={upgradeOpen} onClose={() => setUpgradeOpen(false)} />
     </div>
   );
 }

@@ -1,11 +1,13 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, MapPin, Wifi, Plug, Coffee, Volume2, VolumeX, Users, X, Calendar, Map as MapIcon, List, Sparkles } from "lucide-react";
+import { Search, MapPin, Wifi, Plug, Coffee, Volume2, VolumeX, Users, X, Calendar, Map as MapIcon, List, Sparkles, Crown, TrendingUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "./Badge";
 import { SPOTS, type Spot } from "@/data/mockData";
 import { cn } from "@/lib/utils";
+import { useSubscription } from "@/lib/subscriptionStore";
+import { UpgradeModal } from "./UpgradeModal";
 
 const TYPE_FILTERS = ["All", "Cafe", "Library", "University Hub"] as const;
 
@@ -26,12 +28,15 @@ const AmenityIcon = ({ name }: { name: string }) => {
 };
 
 export function SpotsPage() {
+  const { isPro } = useSubscription();
   const [view, setView] = useState<"list" | "map">("list");
   const [query, setQuery] = useState("");
   const [type, setType] = useState<(typeof TYPE_FILTERS)[number]>("All");
   const [laptopOnly, setLaptopOnly] = useState(false);
   const [quietOnly, setQuietOnly] = useState(false);
   const [selected, setSelected] = useState<Spot | null>(null);
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
+  const [upgradeReason, setUpgradeReason] = useState<string | undefined>();
 
   const filtered = useMemo(() => {
     return SPOTS.filter((s) => {
@@ -243,13 +248,39 @@ export function SpotsPage() {
 
       {/* Spot detail modal */}
       <AnimatePresence>
-        {selected && <SpotDetail spot={selected} onClose={() => setSelected(null)} />}
+        {selected && (
+          <SpotDetail
+            spot={selected}
+            isPro={isPro}
+            onClose={() => setSelected(null)}
+            onUpgrade={(reason) => {
+              setUpgradeReason(reason);
+              setUpgradeOpen(true);
+            }}
+          />
+        )}
       </AnimatePresence>
+
+      <UpgradeModal
+        open={upgradeOpen}
+        onClose={() => setUpgradeOpen(false)}
+        highlight={upgradeReason}
+      />
     </div>
   );
 }
 
-function SpotDetail({ spot, onClose }: { spot: Spot; onClose: () => void }) {
+function SpotDetail({
+  spot,
+  isPro,
+  onClose,
+  onUpgrade,
+}: {
+  spot: Spot;
+  isPro: boolean;
+  onClose: () => void;
+  onUpgrade: (reason: string) => void;
+}) {
   const [reserved, setReserved] = useState(false);
 
   return (
@@ -329,13 +360,72 @@ function SpotDetail({ spot, onClose }: { spot: Spot; onClose: () => void }) {
             </div>
           </div>
 
-          {/* Student menu */}
+          {/* Student menu — Pro insight */}
           {spot.studentMenu && (
-            <div className="mt-4 rounded-2xl bg-accent-soft p-4">
-              <p className="text-xs font-medium uppercase tracking-wider text-primary/70">Student menu</p>
-              <p className="mt-1 font-display text-lg font-semibold text-primary">{spot.studentMenu}</p>
+            <div className="relative mt-4 overflow-hidden rounded-2xl bg-accent-soft p-4">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-medium uppercase tracking-wider text-primary/70">
+                  Student menu
+                </p>
+                {!isPro && (
+                  <span className="inline-flex items-center gap-0.5 rounded-full bg-primary px-1.5 py-0.5 text-[9px] font-bold text-primary-foreground">
+                    <Crown className="h-2.5 w-2.5" /> PRO
+                  </span>
+                )}
+              </div>
+              <p
+                className={cn(
+                  "mt-1 font-display text-lg font-semibold text-primary",
+                  !isPro && "blur-sm select-none"
+                )}
+              >
+                {spot.studentMenu}
+              </p>
+              {!isPro && (
+                <button
+                  onClick={() => onUpgrade("Unlock student menu perks at every spot.")}
+                  className="absolute inset-0 flex items-center justify-center bg-accent-soft/50 text-xs font-semibold text-primary"
+                >
+                  Tap to unlock with Pro
+                </button>
+              )}
             </div>
           )}
+
+          {/* Pro spot insights */}
+          <div className="mt-4 rounded-2xl border border-border bg-card p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-primary" />
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Busy-time forecast
+                </p>
+              </div>
+              {!isPro && (
+                <span className="inline-flex items-center gap-0.5 rounded-full bg-accent px-1.5 py-0.5 text-[9px] font-bold text-accent-foreground">
+                  <Crown className="h-2.5 w-2.5" /> PRO
+                </span>
+              )}
+            </div>
+            {isPro ? (
+              <div className="mt-3 flex items-end gap-1 h-12">
+                {[30, 55, 80, 95, 70, 40, 25].map((v, i) => (
+                  <div
+                    key={i}
+                    className="flex-1 rounded-sm bg-primary/70"
+                    style={{ height: `${v}%` }}
+                  />
+                ))}
+              </div>
+            ) : (
+              <button
+                onClick={() => onUpgrade("See live busy-time forecasts for every spot.")}
+                className="mt-2 w-full rounded-xl bg-accent-soft/40 py-3 text-xs font-semibold text-primary"
+              >
+                Unlock forecasts with Pro
+              </button>
+            )}
+          </div>
 
           {/* Amenities full */}
           <div className="mt-4">
@@ -351,12 +441,20 @@ function SpotDetail({ spot, onClose }: { spot: Spot; onClose: () => void }) {
 
           {spot.reservationAvailable && (
             <Button
-              onClick={() => setReserved(true)}
+              onClick={() => {
+                if (!isPro) {
+                  onUpgrade("Reserving a spot 24h+ in advance is a Pro feature.");
+                  return;
+                }
+                setReserved(true);
+              }}
               disabled={reserved}
               className={cn("mt-6 h-12 w-full rounded-xl text-sm font-semibold", reserved && "bg-success hover:bg-success/90")}
             >
               {reserved ? (
                 <><Sparkles className="mr-1 h-4 w-4" /> Table reserved</>
+              ) : !isPro ? (
+                <><Crown className="mr-1 h-4 w-4" /> Reserve with Pro</>
               ) : (
                 <><Calendar className="mr-1 h-4 w-4" /> Book a table for group</>
               )}
