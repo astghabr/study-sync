@@ -1,14 +1,18 @@
 import { Fragment, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, MapPin, Wifi, Plug, Coffee, Volume2, VolumeX, Users, X, Calendar, Map as MapIcon, List, Sparkles, Crown, TrendingUp } from "lucide-react";
+import { Search, MapPin, Wifi, Plug, Coffee, Volume2, VolumeX, Users, X, Calendar, Map as MapIcon, List, Sparkles, Crown, TrendingUp, Star, Bookmark, BookmarkCheck, Camera, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { StatusBadge } from "./Badge";
-import { SPOTS, type Spot } from "@/data/mockData";
+import { AnimalAvatar } from "./Avatar";
+import { SPOTS, type Spot, CURRENT_USER } from "@/data/mockData";
 import { cn } from "@/lib/utils";
 import { useSubscription } from "@/lib/subscriptionStore";
+import { useSpotsExtra, spotsExtraStore, getSpotReviews, spotAverageRating } from "@/lib/spotsExtraStore";
 import { UpgradeModal } from "./UpgradeModal";
 import { AdSlot } from "./AdSlot";
+import { useToast } from "@/hooks/use-toast";
 
 const TYPE_FILTERS = ["All", "Cafe", "Library", "University Hub"] as const;
 
