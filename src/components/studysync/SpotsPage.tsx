@@ -248,13 +248,39 @@ export function SpotsPage() {
 
       {/* Spot detail modal */}
       <AnimatePresence>
-        {selected && <SpotDetail spot={selected} onClose={() => setSelected(null)} />}
+        {selected && (
+          <SpotDetail
+            spot={selected}
+            isPro={isPro}
+            onClose={() => setSelected(null)}
+            onUpgrade={(reason) => {
+              setUpgradeReason(reason);
+              setUpgradeOpen(true);
+            }}
+          />
+        )}
       </AnimatePresence>
+
+      <UpgradeModal
+        open={upgradeOpen}
+        onClose={() => setUpgradeOpen(false)}
+        highlight={upgradeReason}
+      />
     </div>
   );
 }
 
-function SpotDetail({ spot, onClose }: { spot: Spot; onClose: () => void }) {
+function SpotDetail({
+  spot,
+  isPro,
+  onClose,
+  onUpgrade,
+}: {
+  spot: Spot;
+  isPro: boolean;
+  onClose: () => void;
+  onUpgrade: (reason: string) => void;
+}) {
   const [reserved, setReserved] = useState(false);
 
   return (
