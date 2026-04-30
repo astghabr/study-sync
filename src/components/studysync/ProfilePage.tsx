@@ -229,8 +229,13 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
 function Stat({ label, value, icon }: { label: string; value: string; icon?: React.ReactNode }) {
   return (
     <div className="flex flex-col items-center text-center">
-      <p className="inline-flex items-center gap-1 font-display text-lg font-semibold">{icon}{value}</p>
-      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p className="inline-flex items-center gap-1 font-display text-xl font-semibold text-foreground">
+        {icon}
+        {value}
+      </p>
+      <p className="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+        {label}
+      </p>
     </div>
   );
 }
