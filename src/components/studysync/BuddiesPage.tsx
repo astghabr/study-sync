@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, SlidersHorizontal, X, MessageCircle, Check, Flag, ShieldAlert, Inbox } from "lucide-react";
+import { Search, SlidersHorizontal, X, MessageCircle, MessageSquare, Check, Flag, ShieldAlert, Inbox } from "lucide-react";
 import { GradientAvatar } from "./Avatar";
 import { StatusBadge } from "./Badge";
 import { ChatModal } from "./ChatModal";
