@@ -34,14 +34,13 @@ export type Spot = {
 
 export type StudyGroup = {
   id: string;
-  subject: string;
   spotName: string;
   time: string;
   date: string;
   spotsTotal: number;
   spotsRemaining: number;
-  members: string[];
-  level: string;
+  noisePreference: "Quiet" | "Moderate" | "Lively";
+  anonymousMembers: number; // count of anonymous joined members
 };
 
 export const CURRENT_USER = {
@@ -76,9 +75,9 @@ export const SPOTS: Spot[] = [
 ];
 
 export const GROUPS: StudyGroup[] = [
-  { id: "g1", subject: "Statistics", spotName: "Café Nero Leuven", time: "14:00", date: "Today", spotsTotal: 4, spotsRemaining: 1, members: ["LJ","SP","ND"], level: "Intermediate" },
-  { id: "g2", subject: "Algorithms", spotName: "Agora Learning Center", time: "10:30", date: "Tomorrow", spotsTotal: 5, spotsRemaining: 3, members: ["JW","LM"], level: "Advanced" },
-  { id: "g3", subject: "EU Law Review", spotName: "Maurits Sabbe Library", time: "16:00", date: "Today", spotsTotal: 3, spotsRemaining: 2, members: ["MH"], level: "Beginner" },
-  { id: "g4", subject: "Macroeconomics", spotName: "Onder de Toren", time: "09:00", date: "Fri 3 May", spotsTotal: 4, spotsRemaining: 2, members: ["SP","EV"], level: "Intermediate" },
-  { id: "g5", subject: "Molecular Biology", spotName: "Erasmushuis Hub", time: "13:00", date: "Tomorrow", spotsTotal: 4, spotsRemaining: 4, members: ["AC"], level: "Beginner" },
+  { id: "g1", spotName: "Café Nero Leuven", time: "14:00", date: "Today", spotsTotal: 4, spotsRemaining: 1, noisePreference: "Lively", anonymousMembers: 3 },
+  { id: "g2", spotName: "Agora Learning Center", time: "10:30", date: "Tomorrow", spotsTotal: 5, spotsRemaining: 3, noisePreference: "Quiet", anonymousMembers: 2 },
+  { id: "g3", spotName: "Maurits Sabbe Library", time: "16:00", date: "Today", spotsTotal: 3, spotsRemaining: 2, noisePreference: "Quiet", anonymousMembers: 1 },
+  { id: "g4", spotName: "Onder de Toren", time: "09:00", date: "Fri 3 May", spotsTotal: 4, spotsRemaining: 2, noisePreference: "Moderate", anonymousMembers: 2 },
+  { id: "g5", spotName: "Erasmushuis Hub", time: "13:00", date: "Tomorrow", spotsTotal: 4, spotsRemaining: 4, noisePreference: "Moderate", anonymousMembers: 0 },
 ];

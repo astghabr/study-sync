@@ -44,7 +44,7 @@ export function HomePage({ onNavigate }: { onNavigate: (t: Tab) => void }) {
               Upcoming session
             </div>
             <h2 className="mt-3 font-display text-2xl font-semibold leading-tight">
-              {upcoming.subject} group
+              {upcoming.spotName}
             </h2>
             <div className="mt-3 flex items-center gap-4 text-sm text-primary-foreground/85">
               <span className="inline-flex items-center gap-1.5">
@@ -52,17 +52,17 @@ export function HomePage({ onNavigate }: { onNavigate: (t: Tab) => void }) {
               </span>
             </div>
             <div className="mt-1 flex items-center gap-1.5 text-sm text-primary-foreground/85">
-              <MapPin className="h-4 w-4" /> {upcoming.spotName}
+              <MapPin className="h-4 w-4" /> {upcoming.noisePreference} vibe · anonymous group
             </div>
 
             <div className="mt-5 flex items-center justify-between">
               <div className="flex -space-x-2">
-                {upcoming.members.map((m, i) => (
+                {Array.from({ length: Math.min(upcoming.anonymousMembers, 3) }).map((_, i) => (
                   <div
                     key={i}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary bg-gradient-to-br from-amber-200 to-orange-300 text-[11px] font-semibold text-primary"
+                    className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary bg-accent-soft text-[11px] font-semibold text-primary"
                   >
-                    {m}
+                    ?
                   </div>
                 ))}
                 <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary bg-accent text-[11px] font-bold text-primary">
