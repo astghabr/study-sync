@@ -20,7 +20,9 @@ type Step = 0 | 1 | 2 | 3 | 4;
 
 export function Onboarding({ onComplete }: { onComplete: () => void }) {
   const [step, setStep] = useState<Step>(0);
+  const [mode, setMode] = useState<"register" | "login">("register");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [verifying, setVerifying] = useState(false);
   const [verified, setVerified] = useState(false);
@@ -53,13 +55,24 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
       setError(check.reason ?? "Invalid email.");
       return;
     }
+    if (mode === "login" && password.trim().length < 6) {
+      setError("Enter your password (min 6 chars).");
+      return;
+    }
     setError("");
     setVerifying(true);
     // Simulated verification delay (in production: send magic link / OTP)
     window.setTimeout(() => {
       setVerifying(false);
       setVerified(true);
-      window.setTimeout(() => setStep(1), 600);
+      window.setTimeout(() => {
+        if (mode === "login") {
+          // Skip the rest of onboarding for returning users
+          onComplete();
+        } else {
+          setStep(1);
+        }
+      }, 600);
     }, 900);
   };
 
