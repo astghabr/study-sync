@@ -23,6 +23,7 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
   const [mode, setMode] = useState<"register" | "login">("register");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [verifying, setVerifying] = useState(false);
   const [verified, setVerified] = useState(false);
@@ -55,8 +56,12 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
       setError(check.reason ?? "Invalid email.");
       return;
     }
-    if (mode === "login" && password.trim().length < 6) {
-      setError("Enter your password (min 6 chars).");
+    if (password.trim().length < 8) {
+      setError("Password must be at least 8 characters.");
+      return;
+    }
+    if (mode === "register" && password !== confirmPassword) {
+      setError("Passwords don't match.");
       return;
     }
     setError("");
@@ -163,17 +168,32 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
                 )}
               </div>
 
-              {mode === "login" && (
+              <Input
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (error) setError("");
+                }}
+                placeholder={mode === "register" ? "Create a password (min 8 chars)" : "Password"}
+                className="mt-2 h-12 rounded-xl text-sm"
+                type="password"
+                autoComplete={mode === "register" ? "new-password" : "current-password"}
+                maxLength={72}
+                disabled={verifying || verified}
+              />
+
+              {mode === "register" && (
                 <Input
-                  value={password}
+                  value={confirmPassword}
                   onChange={(e) => {
-                    setPassword(e.target.value);
+                    setConfirmPassword(e.target.value);
                     if (error) setError("");
                   }}
-                  placeholder="Password"
+                  placeholder="Confirm password"
                   className="mt-2 h-12 rounded-xl text-sm"
                   type="password"
-                  autoComplete="current-password"
+                  autoComplete="new-password"
+                  maxLength={72}
                   disabled={verifying || verified}
                 />
               )}
