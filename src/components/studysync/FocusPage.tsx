@@ -344,7 +344,11 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
 
       {/* HISTORY */}
       <div className="mt-6 px-6">
-        <SessionHistory history={history} />
+        <SessionHistory
+          history={history}
+          isPro={isPro}
+          onUpgrade={() => requestUpgrade("Full session history is part of Pro.")}
+        />
       </div>
 
       {/* ACTIVE FOCUS LOCK OVERLAY */}
