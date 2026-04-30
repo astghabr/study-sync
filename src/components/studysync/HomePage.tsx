@@ -1,14 +1,16 @@
-import { motion } from "framer-motion";
-import { Bell, Calendar, MapPin, Users, ArrowRight, Sparkles } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Bell, Calendar, MapPin, Users, ArrowRight, Sparkles, AlertTriangle, X } from "lucide-react";
 import { GradientAvatar } from "./Avatar";
 import { StatusBadge } from "./Badge";
 import { BUDDIES, CURRENT_USER, GROUPS, SPOTS } from "@/data/mockData";
 import { Tab } from "./BottomNav";
+import { useRiskNotices, riskNoticeStore } from "@/lib/riskNoticeStore";
 
 export function HomePage({ onNavigate }: { onNavigate: (t: Tab) => void }) {
   const upcoming = GROUPS[0];
   const recommended = BUDDIES.slice(0, 4);
   const featured = SPOTS.slice(0, 3);
+  const notices = useRiskNotices().filter((n) => !n.dismissed);
 
   return (
     <div className="flex flex-col gap-7 pb-6">
