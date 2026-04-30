@@ -130,6 +130,15 @@ export function SpotsPage() {
         >
           🤫 Quiet
         </button>
+        <button
+          onClick={() => setSavedOnly((v) => !v)}
+          className={cn(
+            "shrink-0 inline-flex items-center gap-1 rounded-full border px-3.5 py-1.5 text-xs font-medium",
+            savedOnly ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-foreground"
+          )}
+        >
+          <Bookmark className={cn("h-3 w-3", savedOnly && "fill-current")} /> Saved ({favorites.size})
+        </button>
       </div>
 
       <AnimatePresence mode="wait">
