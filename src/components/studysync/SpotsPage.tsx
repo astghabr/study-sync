@@ -34,11 +34,13 @@ const AmenityIcon = ({ name }: { name: string }) => {
 
 export function SpotsPage() {
   const { isPro } = useSubscription();
+  const { favorites } = useSpotsExtra();
   const [view, setView] = useState<"list" | "map">("list");
   const [query, setQuery] = useState("");
   const [type, setType] = useState<(typeof TYPE_FILTERS)[number]>("All");
   const [laptopOnly, setLaptopOnly] = useState(false);
   const [quietOnly, setQuietOnly] = useState(false);
+  const [savedOnly, setSavedOnly] = useState(false);
   const [selected, setSelected] = useState<Spot | null>(null);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
   const [upgradeReason, setUpgradeReason] = useState<string | undefined>();
@@ -49,9 +51,10 @@ export function SpotsPage() {
       if (type !== "All" && s.type !== type) return false;
       if (laptopOnly && s.laptopPolicy !== "Allowed") return false;
       if (quietOnly && s.noise !== "Quiet") return false;
+      if (savedOnly && !favorites.has(s.id)) return false;
       return true;
     });
-  }, [query, type, laptopOnly, quietOnly]);
+  }, [query, type, laptopOnly, quietOnly, savedOnly, favorites]);
 
   return (
     <div className="flex flex-col pb-6">
