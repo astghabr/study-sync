@@ -32,9 +32,11 @@ const formatRelative = (ts: number) => {
 export function NotificationCenter({
   open,
   onClose,
+  onOpenChat,
 }: {
   open: boolean;
   onClose: () => void;
+  onOpenChat?: (buddyId: string) => void;
 }) {
   const notes = useNotifications();
   const unread = notes.filter((n) => !n.read).length;
