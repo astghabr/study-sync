@@ -317,6 +317,16 @@ export function GroupsPage() {
       </AnimatePresence>
 
       <AnimatePresence>
+        {cancelling && (
+          <CancelReasonModal
+            spotName={cancelling.spotName}
+            onClose={() => setCancelling(null)}
+            onConfirm={(reasonId, note) => handleCancel(cancelling, reasonId, note)}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
         {confirming && (
           <motion.div
             initial={{ opacity: 0 }}
