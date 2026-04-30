@@ -102,6 +102,19 @@ export const messagesStore = {
   },
 };
 
+// Lightweight event bus to request opening a buddy's chat from anywhere
+// (e.g. notification click on Home → BuddiesPage opens the chat modal).
+const openListeners = new Set<(buddyId: string) => void>();
+export const chatOpener = {
+  subscribe(fn: (buddyId: string) => void) {
+    openListeners.add(fn);
+    return () => openListeners.delete(fn);
+  },
+  request(buddyId: string) {
+    openListeners.forEach((fn) => fn(buddyId));
+  },
+};
+
 // Cache per-buddy snapshots so useSyncExternalStore returns a stable reference
 // between renders (otherwise filter()/sort() produce a new array each call → infinite loop).
 const snapshotCache = new Map<string, { source: ChatMessage[]; result: ChatMessage[] }>();

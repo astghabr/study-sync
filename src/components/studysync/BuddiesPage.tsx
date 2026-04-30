@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, SlidersHorizontal, X, MessageCircle, Check, Flag, ShieldAlert } from "lucide-react";
 import { GradientAvatar } from "./Avatar";
@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { chatOpener } from "@/lib/messagesStore";
 import { cn } from "@/lib/utils";
 
 const MAJORS = ["All", "Computer Science", "Economics", "Psychology", "Engineering", "Law", "Mathematics", "Biology"];
@@ -34,6 +35,17 @@ export function BuddiesPage() {
   const [requested, setRequested] = useState<Set<string>>(new Set());
   const [reporting, setReporting] = useState<Buddy | null>(null);
   const [chatting, setChatting] = useState<Buddy | null>(null);
+
+  // Open the chat modal when another part of the app (e.g. a notification click) requests it.
+  useEffect(() => {
+    const unsubscribe = chatOpener.subscribe((buddyId) => {
+      const b = BUDDIES.find((x) => x.id === buddyId);
+      if (b) setChatting(b);
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   const filtered = useMemo(() => {
     return BUDDIES.filter((b) => {
