@@ -517,11 +517,25 @@ function ActiveFocusOverlay({
           </div>
         </motion.div>
 
-        {/* participants */}
+        {/* participants — shared/synced group timer */}
         {invitees.length > 0 && (
-          <div className="mt-8 flex flex-col items-center">
-            <div className="flex -space-x-3">
-              {invitees.slice(0, 5).map((id) => {
+          <div className="mt-8 flex w-full flex-col items-center">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-accent/20 px-3 py-1">
+              <span className={cn("h-1.5 w-1.5 rounded-full", paused ? "bg-amber-300" : "animate-pulse bg-accent")} />
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-accent">
+                Synced group timer
+              </span>
+            </div>
+
+            <div className="mt-3 flex -space-x-3">
+              {/* You — host */}
+              <div className="relative rounded-full ring-2 ring-accent">
+                <AnimalAvatar animal="fox" size="md" />
+                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 rounded-full bg-accent px-1.5 py-px text-[8px] font-bold uppercase tracking-wider text-primary">
+                  Host
+                </span>
+              </div>
+              {invitees.slice(0, 4).map((id) => {
                 const b = BUDDIES.find((x) => x.id === id);
                 if (!b) return null;
                 return (
@@ -530,9 +544,17 @@ function ActiveFocusOverlay({
                   </div>
                 );
               })}
+              {invitees.length > 4 && (
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-foreground/15 text-[11px] font-semibold ring-2 ring-[hsl(var(--primary))]">
+                  +{invitees.length - 4}
+                </div>
+              )}
             </div>
+
             <p className="mt-3 text-xs text-primary-foreground/85">
-              {invitees.length} {invitees.length > 1 ? "buddies are" : "buddy is"} focusing with you
+              {paused
+                ? `Paused for the whole group · ${invitees.length + 1} people`
+                : `${invitees.length + 1} people focusing in sync`}
             </p>
           </div>
         )}
