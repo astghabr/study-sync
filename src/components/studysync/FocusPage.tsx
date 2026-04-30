@@ -403,6 +403,13 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
           />
         )}
       </AnimatePresence>
+      </AnimatePresence>
+
+      <UpgradeModal
+        open={upgradeOpen}
+        onClose={() => setUpgradeOpen(false)}
+        highlight={upgradeReason}
+      />
     </div>
   );
 }
