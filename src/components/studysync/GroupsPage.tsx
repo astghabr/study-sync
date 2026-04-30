@@ -412,7 +412,7 @@ function RefillModal({
     return () => clearTimeout(t);
   });
 
-  const matches = REFILL_POOL.filter((c) => c.noisePreference ? c.noisePreference === group.noisePreference : true);
+  const matches = REFILL_POOL;
 
   const toggle = (id: string) =>
     setSelected((prev) => {
