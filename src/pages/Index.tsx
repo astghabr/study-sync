@@ -8,10 +8,12 @@ import { BuddiesPage } from "@/components/studysync/BuddiesPage";
 import { SpotsPage } from "@/components/studysync/SpotsPage";
 import { GroupsPage } from "@/components/studysync/GroupsPage";
 import { ProfilePage } from "@/components/studysync/ProfilePage";
+import { FocusPage } from "@/components/studysync/FocusPage";
 
 const Index = () => {
   const [authed, setAuthed] = useState(false);
   const [tab, setTab] = useState<Tab>("home");
+  const [focusLocked, setFocusLocked] = useState(false);
 
   return (
     <PhoneFrame>
@@ -31,12 +33,20 @@ const Index = () => {
                 {tab === "home" && <HomePage onNavigate={setTab} />}
                 {tab === "buddies" && <BuddiesPage />}
                 {tab === "spots" && <SpotsPage />}
+                {tab === "focus" && <FocusPage onLockChange={setFocusLocked} />}
                 {tab === "groups" && <GroupsPage />}
                 {tab === "profile" && <ProfilePage onSignOut={() => setAuthed(false)} />}
               </motion.div>
             </AnimatePresence>
           </main>
-          <BottomNav active={tab} onChange={setTab} />
+          <BottomNav
+            active={tab}
+            onChange={(t) => {
+              if (focusLocked && t !== "focus") return;
+              setTab(t);
+            }}
+            locked={focusLocked}
+          />
         </>
       )}
     </PhoneFrame>
