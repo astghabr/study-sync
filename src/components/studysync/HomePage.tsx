@@ -40,6 +40,13 @@ export function HomePage({ onNavigate }: { onNavigate: (t: Tab) => void }) {
           </div>
           <div className="flex items-center gap-3">
             <button
+              onClick={() => onNavigate("buddies")}
+              aria-label="Open messages"
+              className="relative flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card transition hover:border-primary/40"
+            >
+              <MessageSquare className="h-4 w-4 text-foreground" />
+            </button>
+            <button
               onClick={() => setNotifOpen(true)}
               aria-label={`Open notifications${unread > 0 ? `, ${unread} unread` : ""}`}
               className="relative flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card transition hover:border-primary/40"
