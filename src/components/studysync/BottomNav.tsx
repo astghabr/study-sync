@@ -5,10 +5,10 @@ import { motion } from "framer-motion";
 export type Tab = "home" | "buddies" | "spots" | "focus" | "groups" | "profile";
 
 const items: { id: Tab; label: string; icon: LucideIcon }[] = [
-  { id: "home", label: "Home", icon: Home },
-  { id: "buddies", label: "Buddies", icon: Users },
   { id: "spots", label: "Spots", icon: MapPin },
   { id: "focus", label: "Focus", icon: Timer },
+  { id: "home", label: "Home", icon: Home },
+  { id: "buddies", label: "Buddies", icon: Users },
   { id: "groups", label: "Groups", icon: CalendarCheck },
 ];
 
