@@ -209,6 +209,8 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
           setEditingPrompts(false);
         }}
       />
+
+      <UpgradeModal open={upgradeOpen} onClose={() => setUpgradeOpen(false)} />
     </div>
   );
 }
