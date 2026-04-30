@@ -95,6 +95,8 @@ export const PROFILE_PROMPTS = [
   "The best café in town is… (don't tell anyone)",
 ];
 
+export type AppRole = "student" | "moderator" | "admin";
+
 export const CURRENT_USER = {
   name: "Marie Dubois",
   initials: "MD",
@@ -104,6 +106,9 @@ export const CURRENT_USER = {
   email: "marie.dubois@kuleuven.be",
   hobbies: ["Gaming", "Coffee", "Hiking"],
   animal: "fox",
+  // NOTE: in production, roles must live in a separate `user_roles` table
+  // with RLS, never on the user/profile object. This is a UI mock only.
+  role: "admin" as AppRole,
   prompts: [
     { question: "This year, I really want to…", answer: "finish my thesis without surviving on instant noodles." },
     { question: "My study playlist says a lot about me because…", answer: "it's 80% lo-fi and 20% questionable 2000s pop." },
