@@ -25,7 +25,13 @@ export function HomePage({ onNavigate }: { onNavigate: (t: Tab) => void }) {
             <button className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card">
               <Bell className="h-4 w-4 text-foreground" />
             </button>
-            <GradientAvatar animal={CURRENT_USER.animal} initials={CURRENT_USER.initials} size="md" />
+            <button
+              onClick={() => onNavigate("profile")}
+              aria-label="Open profile"
+              className="rounded-full outline-none ring-offset-2 transition focus-visible:ring-2 focus-visible:ring-primary"
+            >
+              <GradientAvatar animal={CURRENT_USER.animal} initials={CURRENT_USER.initials} size="md" />
+            </button>
           </div>
         </div>
       </header>
