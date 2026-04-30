@@ -349,7 +349,7 @@ function PromptsEditorModal({
     setDraft((d) => d.map((p, idx) => (idx === i ? { ...p, answer: a } : p)));
 
   const addPrompt = () => {
-    if (draft.length >= 3) return;
+    if (draft.length >= 1) return;
     setDraft((d) => [...d, { question: PROFILE_PROMPTS[0], answer: "" }]);
   };
   const removePrompt = (i: number) => setDraft((d) => d.filter((_, idx) => idx !== i));
@@ -381,9 +381,9 @@ function PromptsEditorModal({
             >
               <X className="h-4 w-4" />
             </button>
-            <h3 className="font-display text-xl font-semibold">Your prompts</h3>
+            <h3 className="font-display text-xl font-semibold">Your prompt</h3>
             <p className="mt-1 text-sm text-muted-foreground">
-              Pick up to 3 prompts and answer them — let people see your vibe.
+              Pick one prompt and answer it — give people a peek at your vibe.
             </p>
 
             <div className="mt-5 space-y-4">
@@ -429,12 +429,12 @@ function PromptsEditorModal({
                 </div>
               ))}
 
-              {draft.length < 3 && (
+              {draft.length < 1 && (
                 <button
                   onClick={addPrompt}
                   className="flex w-full items-center justify-center gap-1.5 rounded-2xl border border-dashed border-border py-4 text-xs font-medium text-muted-foreground hover:text-primary"
                 >
-                  <Plus className="h-4 w-4" /> Add another prompt
+                  <Plus className="h-4 w-4" /> Add a prompt
                 </button>
               )}
             </div>
