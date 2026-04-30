@@ -246,6 +246,82 @@ function Stat({ label, value, icon }: { label: string; value: string; icon?: Rea
   );
 }
 
+function FocusStatsCard() {
+  const sessions = useFocusStats();
+  const { weeklySeconds, sessionsThisWeek, streak, days } = deriveStats(sessions);
+  const weeklyHours = weeklySeconds / 3600;
+  const goalHours = 10;
+  const progress = Math.min(1, weeklyHours / goalHours);
+  const maxMin = Math.max(60, ...days.map((d) => d.minutes));
+
+  return (
+    <div className="rounded-2xl border border-border bg-card p-4 shadow-soft">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <TrendingUp className="h-4 w-4 text-primary" />
+          <p className="text-sm font-semibold text-foreground">Focus stats</p>
+        </div>
+        <div className="flex items-center gap-1.5 rounded-full bg-accent-soft px-2.5 py-1">
+          <Flame className="h-3.5 w-3.5 text-primary" />
+          <span className="text-[11px] font-semibold text-foreground">
+            {streak}-day streak
+          </span>
+        </div>
+      </div>
+
+      {/* Weekly goal */}
+      <div className="mt-3">
+        <div className="flex items-baseline justify-between">
+          <p className="font-display text-2xl font-semibold text-foreground tabular-nums">
+            {weeklyHours.toFixed(1)}<span className="text-sm font-medium text-muted-foreground">h</span>
+          </p>
+          <p className="text-[11px] text-muted-foreground">
+            <Clock className="mr-1 inline h-3 w-3" />
+            {sessionsThisWeek} sessions · goal {goalHours}h
+          </p>
+        </div>
+        <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${progress * 100}%` }}
+            transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+            className="h-full rounded-full bg-primary"
+          />
+        </div>
+      </div>
+
+      {/* Weekly bars */}
+      <div className="mt-4 flex h-16 items-end gap-1.5">
+        {days.map((d, i) => {
+          const isToday = i === days.length - 1;
+          const h = (d.minutes / maxMin) * 100;
+          return (
+            <div key={d.t} className="flex flex-1 flex-col items-center gap-1">
+              <motion.div
+                initial={{ height: 0 }}
+                animate={{ height: `${Math.max(h, d.minutes > 0 ? 10 : 4)}%` }}
+                transition={{ duration: 0.5, delay: i * 0.04 }}
+                className={cn(
+                  "w-full rounded-md",
+                  isToday ? "bg-primary" : "bg-accent"
+                )}
+              />
+              <span
+                className={cn(
+                  "text-[9px]",
+                  isToday ? "font-semibold text-foreground" : "text-muted-foreground"
+                )}
+              >
+                {d.label}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function Section({ title, children, action }: { title: string; children: React.ReactNode; action?: React.ReactNode }) {
   return (
     <div>
