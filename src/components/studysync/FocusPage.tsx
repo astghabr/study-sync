@@ -563,7 +563,9 @@ function ActiveFocusOverlay({
       {/* controls */}
       <div className="w-full space-y-3">
         <p className="text-center text-[11px] text-primary-foreground/85">
-          Stay put — navigation is locked while your session runs.
+          {invitees.length > 0
+            ? "You're the host — pause and end sync to your group."
+            : "Stay put — navigation is locked while your session runs."}
         </p>
         <div className="flex items-center gap-3">
           <Button
