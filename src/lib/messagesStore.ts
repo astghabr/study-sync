@@ -87,6 +87,13 @@ export const messagesStore = {
       };
       state = [...state, reply];
       emit();
+      const buddy = BUDDIES.find((b) => b.id === buddyId);
+      notificationStore.add({
+        type: "message",
+        buddyId,
+        title: `${buddy?.name ?? "Buddy"} sent you a message`,
+        body: reply.text,
+      });
     }, 1400);
   },
   remove(messageId: string) {
