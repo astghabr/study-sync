@@ -282,15 +282,9 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
             </div>
           )}
 
-          {/* invite buddies (Pro) */}
+          {/* invite buddies */}
           <button
-            onClick={() => {
-              if (!isPro) {
-                requestUpgrade("Group focus sessions with buddies are part of Pro.");
-                return;
-              }
-              setShowInvite(true);
-            }}
+            onClick={() => setShowInvite(true)}
             className="mt-4 flex w-full items-center justify-between rounded-2xl border border-border bg-card px-4 py-3 text-left transition hover:border-primary/40"
           >
             <div className="flex items-center gap-3">
@@ -300,11 +294,6 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
               <div>
                 <p className="flex items-center gap-1.5 text-sm font-semibold text-foreground">
                   Invite study buddies
-                  {!isPro && (
-                    <span className="inline-flex items-center gap-0.5 rounded-full bg-accent px-1.5 py-0.5 text-[9px] font-bold text-accent-foreground">
-                      <Crown className="h-2.5 w-2.5" /> PRO
-                    </span>
-                  )}
                 </p>
                 <p className="text-[11px] text-muted-foreground">
                   {invitees.length === 0
