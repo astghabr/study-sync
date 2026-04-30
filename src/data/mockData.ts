@@ -36,12 +36,29 @@ export type Spot = {
 export type StudyGroup = {
   id: string;
   spotName: string;
+  spotType: "Cafe" | "Library" | "University Hub";
   time: string;
   date: string;
-  spotsTotal: number;
-  spotsRemaining: number;
+  /** null = no fixed limit (open table). Number = hard cap (e.g. 4 for cafes). */
+  spotsTotal: number | null;
+  spotsRemaining: number | null;
   noisePreference: "Quiet" | "Moderate" | "Lively";
   anonymousMembers: number;
+  subject?: string;
+  /** True when too many people cancelled and the session needs a refill. */
+  atRisk?: boolean;
+  /** Booked at least 24h in advance. */
+  bookedAt?: string;
+};
+
+export type RefillCandidate = {
+  id: string;
+  initials: string;
+  animal: string;
+  subject: string;
+  availability: string;
+  distance: string;
+  online: boolean;
 };
 
 /** Cute animal options for profile pictures */
