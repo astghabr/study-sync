@@ -270,8 +270,9 @@ export function HomePage({ onNavigate }: { onNavigate: (t: Tab) => void }) {
         open={notifOpen}
         onClose={() => setNotifOpen(false)}
         onOpenChat={(buddyId) => {
-          chatOpener.request(buddyId);
           onNavigate("buddies");
+          // Defer so BuddiesPage has mounted and subscribed before we request the chat to open.
+          setTimeout(() => chatOpener.request(buddyId), 50);
         }}
       />
     </div>
