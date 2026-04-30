@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Settings, GraduationCap, BookOpen, Heart, Calendar, LogOut, ChevronRight, Pencil, X, Check, Plus, Crown, Sparkles } from "lucide-react";
+import { Settings, GraduationCap, BookOpen, Heart, Calendar, LogOut, ChevronRight, Pencil, X, Check, Plus, Crown, Sparkles, Flame, TrendingUp, Clock } from "lucide-react";
 import { GradientAvatar, AnimalAvatar } from "./Avatar";
 import { StatusBadge } from "./Badge";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { AdminAnalytics } from "./AdminAnalytics";
 import { useSubscription, subscriptionStore } from "@/lib/subscriptionStore";
+import { useFocusStats, deriveStats } from "@/lib/focusStatsStore";
 import { UpgradeModal } from "./UpgradeModal";
 import { toast } from "@/hooks/use-toast";
 
