@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { CURRENT_USER, ANIMALS, PROFILE_PROMPTS } from "@/data/mockData";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { AdminAnalytics } from "./AdminAnalytics";
 
 export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
   const [animal, setAnimal] = useState(CURRENT_USER.animal);
@@ -108,6 +109,12 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
             ))}
           </div>
         </Section>
+
+        {(CURRENT_USER.role === "admin" || CURRENT_USER.role === "moderator") && (
+          <div className="mb-3">
+            <AdminAnalytics />
+          </div>
+        )}
 
         <button
           onClick={onSignOut}

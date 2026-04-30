@@ -18,8 +18,12 @@ import {
   Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import { GROUPS, SPOTS, REFILL_POOL, type StudyGroup, type RefillCandidate, ANIMALS } from "@/data/mockData";
 import { cn } from "@/lib/utils";
+import { cancellationStore, type CancelReasonId } from "@/lib/cancellationStore";
+import { riskNoticeStore } from "@/lib/riskNoticeStore";
+import { CancelReasonModal } from "./CancelReasonModal";
 
 type Noise = "Quiet" | "Moderate" | "Lively";
 const NOISE_OPTIONS: { value: Noise; label: string; hint: string; icon: React.ReactNode }[] = [
@@ -37,6 +41,7 @@ export function GroupsPage() {
   const [smartOpen, setSmartOpen] = useState(false);
   const [confirming, setConfirming] = useState<StudyGroup | null>(null);
   const [refilling, setRefilling] = useState<StudyGroup | null>(null);
+  const [cancelling, setCancelling] = useState<StudyGroup | null>(null);
 
   const handleJoin = (id: string) => {
     setGroups((prev) =>
@@ -70,6 +75,60 @@ export function GroupsPage() {
       )
     );
     setRefilling(null);
+    toast.success(`${picks.length} new ${picks.length === 1 ? "person" : "people"} added`, {
+      description: `${group.spotName} · ${group.time} is back on track.`,
+    });
+  };
+
+  const handleCancel = (group: StudyGroup, reasonId: CancelReasonId, note?: string) => {
+    // 1. Persist cancellation reason for analytics.
+    cancellationStore.add(
+      { groupId: group.id, reasonId, note },
+      group.spotName,
+    );
+
+    // 2. Update group state: remove user, mark at-risk if too thin.
+    let becameAtRisk = false;
+    setGroups((prev) =>
+      prev.map((g) => {
+        if (g.id !== group.id) return g;
+        const nextMembers = Math.max(g.anonymousMembers - 1, 0);
+        const nextRemaining = isCapped(g)
+          ? Math.min((g.spotsRemaining ?? 0) + 1, g.spotsTotal ?? 0)
+          : null;
+        const wasAtRisk = !!g.atRisk;
+        const nowAtRisk = nextMembers <= 1;
+        if (!wasAtRisk && nowAtRisk) becameAtRisk = true;
+        return {
+          ...g,
+          anonymousMembers: nextMembers,
+          spotsRemaining: nextRemaining,
+          atRisk: nowAtRisk,
+        };
+      }),
+    );
+    setJoined((prev) => {
+      const next = new Set(prev);
+      next.delete(group.id);
+      return next;
+    });
+    setCancelling(null);
+
+    // 3. Notify the user; raise a push-style notice if session is at risk.
+    toast("Seat cancelled", {
+      description: "Thanks — your reason helps us keep groups healthy.",
+    });
+    if (becameAtRisk) {
+      riskNoticeStore.add({
+        groupId: group.id,
+        spotName: group.spotName,
+        time: group.time,
+        date: group.date,
+      });
+      toast.warning(`${group.spotName} is now at risk`, {
+        description: "Tap the Home banner to refill the session in 2 mins.",
+      });
+    }
   };
 
   return (
@@ -184,17 +243,32 @@ export function GroupsPage() {
                     {capped ? `/${g.spotsTotal}` : ""}
                   </div>
                 </div>
-                <Button
-                  size="sm"
-                  disabled={isJoined || full}
-                  onClick={() => setConfirming(g)}
-                  className={cn(
-                    "h-9 rounded-full px-4 text-xs font-semibold",
-                    isJoined && "bg-success hover:bg-success/90"
-                  )}
-                >
-                  {isJoined ? (<><Check className="mr-1 h-3.5 w-3.5" strokeWidth={3} /> Joined</>) : full ? "Full" : "Join table"}
-                </Button>
+                {isJoined ? (
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setCancelling(g)}
+                      className="h-9 rounded-full border border-border bg-card px-3 text-xs font-semibold text-muted-foreground transition hover:border-destructive hover:text-destructive"
+                    >
+                      Cancel
+                    </button>
+                    <Button
+                      size="sm"
+                      disabled
+                      className="h-9 rounded-full bg-success px-4 text-xs font-semibold hover:bg-success/90"
+                    >
+                      <Check className="mr-1 h-3.5 w-3.5" strokeWidth={3} /> Joined
+                    </Button>
+                  </div>
+                ) : (
+                  <Button
+                    size="sm"
+                    disabled={full}
+                    onClick={() => setConfirming(g)}
+                    className="h-9 rounded-full px-4 text-xs font-semibold"
+                  >
+                    {full ? "Full" : "Join table"}
+                  </Button>
+                )}
               </div>
 
               {g.atRisk && isJoined && (
@@ -238,6 +312,16 @@ export function GroupsPage() {
             group={refilling}
             onClose={() => setRefilling(null)}
             onConfirm={(picks) => handleRefill(refilling, picks)}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {cancelling && (
+          <CancelReasonModal
+            spotName={cancelling.spotName}
+            onClose={() => setCancelling(null)}
+            onConfirm={(reasonId, note) => handleCancel(cancelling, reasonId, note)}
           />
         )}
       </AnimatePresence>

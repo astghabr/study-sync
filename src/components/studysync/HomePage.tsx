@@ -1,14 +1,16 @@
-import { motion } from "framer-motion";
-import { Bell, Calendar, MapPin, Users, ArrowRight, Sparkles } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Bell, Calendar, MapPin, Users, ArrowRight, Sparkles, AlertTriangle, X } from "lucide-react";
 import { GradientAvatar } from "./Avatar";
 import { StatusBadge } from "./Badge";
 import { BUDDIES, CURRENT_USER, GROUPS, SPOTS } from "@/data/mockData";
 import { Tab } from "./BottomNav";
+import { useRiskNotices, riskNoticeStore } from "@/lib/riskNoticeStore";
 
 export function HomePage({ onNavigate }: { onNavigate: (t: Tab) => void }) {
   const upcoming = GROUPS[0];
   const recommended = BUDDIES.slice(0, 4);
   const featured = SPOTS.slice(0, 3);
+  const notices = useRiskNotices().filter((n) => !n.dismissed);
 
   return (
     <div className="flex flex-col gap-7 pb-6">
@@ -36,7 +38,57 @@ export function HomePage({ onNavigate }: { onNavigate: (t: Tab) => void }) {
         </div>
       </header>
 
-      {/* Hero — upcoming session */}
+      {/* At-risk session notifications */}
+      <AnimatePresence initial={false}>
+        {notices.length > 0 && (
+          <section className="px-6">
+            <div className="flex flex-col gap-2">
+              {notices.map((n) => (
+                <motion.div
+                  key={n.id}
+                  layout
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  className="relative overflow-hidden rounded-2xl border border-destructive/30 bg-destructive/5 p-4"
+                >
+                  <button
+                    onClick={() => riskNoticeStore.dismiss(n.id)}
+                    aria-label="Dismiss"
+                    className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-card text-muted-foreground hover:text-foreground"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-destructive/15 text-destructive">
+                      <AlertTriangle className="h-4 w-4" />
+                    </div>
+                    <div className="min-w-0 flex-1 pr-6">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-destructive">
+                        Session at risk
+                      </p>
+                      <p className="mt-0.5 font-display text-sm font-semibold text-foreground">
+                        {n.spotName} · {n.date} {n.time}
+                      </p>
+                      <p className="mt-0.5 text-xs text-muted-foreground">
+                        People cancelled. Refill in 2 mins so the session still happens.
+                      </p>
+                      <button
+                        onClick={() => onNavigate("groups")}
+                        className="mt-2 inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-[11px] font-semibold text-primary-foreground"
+                      >
+                        Find new people <ArrowRight className="h-3 w-3" />
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </section>
+        )}
+      </AnimatePresence>
+
+
       <section className="px-6">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
