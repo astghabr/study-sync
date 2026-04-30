@@ -181,9 +181,6 @@ export function HomePage({ onNavigate }: { onNavigate: (t: Tab) => void }) {
               </div>
               <p className="mt-3 truncate font-display text-sm font-semibold">{b.name}</p>
               <p className="truncate text-[11px] text-muted-foreground">{b.major} · {b.year}</p>
-              <div className="mt-3">
-                <StatusBadge variant="verified">Verified</StatusBadge>
-              </div>
             </div>
           ))}
         </div>
