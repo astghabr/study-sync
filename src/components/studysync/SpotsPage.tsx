@@ -1,11 +1,13 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, MapPin, Wifi, Plug, Coffee, Volume2, VolumeX, Users, X, Calendar, Map as MapIcon, List, Sparkles } from "lucide-react";
+import { Search, MapPin, Wifi, Plug, Coffee, Volume2, VolumeX, Users, X, Calendar, Map as MapIcon, List, Sparkles, Crown, TrendingUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "./Badge";
 import { SPOTS, type Spot } from "@/data/mockData";
 import { cn } from "@/lib/utils";
+import { useSubscription } from "@/lib/subscriptionStore";
+import { UpgradeModal } from "./UpgradeModal";
 
 const TYPE_FILTERS = ["All", "Cafe", "Library", "University Hub"] as const;
 
