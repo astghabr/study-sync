@@ -114,7 +114,17 @@ export function NotificationCenter({
               ) : (
                 <ul className="divide-y divide-border">
                   {notes.map((n) => (
-                    <NotificationRow key={n.id} note={n} />
+                    <NotificationRow
+                      key={n.id}
+                      note={n}
+                      onActivate={(note) => {
+                        notificationStore.markRead(note.id);
+                        if (note.type === "message" && note.buddyId && onOpenChat) {
+                          onOpenChat(note.buddyId);
+                          onClose();
+                        }
+                      }}
+                    />
                   ))}
                 </ul>
               )}
@@ -126,17 +136,25 @@ export function NotificationCenter({
   );
 }
 
-function NotificationRow({ note }: { note: Notification }) {
+function NotificationRow({
+  note,
+  onActivate,
+}: {
+  note: Notification;
+  onActivate: (note: Notification) => void;
+}) {
   const Icon = ICONS[note.type];
   const buddy = note.buddyId ? BUDDIES.find((b) => b.id === note.buddyId) : null;
+  const isClickable = note.type === "message" && !!note.buddyId;
 
   return (
     <li
       className={cn(
         "group relative flex items-start gap-3 px-5 py-3.5 transition-colors",
-        !note.read && "bg-accent-soft/40"
+        !note.read && "bg-accent-soft/40",
+        isClickable && "cursor-pointer hover:bg-accent-soft/60"
       )}
-      onClick={() => notificationStore.markRead(note.id)}
+      onClick={() => onActivate(note)}
     >
       {buddy ? (
         <GradientAvatar animal={buddy.animal} initials={buddy.initials} size="sm" />
