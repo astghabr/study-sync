@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, MapPin, Wifi, Plug, Coffee, Volume2, VolumeX, Users, X, Calendar, Map as MapIcon, List, Sparkles, Crown, TrendingUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import { SPOTS, type Spot } from "@/data/mockData";
 import { cn } from "@/lib/utils";
 import { useSubscription } from "@/lib/subscriptionStore";
 import { UpgradeModal } from "./UpgradeModal";
+import { AdSlot } from "./AdSlot";
 
 const TYPE_FILTERS = ["All", "Cafe", "Library", "University Hub"] as const;
 
@@ -134,47 +135,49 @@ export function SpotsPage() {
             transition={{ duration: 0.25 }}
             className="mt-4 flex flex-col gap-3 px-6"
           >
-            {filtered.map((s) => (
-              <button
-                key={s.id}
-                onClick={() => setSelected(s)}
-                className="overflow-hidden rounded-2xl border border-border bg-card text-left shadow-soft transition hover:shadow-card"
-              >
-                <div className={`relative h-28 w-full bg-gradient-to-br ${s.hero}`}>
-                  <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
-                    {s.official && <StatusBadge variant="official">Official Hub</StatusBadge>}
-                    {s.laptopPolicy === "Not Allowed" && <StatusBadge variant="no-laptop">No laptops</StatusBadge>}
-                    {s.noise === "Quiet" && <StatusBadge variant="quiet">Quiet zone</StatusBadge>}
-                  </div>
-                  <div className="absolute bottom-3 right-3">
-                    <span className={cn(
-                      "rounded-full px-2.5 py-1 text-[10px] font-semibold",
-                      s.status === "Open" && "bg-success text-success-foreground",
-                      s.status === "Busy" && "bg-warning text-warning-foreground",
-                      s.status === "Closing soon" && "bg-foreground/80 text-background"
-                    )}>
-                      {s.status}
-                    </span>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <p className="font-display text-base font-semibold">{s.name}</p>
-                      <p className="text-xs text-muted-foreground">{s.type} · {s.distance} · {s.pricing}</p>
+            {filtered.map((s, idx) => (
+              <Fragment key={s.id}>
+                <button
+                  onClick={() => setSelected(s)}
+                  className="overflow-hidden rounded-2xl border border-border bg-card text-left shadow-soft transition hover:shadow-card"
+                >
+                  <div className={`relative h-28 w-full bg-gradient-to-br ${s.hero}`}>
+                    <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
+                      {s.official && <StatusBadge variant="official">Official Hub</StatusBadge>}
+                      {s.laptopPolicy === "Not Allowed" && <StatusBadge variant="no-laptop">No laptops</StatusBadge>}
+                      {s.noise === "Quiet" && <StatusBadge variant="quiet">Quiet zone</StatusBadge>}
                     </div>
-                    <span className="text-xs font-semibold text-foreground">{s.wifi}</span>
+                    <div className="absolute bottom-3 right-3">
+                      <span className={cn(
+                        "rounded-full px-2.5 py-1 text-[10px] font-semibold",
+                        s.status === "Open" && "bg-success text-success-foreground",
+                        s.status === "Busy" && "bg-warning text-warning-foreground",
+                        s.status === "Closing soon" && "bg-foreground/80 text-background"
+                      )}>
+                        {s.status}
+                      </span>
+                    </div>
                   </div>
-                  <div className="mt-3 flex items-center gap-1.5">
-                    {s.amenities.map((a) => (
-                      <AmenityIcon key={a} name={a} />
-                    ))}
+                  <div className="p-4">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <p className="font-display text-base font-semibold">{s.name}</p>
+                        <p className="text-xs text-muted-foreground">{s.type} · {s.distance} · {s.pricing}</p>
+                      </div>
+                      <span className="text-xs font-semibold text-foreground">{s.wifi}</span>
+                    </div>
+                    <div className="mt-3 flex items-center gap-1.5">
+                      {s.amenities.map((a) => (
+                        <AmenityIcon key={a} name={a} />
+                      ))}
+                    </div>
+                    {s.laptopNote && (
+                      <p className="mt-3 text-[11px] font-medium text-foreground/70">📋 {s.laptopNote}</p>
+                    )}
                   </div>
-                  {s.laptopNote && (
-                    <p className="mt-3 text-[11px] font-medium text-foreground/70">📋 {s.laptopNote}</p>
-                  )}
-                </div>
-              </button>
+                </button>
+                {idx === 1 && <AdSlot variant="spots" />}
+              </Fragment>
             ))}
           </motion.div>
         ) : (

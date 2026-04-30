@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Bell, Calendar, MapPin, Users, ArrowRight, Sparkles, AlertTriangle, X } from "lucide-react";
 import { GradientAvatar } from "./Avatar";
 import { StatusBadge } from "./Badge";
+import { AdSlot } from "./AdSlot";
 import { BUDDIES, CURRENT_USER, GROUPS, SPOTS } from "@/data/mockData";
 import { Tab } from "./BottomNav";
 import { useRiskNotices, riskNoticeStore } from "@/lib/riskNoticeStore";
@@ -160,6 +161,11 @@ export function HomePage({ onNavigate }: { onNavigate: (t: Tab) => void }) {
           <p className="font-display text-base font-semibold">Study spots</p>
           <p className="text-xs text-muted-foreground">6 nearby</p>
         </button>
+      </section>
+
+      {/* Ad slot (free users only) */}
+      <section className="px-6">
+        <AdSlot variant="default" />
       </section>
 
       {/* Recommended buddies */}

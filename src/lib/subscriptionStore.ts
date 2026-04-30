@@ -67,10 +67,11 @@ export const subscriptionStore = {
 
 export const PLAN_PRICING = {
   monthly: { price: 4.90, currency: "€", label: "Monthly" },
-  yearly: { price: 39.99, currency: "€", label: "Yearly", perMonth: 3.33, savings: "Save 33%" },
+  yearly: { price: 39.90, currency: "€", label: "Yearly", perMonth: 3.33, savings: "Save 32%" },
 } as const;
 
 export const PRO_FEATURES = [
+  "Ad-free experience across the app",
   "Advanced Focus mode (custom timers, group sessions, full history)",
   "Spot reservations 24h+ in advance",
   "Spot insights: busy-time forecasts & student menu perks",
