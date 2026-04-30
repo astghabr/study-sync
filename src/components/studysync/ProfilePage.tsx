@@ -18,7 +18,7 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
     <div className="flex flex-col pb-6">
       <div className="relative gradient-hero px-6 pb-16 pt-10 text-primary-foreground">
         <div className="flex items-start justify-between">
-          <p className="text-xs uppercase tracking-[0.18em] text-primary-foreground/70">My profile</p>
+          <p className="text-xs uppercase tracking-[0.18em] text-primary-foreground/85">My profile</p>
           <button className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-foreground/10">
             <Settings className="h-4 w-4" />
           </button>

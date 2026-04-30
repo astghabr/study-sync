@@ -46,12 +46,12 @@ export function HomePage({ onNavigate }: { onNavigate: (t: Tab) => void }) {
             <h2 className="mt-3 font-display text-2xl font-semibold leading-tight">
               {upcoming.spotName}
             </h2>
-            <div className="mt-3 flex items-center gap-4 text-sm text-primary-foreground/85">
+            <div className="mt-3 flex items-center gap-4 text-sm text-primary-foreground/95">
               <span className="inline-flex items-center gap-1.5">
                 <Calendar className="h-4 w-4" /> {upcoming.date} · {upcoming.time}
               </span>
             </div>
-            <div className="mt-1 flex items-center gap-1.5 text-sm text-primary-foreground/85">
+            <div className="mt-1 flex items-center gap-1.5 text-sm text-primary-foreground/95">
               <MapPin className="h-4 w-4" /> {upcoming.noisePreference} vibe · anonymous group
             </div>
 
