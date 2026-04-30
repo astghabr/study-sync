@@ -22,36 +22,37 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
 
   return (
     <div className="flex flex-col pb-6">
-      <div className="relative gradient-hero px-6 pb-16 pt-10 text-primary">
+      <div className="relative gradient-hero px-6 pb-20 pt-10 text-primary-foreground">
         <div className="flex items-start justify-between">
-          <p className="text-xs uppercase tracking-[0.18em] text-primary">My profile</p>
-          <button className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
+          <p className="text-xs uppercase tracking-[0.18em] text-primary-foreground/80">My profile</p>
+          <button className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-foreground/15 text-primary-foreground">
             <Settings className="h-4 w-4" />
           </button>
         </div>
+        <div className="mt-6 flex items-center gap-4">
+          <button
+            onClick={() => setEditingAnimal(true)}
+            className="relative shrink-0"
+            aria-label="Change profile animal"
+          >
+            <GradientAvatar animal={animal} initials={CURRENT_USER.initials} size="lg" />
+            <span className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-accent text-primary shadow-card">
+              <Pencil className="h-3 w-3" />
+            </span>
+          </button>
+          <div className="min-w-0 flex-1">
+            <h2 className="font-display text-2xl font-semibold leading-tight text-primary-foreground">
+              {CURRENT_USER.name}
+            </h2>
+            <p className="mt-0.5 truncate text-xs text-primary-foreground/80">{CURRENT_USER.email}</p>
+            <p className="text-xs text-primary-foreground/70">{CURRENT_USER.university}</p>
+          </div>
+        </div>
       </div>
 
-      <div className="-mt-12 px-6">
-        <div className="rounded-3xl bg-card p-6 shadow-elevated">
-          <div className="flex items-start gap-4">
-            <button
-              onClick={() => setEditingAnimal(true)}
-              className="relative shrink-0"
-              aria-label="Change profile animal"
-            >
-              <GradientAvatar animal={animal} initials={CURRENT_USER.initials} size="lg" />
-              <span className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-card">
-                <Pencil className="h-3 w-3" />
-              </span>
-            </button>
-            <div className="flex-1 pt-1">
-              <h2 className="font-display text-xl font-semibold text-foreground">{CURRENT_USER.name}</h2>
-              <p className="text-xs text-muted-foreground">{CURRENT_USER.email}</p>
-              <p className="mt-1 text-xs text-muted-foreground">{CURRENT_USER.university}</p>
-            </div>
-          </div>
-
-          <div className="mt-5 grid grid-cols-2 gap-2 border-t border-border pt-4">
+      <div className="-mt-10 px-6">
+        <div className="rounded-3xl bg-card p-5 shadow-elevated">
+          <div className="grid grid-cols-2 gap-2">
             <Stat label="Sessions" value="24" />
             <Stat label="Buddies" value="18" />
           </div>
