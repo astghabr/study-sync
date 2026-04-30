@@ -93,10 +93,24 @@ export const messagesStore = {
   },
 };
 
+// Cache per-buddy snapshots so useSyncExternalStore returns a stable reference
+// between renders (otherwise filter()/sort() produce a new array each call → infinite loop).
+const snapshotCache = new Map<string, { source: ChatMessage[]; result: ChatMessage[] }>();
+const EMPTY: ChatMessage[] = [];
+
+function getStableSnapshot(buddyId: string | null): ChatMessage[] {
+  if (!buddyId) return EMPTY;
+  const cached = snapshotCache.get(buddyId);
+  if (cached && cached.source === state) return cached.result;
+  const result = state.filter((m) => m.buddyId === buddyId).sort((a, b) => a.sentAt - b.sentAt);
+  snapshotCache.set(buddyId, { source: state, result });
+  return result;
+}
+
 export function useMessages(buddyId: string | null): ChatMessage[] {
   return useSyncExternalStore(
     messagesStore.subscribe,
-    () => (buddyId ? messagesStore.getForBuddy(buddyId) : []),
-    () => (buddyId ? messagesStore.getForBuddy(buddyId) : []),
+    () => getStableSnapshot(buddyId),
+    () => getStableSnapshot(buddyId),
   );
 }
