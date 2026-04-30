@@ -1,14 +1,18 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { GraduationCap, Mail, ArrowRight, Check, X } from "lucide-react";
+import { GraduationCap, Mail, ArrowRight, Check, X, ShieldCheck, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { AnimalAvatar } from "./Avatar";
 import { ANIMALS, PROFILE_PROMPTS } from "@/data/mockData";
+import { tourStore } from "@/lib/tourStore";
 import { cn } from "@/lib/utils";
 
-const ALLOWED_DOMAINS = ["kuleuven.be", "ugent.be", "vub.be", "uantwerpen.be", "ulb.be"];
+// Allowed institutional domains. We accept exact match or any subdomain (e.g. student.kuleuven.be).
+// Generic .edu / .ac.* TLDs are also accepted as a catch-all for international students.
+const ALLOWED_DOMAINS = ["kuleuven.be", "ugent.be", "vub.be", "uantwerpen.be", "ulb.be", "uliege.be", "uhasselt.be"];
+const ACADEMIC_TLDS = [".edu", ".ac.uk", ".ac.be", ".ac.nl", ".edu.au", ".ac.jp"];
 
 const HOBBIES = ["Gaming", "Reading", "Coffee", "Hiking", "Music", "Films", "Yoga", "Cycling", "Chess", "Photography", "Painting", "Tea"];
 
@@ -18,44 +22,51 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
   const [step, setStep] = useState<Step>(0);
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const [verifying, setVerifying] = useState(false);
+  const [verified, setVerified] = useState(false);
   const [picked, setPicked] = useState<string[]>(["Gaming", "Coffee"]);
   const [animal, setAnimal] = useState<string>("fox");
-  const [prompts, setPrompts] = useState<{ question: string; answer: string }[]>([
-    { question: PROFILE_PROMPTS[0], answer: "" },
-    { question: PROFILE_PROMPTS[2], answer: "" },
-  ]);
+  const [prompt, setPrompt] = useState<{ question: string; answer: string }>({
+    question: PROFILE_PROMPTS[0],
+    answer: "",
+  });
 
-  const handleVerify = () => {
-    const lower = email.trim().toLowerCase();
-    if (!lower.includes("@")) {
-      setError("Please enter a valid email.");
-      return;
+  const validEmail = (raw: string): { ok: boolean; reason?: string } => {
+    const lower = raw.trim().toLowerCase();
+    // basic shape
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lower)) {
+      return { ok: false, reason: "Please enter a valid email address." };
     }
     const domain = lower.split("@")[1];
-    if (!ALLOWED_DOMAINS.some((d) => domain === d || domain.endsWith("." + d))) {
-      setError("Only verified university emails are accepted (e.g. @kuleuven.be).");
+    const domainOk =
+      ALLOWED_DOMAINS.some((d) => domain === d || domain.endsWith("." + d)) ||
+      ACADEMIC_TLDS.some((tld) => domain.endsWith(tld));
+    if (!domainOk) {
+      return { ok: false, reason: "Use your university email (e.g. @kuleuven.be or .edu)." };
+    }
+    return { ok: true };
+  };
+
+  const handleVerify = () => {
+    const check = validEmail(email);
+    if (!check.ok) {
+      setError(check.reason ?? "Invalid email.");
       return;
     }
     setError("");
-    setStep(1);
+    setVerifying(true);
+    // Simulated verification delay (in production: send magic link / OTP)
+    window.setTimeout(() => {
+      setVerifying(false);
+      setVerified(true);
+      window.setTimeout(() => setStep(1), 600);
+    }, 900);
   };
 
   const togglePick = (h: string) =>
     setPicked((p) => (p.includes(h) ? p.filter((x) => x !== h) : [...p, h]));
 
-  const setQ = (i: number, q: string) =>
-    setPrompts((arr) => arr.map((p, idx) => (idx === i ? { ...p, question: q } : p)));
-  const setA = (i: number, a: string) =>
-    setPrompts((arr) => arr.map((p, idx) => (idx === i ? { ...p, answer: a } : p)));
-  const removePrompt = (i: number) => setPrompts((arr) => arr.filter((_, idx) => idx !== i));
-  const addPrompt = () => {
-    if (prompts.length >= 3) return;
-    const used = new Set(prompts.map((p) => p.question));
-    const next = PROFILE_PROMPTS.find((q) => !used.has(q)) ?? PROFILE_PROMPTS[0];
-    setPrompts((arr) => [...arr, { question: next, answer: "" }]);
-  };
-
-  const promptsValid = prompts.length >= 1 && prompts.every((p) => p.answer.trim().length >= 3);
+  const promptValid = prompt.answer.trim().length >= 3;
 
   return (
     <div className="relative flex min-h-full flex-1 flex-col gradient-warm">
@@ -85,28 +96,55 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
             </p>
 
             <div className="mt-auto rounded-3xl bg-card p-6 shadow-elevated">
-              <p className="font-display text-2xl font-semibold text-foreground">
-                Verify your university
-              </p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                We use your institutional email to keep the community exclusive and safe.
+              <div className="flex items-center gap-2">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent-soft text-primary">
+                  <ShieldCheck className="h-4 w-4" />
+                </div>
+                <p className="font-display text-2xl font-semibold text-foreground">
+                  Verify your university
+                </p>
+              </div>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Students-only community. We'll check your institutional email to keep things safe.
               </p>
 
               <div className="relative mt-5">
                 <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (error) setError("");
+                  }}
                   placeholder="you@kuleuven.be"
                   className="h-12 rounded-xl pl-9 text-sm"
                   type="email"
                   autoComplete="email"
+                  disabled={verifying || verified}
                 />
+                {verified && (
+                  <Check className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-success" strokeWidth={3} />
+                )}
               </div>
               {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
+              {!error && (
+                <p className="mt-2 text-[11px] text-muted-foreground">
+                  Accepted: @kuleuven.be, @ugent.be, .edu, .ac.uk and other academic domains.
+                </p>
+              )}
 
-              <Button onClick={handleVerify} className="mt-4 h-12 w-full rounded-xl text-sm font-semibold">
-                Verify email <ArrowRight className="ml-1 h-4 w-4" />
+              <Button
+                onClick={handleVerify}
+                disabled={verifying || verified}
+                className="mt-4 h-12 w-full rounded-xl text-sm font-semibold"
+              >
+                {verifying ? (
+                  <><Loader2 className="mr-1 h-4 w-4 animate-spin" /> Verifying…</>
+                ) : verified ? (
+                  <><Check className="mr-1 h-4 w-4" strokeWidth={3} /> Verified</>
+                ) : (
+                  <>Verify email <ArrowRight className="ml-1 h-4 w-4" /></>
+                )}
               </Button>
 
               <p className="mt-4 text-center text-[11px] text-muted-foreground">
@@ -209,66 +247,46 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
               Show your vibe.
             </h1>
             <p className="mt-3 text-sm text-primary-foreground/95">
-              Pick a couple of prompts and answer them. Real beats polished.
+              Pick one prompt and answer it. Real beats polished.
             </p>
 
-            <div className="mt-6 max-h-[55vh] space-y-3 overflow-y-auto rounded-3xl bg-card p-5 shadow-elevated">
-              {prompts.map((p, i) => (
-                <div key={i} className="rounded-2xl border border-border bg-card p-4">
-                  <div className="flex items-center justify-between">
-                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                      Prompt {i + 1}
-                    </p>
-                    {prompts.length > 1 && (
-                      <button
-                        onClick={() => removePrompt(i)}
-                        className="flex h-6 w-6 items-center justify-center rounded-full bg-secondary text-muted-foreground hover:text-destructive"
-                      >
-                        <X className="h-3.5 w-3.5" />
-                      </button>
-                    )}
-                  </div>
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    {PROFILE_PROMPTS.map((q) => (
-                      <button
-                        key={q}
-                        onClick={() => setQ(i, q)}
-                        className={cn(
-                          "rounded-full border px-2.5 py-1 text-[11px] font-medium transition",
-                          p.question === q
-                            ? "border-primary bg-primary text-primary-foreground"
-                            : "border-border bg-card text-foreground hover:border-primary/40"
-                        )}
-                      >
-                        {q}
-                      </button>
-                    ))}
-                  </div>
-                  <Textarea
-                    value={p.answer}
-                    onChange={(e) => setA(i, e.target.value.slice(0, 200))}
-                    placeholder="Your answer…"
-                    className="mt-3 min-h-[80px] rounded-xl text-sm"
-                    maxLength={200}
-                  />
-                  <p className="mt-1 text-right text-[10px] text-muted-foreground">
-                    {p.answer.length}/200
-                  </p>
+            <div className="mt-auto rounded-3xl bg-card p-5 shadow-elevated">
+              <div className="rounded-2xl border border-border bg-card p-4">
+                <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                  Pick a prompt
+                </p>
+                <div className="mt-2 flex max-h-32 flex-wrap gap-1.5 overflow-y-auto">
+                  {PROFILE_PROMPTS.map((q) => (
+                    <button
+                      key={q}
+                      onClick={() => setPrompt((p) => ({ ...p, question: q }))}
+                      className={cn(
+                        "rounded-full border px-2.5 py-1 text-[11px] font-medium transition",
+                        prompt.question === q
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border bg-card text-foreground hover:border-primary/40"
+                      )}
+                    >
+                      {q}
+                    </button>
+                  ))}
                 </div>
-              ))}
-              {prompts.length < 3 && (
-                <button
-                  onClick={addPrompt}
-                  className="flex w-full items-center justify-center rounded-2xl border border-dashed border-border py-3 text-xs font-medium text-muted-foreground hover:text-primary"
-                >
-                  + Add another prompt
-                </button>
-              )}
+                <Textarea
+                  value={prompt.answer}
+                  onChange={(e) => setPrompt((p) => ({ ...p, answer: e.target.value.slice(0, 200) }))}
+                  placeholder="Your answer…"
+                  className="mt-3 min-h-[90px] rounded-xl text-sm"
+                  maxLength={200}
+                />
+                <p className="mt-1 text-right text-[10px] text-muted-foreground">
+                  {prompt.answer.length}/200
+                </p>
+              </div>
             </div>
 
             <Button
               onClick={() => setStep(4)}
-              disabled={!promptsValid}
+              disabled={!promptValid}
               className="mt-4 h-12 w-full rounded-xl text-sm font-semibold"
             >
               Continue <ArrowRight className="ml-1 h-4 w-4" />
@@ -297,7 +315,13 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
             <p className="mt-2 max-w-xs text-sm text-primary-foreground/95">
               Welcome to StudySync, KU Leuven. Let's find your first study session.
             </p>
-            <Button onClick={onComplete} className="mt-10 h-12 w-full rounded-xl bg-accent text-primary hover:bg-accent/90">
+            <Button
+              onClick={() => {
+                tourStore.reset();
+                onComplete();
+              }}
+              className="mt-10 h-12 w-full rounded-xl bg-accent text-primary hover:bg-accent/90"
+            >
               Enter StudySync <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
           </motion.div>

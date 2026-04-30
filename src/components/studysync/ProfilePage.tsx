@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Settings, GraduationCap, BookOpen, Heart, Calendar, LogOut, ChevronRight, Pencil, X, Check, Plus, Crown, Sparkles } from "lucide-react";
+import { Settings, GraduationCap, BookOpen, Heart, Calendar, LogOut, ChevronRight, Pencil, X, Check, Plus, Crown, Sparkles, Flame, TrendingUp, Clock } from "lucide-react";
 import { GradientAvatar, AnimalAvatar } from "./Avatar";
 import { StatusBadge } from "./Badge";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { AdminAnalytics } from "./AdminAnalytics";
 import { useSubscription, subscriptionStore } from "@/lib/subscriptionStore";
+import { useFocusStats, deriveStats } from "@/lib/focusStatsStore";
 import { UpgradeModal } from "./UpgradeModal";
 import { toast } from "@/hooks/use-toast";
 
@@ -69,6 +70,11 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
             <Stat label="Buddies" value="18" />
           </div>
         </div>
+      </div>
+
+      {/* Focus stats — streaks + weekly */}
+      <div className="px-6 pt-4">
+        <FocusStatsCard />
       </div>
 
       <div className="mt-6 space-y-4 px-6">
@@ -240,6 +246,82 @@ function Stat({ label, value, icon }: { label: string; value: string; icon?: Rea
   );
 }
 
+function FocusStatsCard() {
+  const sessions = useFocusStats();
+  const { weeklySeconds, sessionsThisWeek, streak, days } = deriveStats(sessions);
+  const weeklyHours = weeklySeconds / 3600;
+  const goalHours = 10;
+  const progress = Math.min(1, weeklyHours / goalHours);
+  const maxMin = Math.max(60, ...days.map((d) => d.minutes));
+
+  return (
+    <div className="rounded-2xl border border-border bg-card p-4 shadow-soft">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <TrendingUp className="h-4 w-4 text-primary" />
+          <p className="text-sm font-semibold text-foreground">Focus stats</p>
+        </div>
+        <div className="flex items-center gap-1.5 rounded-full bg-accent-soft px-2.5 py-1">
+          <Flame className="h-3.5 w-3.5 text-primary" />
+          <span className="text-[11px] font-semibold text-foreground">
+            {streak}-day streak
+          </span>
+        </div>
+      </div>
+
+      {/* Weekly goal */}
+      <div className="mt-3">
+        <div className="flex items-baseline justify-between">
+          <p className="font-display text-2xl font-semibold text-foreground tabular-nums">
+            {weeklyHours.toFixed(1)}<span className="text-sm font-medium text-muted-foreground">h</span>
+          </p>
+          <p className="text-[11px] text-muted-foreground">
+            <Clock className="mr-1 inline h-3 w-3" />
+            {sessionsThisWeek} sessions · goal {goalHours}h
+          </p>
+        </div>
+        <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${progress * 100}%` }}
+            transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+            className="h-full rounded-full bg-primary"
+          />
+        </div>
+      </div>
+
+      {/* Weekly bars */}
+      <div className="mt-4 flex h-16 items-end gap-1.5">
+        {days.map((d, i) => {
+          const isToday = i === days.length - 1;
+          const h = (d.minutes / maxMin) * 100;
+          return (
+            <div key={d.t} className="flex flex-1 flex-col items-center gap-1">
+              <motion.div
+                initial={{ height: 0 }}
+                animate={{ height: `${Math.max(h, d.minutes > 0 ? 10 : 4)}%` }}
+                transition={{ duration: 0.5, delay: i * 0.04 }}
+                className={cn(
+                  "w-full rounded-md",
+                  isToday ? "bg-primary" : "bg-accent"
+                )}
+              />
+              <span
+                className={cn(
+                  "text-[9px]",
+                  isToday ? "font-semibold text-foreground" : "text-muted-foreground"
+                )}
+              >
+                {d.label}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function Section({ title, children, action }: { title: string; children: React.ReactNode; action?: React.ReactNode }) {
   return (
     <div>
@@ -349,7 +431,7 @@ function PromptsEditorModal({
     setDraft((d) => d.map((p, idx) => (idx === i ? { ...p, answer: a } : p)));
 
   const addPrompt = () => {
-    if (draft.length >= 3) return;
+    if (draft.length >= 1) return;
     setDraft((d) => [...d, { question: PROFILE_PROMPTS[0], answer: "" }]);
   };
   const removePrompt = (i: number) => setDraft((d) => d.filter((_, idx) => idx !== i));
@@ -381,9 +463,9 @@ function PromptsEditorModal({
             >
               <X className="h-4 w-4" />
             </button>
-            <h3 className="font-display text-xl font-semibold">Your prompts</h3>
+            <h3 className="font-display text-xl font-semibold">Your prompt</h3>
             <p className="mt-1 text-sm text-muted-foreground">
-              Pick up to 3 prompts and answer them — let people see your vibe.
+              Pick one prompt and answer it — give people a peek at your vibe.
             </p>
 
             <div className="mt-5 space-y-4">
@@ -429,12 +511,12 @@ function PromptsEditorModal({
                 </div>
               ))}
 
-              {draft.length < 3 && (
+              {draft.length < 1 && (
                 <button
                   onClick={addPrompt}
                   className="flex w-full items-center justify-center gap-1.5 rounded-2xl border border-dashed border-border py-4 text-xs font-medium text-muted-foreground hover:text-primary"
                 >
-                  <Plus className="h-4 w-4" /> Add another prompt
+                  <Plus className="h-4 w-4" /> Add a prompt
                 </button>
               )}
             </div>

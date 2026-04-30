@@ -111,7 +111,6 @@ export const CURRENT_USER = {
   role: "admin" as AppRole,
   prompts: [
     { question: "This year, I really want to…", answer: "finish my thesis without surviving on instant noodles." },
-    { question: "My study playlist says a lot about me because…", answer: "it's 80% lo-fi and 20% questionable 2000s pop." },
   ],
 };
 
