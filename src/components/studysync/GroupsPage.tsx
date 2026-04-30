@@ -41,6 +41,7 @@ export function GroupsPage() {
   const [smartOpen, setSmartOpen] = useState(false);
   const [confirming, setConfirming] = useState<StudyGroup | null>(null);
   const [refilling, setRefilling] = useState<StudyGroup | null>(null);
+  const [cancelling, setCancelling] = useState<StudyGroup | null>(null);
 
   const handleJoin = (id: string) => {
     setGroups((prev) =>
@@ -74,6 +75,60 @@ export function GroupsPage() {
       )
     );
     setRefilling(null);
+    toast.success(`${picks.length} new ${picks.length === 1 ? "person" : "people"} added`, {
+      description: `${group.spotName} · ${group.time} is back on track.`,
+    });
+  };
+
+  const handleCancel = (group: StudyGroup, reasonId: CancelReasonId, note?: string) => {
+    // 1. Persist cancellation reason for analytics.
+    cancellationStore.add(
+      { groupId: group.id, reasonId, note },
+      group.spotName,
+    );
+
+    // 2. Update group state: remove user, mark at-risk if too thin.
+    let becameAtRisk = false;
+    setGroups((prev) =>
+      prev.map((g) => {
+        if (g.id !== group.id) return g;
+        const nextMembers = Math.max(g.anonymousMembers - 1, 0);
+        const nextRemaining = isCapped(g)
+          ? Math.min((g.spotsRemaining ?? 0) + 1, g.spotsTotal ?? 0)
+          : null;
+        const wasAtRisk = !!g.atRisk;
+        const nowAtRisk = nextMembers <= 1;
+        if (!wasAtRisk && nowAtRisk) becameAtRisk = true;
+        return {
+          ...g,
+          anonymousMembers: nextMembers,
+          spotsRemaining: nextRemaining,
+          atRisk: nowAtRisk,
+        };
+      }),
+    );
+    setJoined((prev) => {
+      const next = new Set(prev);
+      next.delete(group.id);
+      return next;
+    });
+    setCancelling(null);
+
+    // 3. Notify the user; raise a push-style notice if session is at risk.
+    toast("Seat cancelled", {
+      description: "Thanks — your reason helps us keep groups healthy.",
+    });
+    if (becameAtRisk) {
+      riskNoticeStore.add({
+        groupId: group.id,
+        spotName: group.spotName,
+        time: group.time,
+        date: group.date,
+      });
+      toast.warning(`${group.spotName} is now at risk`, {
+        description: "Tap the Home banner to refill the session in 2 mins.",
+      });
+    }
   };
 
   return (
