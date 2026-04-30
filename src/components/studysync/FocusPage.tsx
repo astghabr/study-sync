@@ -22,6 +22,7 @@ import { AnimalAvatar } from "./Avatar";
 import { BUDDIES } from "@/data/mockData";
 import { cn } from "@/lib/utils";
 import { useSubscription } from "@/lib/subscriptionStore";
+import { focusStatsStore } from "@/lib/focusStatsStore";
 import { UpgradeModal } from "./UpgradeModal";
 import { Crown } from "lucide-react";
 
@@ -188,6 +189,12 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
     setExitWarn(false);
     setSummary(log);
     setHistory((h) => [log, ...h]);
+    // Persist to shared focus stats store for the Profile page.
+    focusStatsStore.log({
+      endedAt: log.endedAt,
+      durationSec: log.durationSec,
+      group: log.group,
+    });
   };
 
   return (
