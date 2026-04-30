@@ -358,6 +358,7 @@ function SpotDetail({
           >
             <X className="h-4 w-4" />
           </button>
+          <FavoriteButton spotId={spot.id} />
           <div className="absolute bottom-3 left-4 flex flex-wrap gap-1.5">
             {spot.official && <StatusBadge variant="official">Official Hub</StatusBadge>}
             {spot.laptopPolicy === "Not Allowed" && <StatusBadge variant="no-laptop">No laptops</StatusBadge>}
