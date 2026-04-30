@@ -126,8 +126,31 @@ export function BuddiesPage() {
         ))}
       </div>
 
-      <div className="mt-4 px-6">
-        <p className="text-xs text-muted-foreground">{filtered.length} verified students</p>
+      <div className="mt-2 flex gap-2 overflow-x-auto px-6 pb-1 scrollbar-hide">
+        {YEARS.map((y) => (
+          <button
+            key={y}
+            onClick={() => setYear(y)}
+            className={cn(
+              "shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-medium",
+              year === y ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-foreground"
+            )}
+          >
+            {y === "All" ? "Any year" : y}
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-4 flex items-center justify-between px-6">
+        <p className="text-xs text-muted-foreground">{filtered.length} verified student{filtered.length === 1 ? "" : "s"}</p>
+        {activeFilterCount > 0 && (
+          <button
+            onClick={clearFilters}
+            className="inline-flex items-center gap-1 text-[11px] font-medium text-primary hover:underline"
+          >
+            <X className="h-3 w-3" /> Clear {activeFilterCount} filter{activeFilterCount > 1 ? "s" : ""}
+          </button>
+        )}
       </div>
 
       <div className="mt-3 grid grid-cols-2 gap-3 px-6">
