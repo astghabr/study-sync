@@ -28,12 +28,15 @@ const AmenityIcon = ({ name }: { name: string }) => {
 };
 
 export function SpotsPage() {
+  const { isPro } = useSubscription();
   const [view, setView] = useState<"list" | "map">("list");
   const [query, setQuery] = useState("");
   const [type, setType] = useState<(typeof TYPE_FILTERS)[number]>("All");
   const [laptopOnly, setLaptopOnly] = useState(false);
   const [quietOnly, setQuietOnly] = useState(false);
   const [selected, setSelected] = useState<Spot | null>(null);
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
+  const [upgradeReason, setUpgradeReason] = useState<string | undefined>();
 
   const filtered = useMemo(() => {
     return SPOTS.filter((s) => {
