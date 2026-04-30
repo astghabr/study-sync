@@ -21,6 +21,9 @@ import { Button } from "@/components/ui/button";
 import { AnimalAvatar } from "./Avatar";
 import { BUDDIES } from "@/data/mockData";
 import { cn } from "@/lib/utils";
+import { useSubscription } from "@/lib/subscriptionStore";
+import { UpgradeModal } from "./UpgradeModal";
+import { Crown } from "lucide-react";
 
 type Mode = "pomodoro" | "timer" | "stopwatch";
 type Phase = "focus" | "break";
