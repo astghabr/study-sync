@@ -22,14 +22,14 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
 
   return (
     <div className="flex flex-col pb-6">
-      <div className="relative gradient-hero px-6 pb-20 pt-10 text-primary-foreground">
-        <div className="flex items-start justify-between">
+      <div className="relative gradient-hero px-6 pb-28 pt-10 text-primary-foreground">
+        <div className="relative z-10 flex items-start justify-between">
           <p className="text-xs uppercase tracking-[0.18em] text-primary-foreground/80">My profile</p>
           <button className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-foreground/15 text-primary-foreground">
             <Settings className="h-4 w-4" />
           </button>
         </div>
-        <div className="mt-6 flex items-center gap-4">
+        <div className="relative z-10 mt-6 flex items-center gap-4">
           <button
             onClick={() => setEditingAnimal(true)}
             className="relative shrink-0"
@@ -49,6 +49,8 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
           </div>
         </div>
       </div>
+
+      <div className="-mt-12 px-6">
 
       <div className="-mt-10 px-6">
         <div className="rounded-3xl bg-card p-5 shadow-elevated">
