@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { chatOpener, useAllMessages, type ChatMessage } from "@/lib/messagesStore";
+import { cn } from "@/lib/utils";
 
 function formatRelative(ts: number): string {
   const diff = Date.now() - ts;
