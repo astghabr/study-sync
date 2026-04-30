@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Bell, Calendar, MapPin, Users, ArrowRight, Sparkles, Star } from "lucide-react";
+import { Bell, Calendar, MapPin, Users, ArrowRight, Sparkles } from "lucide-react";
 import { GradientAvatar } from "./Avatar";
 import { StatusBadge } from "./Badge";
 import { BUDDIES, CURRENT_USER, GROUPS, SPOTS } from "@/data/mockData";
@@ -25,7 +25,7 @@ export function HomePage({ onNavigate }: { onNavigate: (t: Tab) => void }) {
             <button className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card">
               <Bell className="h-4 w-4 text-foreground" />
             </button>
-            <GradientAvatar initials={CURRENT_USER.initials} gradient="from-amber-200 to-rose-300" size="md" />
+            <GradientAvatar animal={CURRENT_USER.animal} initials={CURRENT_USER.initials} size="md" />
           </div>
         </div>
       </header>
@@ -119,10 +119,7 @@ export function HomePage({ onNavigate }: { onNavigate: (t: Tab) => void }) {
               className="flex w-44 shrink-0 flex-col rounded-2xl border border-border bg-card p-4 shadow-soft"
             >
               <div className="flex items-start justify-between">
-                <GradientAvatar initials={b.initials} gradient={b.avatarColor} size="md" />
-                <span className="inline-flex items-center gap-0.5 text-[11px] font-medium text-foreground">
-                  <Star className="h-3 w-3 fill-accent text-accent" /> {b.rating}
-                </span>
+                <GradientAvatar animal={b.animal} initials={b.initials} size="md" />
               </div>
               <p className="mt-3 truncate font-display text-sm font-semibold">{b.name}</p>
               <p className="truncate text-[11px] text-muted-foreground">{b.major} · {b.year}</p>
