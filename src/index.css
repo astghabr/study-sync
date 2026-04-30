@@ -21,10 +21,10 @@
     --primary-foreground: 30 33% 97%;
     --primary-glow: 222 50% 24%;
 
-    /* Peach */
-    --accent: 18 88% 72%;
+    /* Peach (lighter) */
+    --accent: 22 100% 86%;
     --accent-foreground: 222 45% 14%;
-    --accent-soft: 22 95% 92%;
+    --accent-soft: 24 100% 95%;
 
     --secondary: 220 14% 94%;
     --secondary-foreground: 222 45% 14%;
@@ -49,14 +49,14 @@
 
     /* Gradients */
     --gradient-hero: linear-gradient(135deg, hsl(222 45% 14%) 0%, hsl(222 50% 24%) 100%);
-    --gradient-peach: linear-gradient(135deg, hsl(18 88% 72%) 0%, hsl(22 95% 82%) 100%);
-    --gradient-warm: linear-gradient(180deg, hsl(30 33% 97%) 0%, hsl(22 95% 95%) 100%);
+    --gradient-peach: linear-gradient(135deg, hsl(22 100% 88%) 0%, hsl(28 100% 94%) 100%);
+    --gradient-warm: linear-gradient(180deg, hsl(30 33% 97%) 0%, hsl(24 100% 96%) 100%);
 
     /* Shadows */
     --shadow-soft: 0 2px 8px -2px hsl(222 45% 14% / 0.06), 0 4px 16px -4px hsl(222 45% 14% / 0.04);
     --shadow-card: 0 4px 20px -6px hsl(222 45% 14% / 0.08);
     --shadow-elevated: 0 12px 40px -12px hsl(222 45% 14% / 0.18);
-    --shadow-peach: 0 8px 30px -8px hsl(18 88% 72% / 0.5);
+    --shadow-peach: 0 8px 30px -8px hsl(22 100% 80% / 0.45);
 
     --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   }
