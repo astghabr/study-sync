@@ -136,3 +136,20 @@ export function useMessages(buddyId: string | null): ChatMessage[] {
     () => getStableSnapshot(buddyId),
   );
 }
+
+// Stable snapshot for all messages (used for conversation summaries)
+let allCache: { source: ChatMessage[]; result: ChatMessage[] } | null = null;
+function getAllSnapshot(): ChatMessage[] {
+  if (allCache && allCache.source === state) return allCache.result;
+  const result = [...state].sort((a, b) => a.sentAt - b.sentAt);
+  allCache = { source: state, result };
+  return result;
+}
+
+export function useAllMessages(): ChatMessage[] {
+  return useSyncExternalStore(
+    messagesStore.subscribe,
+    getAllSnapshot,
+    getAllSnapshot,
+  );
+}

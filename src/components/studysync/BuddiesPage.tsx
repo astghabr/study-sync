@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, SlidersHorizontal, X, MessageCircle, Check, Flag, ShieldAlert } from "lucide-react";
+import { Search, SlidersHorizontal, X, MessageCircle, Check, Flag, ShieldAlert, Inbox } from "lucide-react";
 import { GradientAvatar } from "./Avatar";
 import { StatusBadge } from "./Badge";
 import { ChatModal } from "./ChatModal";
@@ -9,8 +9,20 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { chatOpener } from "@/lib/messagesStore";
+import { chatOpener, useAllMessages, type ChatMessage } from "@/lib/messagesStore";
 import { cn } from "@/lib/utils";
+
+function formatRelative(ts: number): string {
+  const diff = Date.now() - ts;
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return "now";
+  if (m < 60) return `${m}m`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h`;
+  const d = Math.floor(h / 24);
+  return `${d}d`;
+}
+
 
 const MAJORS = ["All", "Computer Science", "Economics", "Psychology", "Engineering", "Law", "Mathematics", "Biology"];
 const HOBBIES = ["Gaming", "Reading", "Coffee", "Hiking", "Music", "Chess", "Photography"];
@@ -35,6 +47,36 @@ export function BuddiesPage() {
   const [requested, setRequested] = useState<Set<string>>(new Set());
   const [reporting, setReporting] = useState<Buddy | null>(null);
   const [chatting, setChatting] = useState<Buddy | null>(null);
+  const [inboxOpen, setInboxOpen] = useState(false);
+  const inboxRef = useRef<HTMLDivElement | null>(null);
+  const allMessages = useAllMessages();
+
+  // Build conversation summary list (latest message per buddy, most recent first)
+  const conversations = useMemo(() => {
+    const latest = new Map<string, ChatMessage>();
+    for (const m of allMessages) {
+      const cur = latest.get(m.buddyId);
+      if (!cur || m.sentAt > cur.sentAt) latest.set(m.buddyId, m);
+    }
+    return Array.from(latest.values())
+      .map((m) => ({ msg: m, buddy: BUDDIES.find((b) => b.id === m.buddyId) }))
+      .filter((c) => c.buddy)
+      .sort((a, b) => b.msg.sentAt - a.msg.sentAt);
+  }, [allMessages]);
+
+  const unreadCount = conversations.filter((c) => c.msg.from === "them").length;
+
+  // Close on outside click
+  useEffect(() => {
+    if (!inboxOpen) return;
+    const onClick = (e: MouseEvent) => {
+      if (inboxRef.current && !inboxRef.current.contains(e.target as Node)) {
+        setInboxOpen(false);
+      }
+    };
+    window.addEventListener("mousedown", onClick);
+    return () => window.removeEventListener("mousedown", onClick);
+  }, [inboxOpen]);
 
   // Open the chat modal when another part of the app (e.g. a notification click) requests it.
   useEffect(() => {
@@ -80,9 +122,77 @@ export function BuddiesPage() {
 
   return (
     <div className="flex flex-col pb-6">
-      <header className="px-6 pt-8">
+      <header className="relative px-6 pt-8">
         <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Discover</p>
         <h1 className="mt-1 font-display text-[28px] font-semibold leading-tight">Find buddies</h1>
+
+        {/* Messages corner */}
+        <div ref={inboxRef} className="absolute right-6 top-8">
+          <button
+            onClick={() => setInboxOpen((v) => !v)}
+            aria-label="Messages"
+            className="relative flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card shadow-soft transition hover:shadow-card"
+          >
+            <MessageCircle className="h-4.5 w-4.5 text-foreground" />
+            {unreadCount > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-primary-foreground">
+                {unreadCount}
+              </span>
+            )}
+          </button>
+
+          <AnimatePresence>
+            {inboxOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -6, scale: 0.98 }}
+                transition={{ duration: 0.15 }}
+                className="absolute right-0 top-12 z-40 w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl border border-border bg-card shadow-elevated"
+              >
+                <div className="flex items-center justify-between border-b border-border px-4 py-3">
+                  <p className="font-display text-sm font-semibold">Messages</p>
+                  <button
+                    onClick={() => setInboxOpen(false)}
+                    className="flex h-7 w-7 items-center justify-center rounded-full bg-secondary"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+                <div className="max-h-80 overflow-y-auto">
+                  {conversations.length === 0 ? (
+                    <div className="flex flex-col items-center gap-2 px-4 py-10 text-center">
+                      <Inbox className="h-6 w-6 text-muted-foreground" />
+                      <p className="text-xs text-muted-foreground">No messages yet. Start a chat from a profile.</p>
+                    </div>
+                  ) : (
+                    conversations.map(({ msg, buddy }) => (
+                      <button
+                        key={buddy!.id}
+                        onClick={() => {
+                          setInboxOpen(false);
+                          setChatting(buddy!);
+                        }}
+                        className="flex w-full items-center gap-3 border-b border-border/60 px-4 py-3 text-left transition last:border-b-0 hover:bg-secondary/60"
+                      >
+                        <GradientAvatar animal={buddy!.animal} initials={buddy!.initials} size="sm" />
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-baseline justify-between gap-2">
+                            <p className="truncate font-display text-sm font-semibold">{buddy!.name}</p>
+                            <span className="shrink-0 text-[10px] text-muted-foreground">{formatRelative(msg.sentAt)}</span>
+                          </div>
+                          <p className="truncate text-xs text-muted-foreground">
+                            {msg.from === "me" ? "You: " : ""}{msg.text}
+                          </p>
+                        </div>
+                      </button>
+                    ))
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
         <div className="relative mt-4">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
