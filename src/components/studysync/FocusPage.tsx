@@ -653,9 +653,6 @@ function ExitWarning({
 }
 
 function SummaryModal({ log, onClose }: { log: SessionLog; onClose: () => void }) {
-  // Simple focus score: 100 if completed full target; else proportional, min 40
-  const score = log.completed ? 100 : Math.max(40, Math.min(95, Math.round((log.durationSec / (45 * 60)) * 100)));
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -689,23 +686,13 @@ function SummaryModal({ log, onClose }: { log: SessionLog; onClose: () => void }
           {log.group ? `Focused with ${log.participants - 1} buddy${log.participants - 1 > 1 ? "s" : ""}` : "Solo session"} · {modeMeta[log.mode].label}
         </p>
 
-        <div className="mt-5 grid grid-cols-2 gap-3">
-          <div className="rounded-2xl bg-accent-soft/60 p-4">
-            <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
-              Duration
-            </p>
-            <p className="mt-1 font-display text-2xl font-semibold text-foreground">
-              {formatHM(log.durationSec)}
-            </p>
-          </div>
-          <div className="rounded-2xl bg-accent-soft/60 p-4">
-            <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
-              Focus score
-            </p>
-            <p className="mt-1 font-display text-2xl font-semibold text-foreground">
-              {score}
-            </p>
-          </div>
+        <div className="mt-5 rounded-2xl bg-accent-soft/60 p-4">
+          <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
+            Duration
+          </p>
+          <p className="mt-1 font-display text-2xl font-semibold text-foreground">
+            {formatHM(log.durationSec)}
+          </p>
         </div>
 
         <Button onClick={onClose} className="mt-5 h-12 w-full rounded-xl text-sm font-semibold">
