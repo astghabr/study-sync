@@ -22,14 +22,21 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
 
   return (
     <div className="flex flex-col pb-6">
-      <div className="relative gradient-hero px-6 pb-28 pt-10 text-primary-foreground">
-        <div className="relative z-10 flex items-start justify-between">
-          <p className="text-xs uppercase tracking-[0.18em] text-primary-foreground/80">My profile</p>
-          <button className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-foreground/15 text-primary-foreground">
+      {/* Hero header */}
+      <div className="gradient-hero px-6 pt-10 pb-8 text-primary-foreground">
+        <div className="flex items-start justify-between">
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary-foreground/70">
+            My profile
+          </p>
+          <button
+            aria-label="Settings"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-foreground/15 text-primary-foreground"
+          >
             <Settings className="h-4 w-4" />
           </button>
         </div>
-        <div className="relative z-10 mt-6 flex items-center gap-4">
+
+        <div className="mt-7 flex items-center gap-4">
           <button
             onClick={() => setEditingAnimal(true)}
             className="relative shrink-0"
@@ -44,15 +51,20 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
             <h2 className="font-display text-2xl font-semibold leading-tight text-primary-foreground">
               {CURRENT_USER.name}
             </h2>
-            <p className="mt-0.5 truncate text-xs text-primary-foreground/80">{CURRENT_USER.email}</p>
-            <p className="text-xs text-primary-foreground/70">{CURRENT_USER.university}</p>
+            <p className="mt-0.5 truncate text-xs text-primary-foreground/80">
+              {CURRENT_USER.email}
+            </p>
+            <p className="text-xs text-primary-foreground/70">
+              {CURRENT_USER.university}
+            </p>
           </div>
         </div>
       </div>
 
-      <div className="-mt-12 px-6">
-        <div className="rounded-3xl bg-card p-5 shadow-elevated">
-          <div className="grid grid-cols-2 gap-2">
+      {/* Stats card — sits flush below hero, no overlap */}
+      <div className="px-6 pt-4">
+        <div className="rounded-2xl border border-border bg-card p-4 text-foreground shadow-soft">
+          <div className="grid grid-cols-2 divide-x divide-border">
             <Stat label="Sessions" value="24" />
             <Stat label="Buddies" value="18" />
           </div>
