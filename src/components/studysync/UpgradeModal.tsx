@@ -92,7 +92,7 @@ export function UpgradeModal({
                     {b}
                     {b === "yearly" && (
                       <span className="ml-1.5 rounded-full bg-accent px-1.5 py-0.5 text-[9px] font-bold text-accent-foreground">
-                        −33%
+                        −32%
                       </span>
                     )}
                   </button>
