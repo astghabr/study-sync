@@ -213,17 +213,30 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
             {(Object.keys(modeMeta) as Mode[]).map((m) => {
               const Icon = modeMeta[m].icon;
               const active = mode === m;
+              const locked = !isPro && m !== "pomodoro";
               return (
                 <button
                   key={m}
-                  onClick={() => setMode(m)}
+                  onClick={() => {
+                    if (locked) {
+                      requestUpgrade(`${modeMeta[m].label} mode is part of Pro.`);
+                      return;
+                    }
+                    setMode(m);
+                  }}
                   className={cn(
-                    "flex flex-col items-center gap-1.5 rounded-2xl border px-2 py-3 transition",
+                    "relative flex flex-col items-center gap-1.5 rounded-2xl border px-2 py-3 transition",
                     active
                       ? "border-primary bg-primary text-primary-foreground"
-                      : "border-border bg-card text-foreground hover:border-primary/40"
+                      : "border-border bg-card text-foreground hover:border-primary/40",
+                    locked && !active && "opacity-80"
                   )}
                 >
+                  {locked && (
+                    <span className="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-accent-foreground">
+                      <Crown className="h-2.5 w-2.5" />
+                    </span>
+                  )}
                   <Icon className="h-5 w-5" strokeWidth={2.2} />
                   <span className="text-xs font-semibold">{modeMeta[m].label}</span>
                   <span
