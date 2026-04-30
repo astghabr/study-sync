@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, SlidersHorizontal, X, MessageCircle, Check, Flag, ShieldAlert } from "lucide-react";
+import { Search, SlidersHorizontal, X, MessageCircle, Check, Flag, ShieldAlert, Inbox } from "lucide-react";
 import { GradientAvatar } from "./Avatar";
 import { StatusBadge } from "./Badge";
 import { ChatModal } from "./ChatModal";
@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { chatOpener } from "@/lib/messagesStore";
+import { chatOpener, useAllMessages, type ChatMessage } from "@/lib/messagesStore";
 import { cn } from "@/lib/utils";
 
 const MAJORS = ["All", "Computer Science", "Economics", "Psychology", "Engineering", "Law", "Mathematics", "Biology"];
