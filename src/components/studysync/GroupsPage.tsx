@@ -18,8 +18,12 @@ import {
   Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import { GROUPS, SPOTS, REFILL_POOL, type StudyGroup, type RefillCandidate, ANIMALS } from "@/data/mockData";
 import { cn } from "@/lib/utils";
+import { cancellationStore, type CancelReasonId } from "@/lib/cancellationStore";
+import { riskNoticeStore } from "@/lib/riskNoticeStore";
+import { CancelReasonModal } from "./CancelReasonModal";
 
 type Noise = "Quiet" | "Moderate" | "Lively";
 const NOISE_OPTIONS: { value: Noise; label: string; hint: string; icon: React.ReactNode }[] = [
