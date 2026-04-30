@@ -206,7 +206,7 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
       {/* MODE SELECTION CARD */}
       <div className="-mt-6 px-6">
         <div className="rounded-3xl bg-card p-5 shadow-elevated">
-          <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+          <p className="mt-4 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
             Mode
           </p>
           <div className="mt-3 grid grid-cols-3 gap-2">
