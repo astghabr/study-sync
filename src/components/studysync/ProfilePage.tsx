@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Settings, GraduationCap, BookOpen, Heart, Calendar, LogOut, ChevronRight, Pencil, X, Check, Plus } from "lucide-react";
+import { Settings, GraduationCap, BookOpen, Heart, Calendar, LogOut, ChevronRight, Pencil, X, Check, Plus, Crown, Sparkles } from "lucide-react";
 import { GradientAvatar, AnimalAvatar } from "./Avatar";
 import { StatusBadge } from "./Badge";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,9 @@ import { CURRENT_USER, ANIMALS, PROFILE_PROMPTS } from "@/data/mockData";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { AdminAnalytics } from "./AdminAnalytics";
+import { useSubscription, subscriptionStore } from "@/lib/subscriptionStore";
+import { UpgradeModal } from "./UpgradeModal";
+import { toast } from "@/hooks/use-toast";
 
 export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
   const [animal, setAnimal] = useState(CURRENT_USER.animal);
