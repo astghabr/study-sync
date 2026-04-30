@@ -933,6 +933,15 @@ function SessionHistory({
           );
         })}
       </div>
+      {!isPro && hidden > 0 && (
+        <button
+          onClick={onUpgrade}
+          className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-primary/40 bg-accent-soft/40 py-3 text-xs font-semibold text-primary"
+        >
+          <Crown className="h-3.5 w-3.5" />
+          Unlock full history ({hidden} more) with Pro
+        </button>
+      )}
     </div>
   );
 }
