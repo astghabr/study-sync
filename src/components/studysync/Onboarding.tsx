@@ -80,7 +80,7 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
             <h1 className="font-display text-4xl font-semibold leading-[1.05] text-primary-foreground">
               Find your study people.
             </h1>
-            <p className="mt-3 max-w-xs text-sm text-primary-foreground/80">
+            <p className="mt-3 max-w-xs text-sm text-primary-foreground/95">
               Verified students. Real study spots. Sessions that actually happen.
             </p>
 
@@ -121,7 +121,7 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
             <h1 className="font-display text-4xl font-semibold leading-[1.05] text-primary-foreground">
               What do you love?
             </h1>
-            <p className="mt-3 text-sm text-primary-foreground/80">
+            <p className="mt-3 text-sm text-primary-foreground/95">
               We'll match you with buddies who share your vibe.
             </p>
 
@@ -163,7 +163,7 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
             <h1 className="font-display text-4xl font-semibold leading-[1.05] text-primary-foreground">
               Pick your animal.
             </h1>
-            <p className="mt-3 text-sm text-primary-foreground/80">
+            <p className="mt-3 text-sm text-primary-foreground/95">
               No selfies here — just the cute creature that feels like you.
             </p>
 
@@ -208,7 +208,7 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
             <h1 className="font-display text-4xl font-semibold leading-[1.05] text-primary-foreground">
               Show your vibe.
             </h1>
-            <p className="mt-3 text-sm text-primary-foreground/80">
+            <p className="mt-3 text-sm text-primary-foreground/95">
               Pick a couple of prompts and answer them. Real beats polished.
             </p>
 
@@ -294,7 +294,7 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
             <h2 className="mt-6 font-display text-3xl font-semibold text-primary-foreground">
               You're verified!
             </h2>
-            <p className="mt-2 max-w-xs text-sm text-primary-foreground/80">
+            <p className="mt-2 max-w-xs text-sm text-primary-foreground/95">
               Welcome to StudySync, KU Leuven. Let's find your first study session.
             </p>
             <Button onClick={onComplete} className="mt-10 h-12 w-full rounded-xl bg-accent text-primary hover:bg-accent/90">
