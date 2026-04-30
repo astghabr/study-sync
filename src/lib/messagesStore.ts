@@ -1,4 +1,6 @@
 import { useSyncExternalStore } from "react";
+import { BUDDIES } from "@/data/mockData";
+import { notificationStore } from "./notificationStore";
 
 export type ChatMessage = {
   id: string;
