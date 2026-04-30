@@ -9,6 +9,7 @@ import { BUDDIES, CURRENT_USER, GROUPS, SPOTS } from "@/data/mockData";
 import { Tab } from "./BottomNav";
 import { useRiskNotices, riskNoticeStore } from "@/lib/riskNoticeStore";
 import { useNotifications } from "@/lib/notificationStore";
+import { chatOpener } from "@/lib/messagesStore";
 import { cn } from "@/lib/utils";
 
 export function HomePage({ onNavigate }: { onNavigate: (t: Tab) => void }) {
@@ -258,7 +259,14 @@ export function HomePage({ onNavigate }: { onNavigate: (t: Tab) => void }) {
         </div>
       </section>
 
-      <NotificationCenter open={notifOpen} onClose={() => setNotifOpen(false)} />
+      <NotificationCenter
+        open={notifOpen}
+        onClose={() => setNotifOpen(false)}
+        onOpenChat={(buddyId) => {
+          chatOpener.request(buddyId);
+          onNavigate("buddies");
+        }}
+      />
     </div>
   );
 }
