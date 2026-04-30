@@ -1,4 +1,4 @@
-import { Home, Users, MapPin, CalendarCheck, User, Timer, type LucideIcon } from "lucide-react";
+import { Home, Users, MapPin, CalendarCheck, Timer, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
@@ -10,7 +10,6 @@ const items: { id: Tab; label: string; icon: LucideIcon }[] = [
   { id: "spots", label: "Spots", icon: MapPin },
   { id: "focus", label: "Focus", icon: Timer },
   { id: "groups", label: "Groups", icon: CalendarCheck },
-  { id: "profile", label: "Profile", icon: User },
 ];
 
 export function BottomNav({
