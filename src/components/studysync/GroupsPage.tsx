@@ -198,9 +198,6 @@ export function GroupsPage() {
                     )}
                   </div>
                   <div className="mt-2 space-y-1 text-xs text-muted-foreground">
-                    {g.subject && (
-                      <p className="flex items-center gap-1.5"><Sparkles className="h-3.5 w-3.5" /> {g.subject}</p>
-                    )}
                     <p className="flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" /> {g.date} · {g.time}</p>
                     <p className="flex items-center gap-1.5">
                       <Clock className="h-3.5 w-3.5" /> Booked 24h ahead {g.bookedAt ? `· ${g.bookedAt}` : ""}
@@ -282,7 +279,7 @@ export function GroupsPage() {
                     </div>
                     <div>
                       <p className="text-sm font-semibold">Find new people for this session</p>
-                      <p className="text-[11px] opacity-80">Auto-match in 2 mins · same subject, same time</p>
+                      <p className="text-[11px] opacity-80">Auto-match in 2 mins · same place, same time</p>
                     </div>
                   </div>
                   <ArrowRight className="h-4 w-4" />
@@ -415,12 +412,7 @@ function RefillModal({
     return () => clearTimeout(t);
   });
 
-  const matches = REFILL_POOL.filter(
-    (c) =>
-      !group.subject ||
-      c.subject.toLowerCase().includes(group.subject.toLowerCase()) ||
-      group.subject.toLowerCase().includes(c.subject.toLowerCase())
-  );
+  const matches = REFILL_POOL;
 
   const toggle = (id: string) =>
     setSelected((prev) => {
@@ -458,7 +450,7 @@ function RefillModal({
             />
             <p className="mt-5 font-display text-xl font-semibold">Refilling your session…</p>
             <p className="mt-1 text-sm text-muted-foreground">
-              Finding {group.subject ?? "students"} nearby with matching availability.
+              Finding students nearby at {group.spotName} with matching availability.
             </p>
           </div>
         )}
@@ -472,7 +464,7 @@ function RefillModal({
               {matches.length} students ready to join
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Same subject ({group.subject}), free at {group.time}. One tap to add them.
+              Same {group.noisePreference.toLowerCase()} vibe at {group.spotName}, free at {group.time}. One tap to add them.
             </p>
 
             <div className="mt-5 flex max-h-72 flex-col gap-2 overflow-y-auto pr-1">
@@ -502,7 +494,7 @@ function RefillModal({
                           )}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {c.subject} · {c.availability}
+                          {c.availability}
                         </p>
                         <p className="text-[11px] text-muted-foreground">{c.distance}</p>
                       </div>
