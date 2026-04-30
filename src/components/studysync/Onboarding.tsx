@@ -315,7 +315,13 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
             <p className="mt-2 max-w-xs text-sm text-primary-foreground/95">
               Welcome to StudySync, KU Leuven. Let's find your first study session.
             </p>
-            <Button onClick={onComplete} className="mt-10 h-12 w-full rounded-xl bg-accent text-primary hover:bg-accent/90">
+            <Button
+              onClick={() => {
+                tourStore.reset();
+                onComplete();
+              }}
+              className="mt-10 h-12 w-full rounded-xl bg-accent text-primary hover:bg-accent/90"
+            >
               Enter StudySync <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
           </motion.div>
