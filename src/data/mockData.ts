@@ -7,9 +7,10 @@ export type Buddy = {
   university: string;
   gender: "Male" | "Female" | "Non-binary";
   hobbies: string[];
-  rating: number;
   bio: string;
   avatarColor: string;
+  animal: string;
+  prompts: { question: string; answer: string }[];
 };
 
 export type Spot = {
@@ -40,8 +41,42 @@ export type StudyGroup = {
   spotsTotal: number;
   spotsRemaining: number;
   noisePreference: "Quiet" | "Moderate" | "Lively";
-  anonymousMembers: number; // count of anonymous joined members
+  anonymousMembers: number;
 };
+
+/** Cute animal options for profile pictures */
+export const ANIMALS = [
+  { id: "fox", emoji: "🦊", label: "Fox", bg: "from-orange-200 to-amber-300" },
+  { id: "bear", emoji: "🐻", label: "Bear", bg: "from-amber-200 to-yellow-300" },
+  { id: "panda", emoji: "🐼", label: "Panda", bg: "from-slate-100 to-zinc-200" },
+  { id: "cat", emoji: "🐱", label: "Cat", bg: "from-rose-200 to-pink-300" },
+  { id: "dog", emoji: "🐶", label: "Dog", bg: "from-amber-100 to-orange-200" },
+  { id: "rabbit", emoji: "🐰", label: "Rabbit", bg: "from-pink-100 to-rose-200" },
+  { id: "koala", emoji: "🐨", label: "Koala", bg: "from-slate-200 to-blue-200" },
+  { id: "frog", emoji: "🐸", label: "Frog", bg: "from-lime-200 to-green-300" },
+  { id: "owl", emoji: "🦉", label: "Owl", bg: "from-amber-200 to-stone-300" },
+  { id: "penguin", emoji: "🐧", label: "Penguin", bg: "from-sky-200 to-indigo-200" },
+  { id: "tiger", emoji: "🐯", label: "Tiger", bg: "from-orange-200 to-yellow-300" },
+  { id: "monkey", emoji: "🐵", label: "Monkey", bg: "from-amber-200 to-orange-300" },
+  { id: "hamster", emoji: "🐹", label: "Hamster", bg: "from-amber-100 to-rose-200" },
+  { id: "duck", emoji: "🦆", label: "Duck", bg: "from-yellow-100 to-amber-200" },
+  { id: "octopus", emoji: "🐙", label: "Octopus", bg: "from-rose-200 to-fuchsia-300" },
+  { id: "unicorn", emoji: "🦄", label: "Unicorn", bg: "from-violet-200 to-pink-200" },
+];
+
+/** Available profile prompts users can pick from */
+export const PROFILE_PROMPTS = [
+  "This year, I really want to…",
+  "I knew my major was for me when…",
+  "My study playlist says a lot about me because…",
+  "My ideal study session looks like…",
+  "The snack that gets me through finals is…",
+  "I procrastinate by…",
+  "A class that changed how I think was…",
+  "After graduation, you'll find me…",
+  "My weirdest study habit is…",
+  "The best café in town is… (don't tell anyone)",
+];
 
 export const CURRENT_USER = {
   name: "Marie Dubois",
@@ -50,19 +85,42 @@ export const CURRENT_USER = {
   major: "Computer Science",
   year: "2nd Year Master",
   email: "marie.dubois@kuleuven.be",
-  rating: 4.8,
   hobbies: ["Gaming", "Coffee", "Hiking"],
+  animal: "fox",
+  prompts: [
+    { question: "This year, I really want to…", answer: "finish my thesis without surviving on instant noodles." },
+    { question: "My study playlist says a lot about me because…", answer: "it's 80% lo-fi and 20% questionable 2000s pop." },
+  ],
 };
 
 export const BUDDIES: Buddy[] = [
-  { id: "1", name: "Liam Janssens", initials: "LJ", major: "Computer Science", year: "3rd Year", university: "KU Leuven", gender: "Male", hobbies: ["Gaming", "Chess", "Coffee"], rating: 4.9, bio: "ML enthusiast looking for algorithm study partners. Coffee fueled.", avatarColor: "from-amber-200 to-orange-300" },
-  { id: "2", name: "Sofia Peeters", initials: "SP", major: "Economics", year: "2nd Year", university: "KU Leuven", gender: "Female", hobbies: ["Reading", "Yoga", "Hiking"], rating: 4.7, bio: "Macroeconomics & finance. Prefer quiet libraries in the morning.", avatarColor: "from-rose-200 to-pink-300" },
-  { id: "3", name: "Noah De Smet", initials: "ND", major: "Computer Science", year: "1st Year Master", university: "KU Leuven", gender: "Male", hobbies: ["Gaming", "Music", "Cycling"], rating: 4.6, bio: "Distributed systems nerd. Love a good whiteboard session.", avatarColor: "from-blue-200 to-indigo-300" },
-  { id: "4", name: "Emma Vermeulen", initials: "EV", major: "Psychology", year: "3rd Year", university: "KU Leuven", gender: "Female", hobbies: ["Coffee", "Films", "Painting"], rating: 5.0, bio: "Neuropsych research. Find me at Onder de Toren most afternoons.", avatarColor: "from-emerald-200 to-teal-300" },
-  { id: "5", name: "Lucas Maes", initials: "LM", major: "Engineering", year: "2nd Year Master", university: "KU Leuven", gender: "Male", hobbies: ["Hiking", "Tech", "Coffee"], rating: 4.8, bio: "Mechanical eng. Group sessions > solo grinding.", avatarColor: "from-violet-200 to-purple-300" },
-  { id: "6", name: "Mila Hendrickx", initials: "MH", major: "Law", year: "1st Year Master", university: "KU Leuven", gender: "Female", hobbies: ["Reading", "Debate", "Tea"], rating: 4.5, bio: "EU law focus. Quiet spaces only — I rehearse out loud.", avatarColor: "from-yellow-200 to-amber-300" },
-  { id: "7", name: "Jasper Willems", initials: "JW", major: "Mathematics", year: "3rd Year", university: "KU Leuven", gender: "Male", hobbies: ["Chess", "Gaming", "Music"], rating: 4.9, bio: "Statistics tutor on the side. Happy to explain anything twice.", avatarColor: "from-sky-200 to-cyan-300" },
-  { id: "8", name: "Anaïs Claes", initials: "AC", major: "Biology", year: "2nd Year", university: "KU Leuven", gender: "Female", hobbies: ["Hiking", "Photography", "Coffee"], rating: 4.7, bio: "Mol bio. Always down for a flashcard marathon.", avatarColor: "from-lime-200 to-green-300" },
+  { id: "1", name: "Liam Janssens", initials: "LJ", major: "Computer Science", year: "3rd Year", university: "KU Leuven", gender: "Male", hobbies: ["Gaming", "Chess", "Coffee"], bio: "ML enthusiast looking for algorithm study partners. Coffee fueled.", avatarColor: "from-amber-200 to-orange-300", animal: "bear", prompts: [
+    { question: "I knew my major was for me when…", answer: "I spent a whole weekend optimizing a sorting algorithm for fun." },
+    { question: "My ideal study session looks like…", answer: "two coffees, one whiteboard, zero small talk." },
+  ] },
+  { id: "2", name: "Sofia Peeters", initials: "SP", major: "Economics", year: "2nd Year", university: "KU Leuven", gender: "Female", hobbies: ["Reading", "Yoga", "Hiking"], bio: "Macroeconomics & finance. Prefer quiet libraries in the morning.", avatarColor: "from-rose-200 to-pink-300", animal: "rabbit", prompts: [
+    { question: "This year, I really want to…", answer: "land an internship at a central bank." },
+    { question: "The snack that gets me through finals is…", answer: "dark chocolate and way too many clementines." },
+  ] },
+  { id: "3", name: "Noah De Smet", initials: "ND", major: "Computer Science", year: "1st Year Master", university: "KU Leuven", gender: "Male", hobbies: ["Gaming", "Music", "Cycling"], bio: "Distributed systems nerd. Love a good whiteboard session.", avatarColor: "from-blue-200 to-indigo-300", animal: "penguin", prompts: [
+    { question: "My weirdest study habit is…", answer: "explaining concepts out loud to my plant." },
+  ] },
+  { id: "4", name: "Emma Vermeulen", initials: "EV", major: "Psychology", year: "3rd Year", university: "KU Leuven", gender: "Female", hobbies: ["Coffee", "Films", "Painting"], bio: "Neuropsych research. Find me at Onder de Toren most afternoons.", avatarColor: "from-emerald-200 to-teal-300", animal: "frog", prompts: [
+    { question: "A class that changed how I think was…", answer: "Cognitive Neuroscience — I haven't shut up about it since." },
+    { question: "After graduation, you'll find me…", answer: "in a research lab or somewhere with great coffee." },
+  ] },
+  { id: "5", name: "Lucas Maes", initials: "LM", major: "Engineering", year: "2nd Year Master", university: "KU Leuven", gender: "Male", hobbies: ["Hiking", "Tech", "Coffee"], bio: "Mechanical eng. Group sessions > solo grinding.", avatarColor: "from-violet-200 to-purple-300", animal: "owl", prompts: [
+    { question: "My ideal study session looks like…", answer: "four people, one big table, snacks in the middle." },
+  ] },
+  { id: "6", name: "Mila Hendrickx", initials: "MH", major: "Law", year: "1st Year Master", university: "KU Leuven", gender: "Female", hobbies: ["Reading", "Debate", "Tea"], bio: "EU law focus. Quiet spaces only — I rehearse out loud.", avatarColor: "from-yellow-200 to-amber-300", animal: "cat", prompts: [
+    { question: "I procrastinate by…", answer: "reorganizing my flashcards by color. Again." },
+  ] },
+  { id: "7", name: "Jasper Willems", initials: "JW", major: "Mathematics", year: "3rd Year", university: "KU Leuven", gender: "Male", hobbies: ["Chess", "Gaming", "Music"], bio: "Statistics tutor on the side. Happy to explain anything twice.", avatarColor: "from-sky-200 to-cyan-300", animal: "fox", prompts: [
+    { question: "I knew my major was for me when…", answer: "a proof made me genuinely emotional. Yes, really." },
+  ] },
+  { id: "8", name: "Anaïs Claes", initials: "AC", major: "Biology", year: "2nd Year", university: "KU Leuven", gender: "Female", hobbies: ["Hiking", "Photography", "Coffee"], bio: "Mol bio. Always down for a flashcard marathon.", avatarColor: "from-lime-200 to-green-300", animal: "panda", prompts: [
+    { question: "The best café in town is… (don't tell anyone)", answer: "the tiny place behind the botanical garden. Shhh." },
+  ] },
 ];
 
 export const SPOTS: Spot[] = [
