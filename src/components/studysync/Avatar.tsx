@@ -1,32 +1,59 @@
 import { cn } from "@/lib/utils";
+import { ANIMALS } from "@/data/mockData";
 
-export function GradientAvatar({
-  initials,
-  gradient = "from-amber-200 to-orange-300",
+const sizes = {
+  sm: "h-8 w-8 text-base",
+  md: "h-11 w-11 text-xl",
+  lg: "h-16 w-16 text-3xl",
+  xl: "h-24 w-24 text-5xl",
+};
+
+export function AnimalAvatar({
+  animal,
   size = "md",
   className,
 }: {
-  initials: string;
-  gradient?: string;
-  size?: "sm" | "md" | "lg" | "xl";
+  animal: string;
+  size?: keyof typeof sizes;
   className?: string;
 }) {
-  const sizes = {
-    sm: "h-8 w-8 text-xs",
-    md: "h-11 w-11 text-sm",
-    lg: "h-16 w-16 text-lg",
-    xl: "h-24 w-24 text-2xl",
-  };
+  const a = ANIMALS.find((x) => x.id === animal) ?? ANIMALS[0];
   return (
     <div
       className={cn(
-        "relative flex items-center justify-center rounded-full bg-gradient-to-br font-semibold text-primary ring-2 ring-background",
-        gradient,
+        "relative flex items-center justify-center rounded-full bg-gradient-to-br ring-2 ring-background",
+        a.bg,
         sizes[size],
         className
       )}
     >
-      {initials}
+      <span aria-label={a.label} className="leading-none">{a.emoji}</span>
     </div>
   );
+}
+
+/** Back-compat wrapper: existing call sites pass `initials` + `gradient`.
+ *  We now show a cute animal instead. */
+export function GradientAvatar({
+  initials,
+  gradient,
+  size = "md",
+  className,
+  animal,
+}: {
+  initials?: string;
+  gradient?: string;
+  size?: keyof typeof sizes;
+  className?: string;
+  animal?: string;
+}) {
+  // Deterministic fallback animal from initials so it stays stable per buddy
+  const pick =
+    animal ??
+    ANIMALS[
+      Math.abs(
+        (initials ?? "AA").split("").reduce((acc, c) => acc + c.charCodeAt(0), 0)
+      ) % ANIMALS.length
+    ].id;
+  return <AnimalAvatar animal={pick} size={size} className={className} />;
 }
