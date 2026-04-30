@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Bell, Calendar, MapPin, Users, ArrowRight, Sparkles, AlertTriangle, MessageSquare } from "lucide-react";
+import { Bell, Calendar, MapPin, Users, ArrowRight, Sparkles, AlertTriangle } from "lucide-react";
 import { GradientAvatar } from "./Avatar";
 import { StatusBadge } from "./Badge";
 import { AdSlot } from "./AdSlot";
@@ -39,13 +39,6 @@ export function HomePage({ onNavigate }: { onNavigate: (t: Tab) => void }) {
             </h1>
           </div>
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => onNavigate("buddies")}
-              aria-label="Open messages"
-              className="relative flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card transition hover:border-primary/40"
-            >
-              <MessageSquare className="h-4 w-4 text-foreground" />
-            </button>
             <button
               onClick={() => setNotifOpen(true)}
               aria-label={`Open notifications${unread > 0 ? `, ${unread} unread` : ""}`}

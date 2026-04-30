@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, SlidersHorizontal, X, MessageCircle, Check, Flag, ShieldAlert, Inbox } from "lucide-react";
+import { Search, SlidersHorizontal, X, MessageCircle, MessageSquare, Check, Flag, ShieldAlert, Inbox } from "lucide-react";
 import { GradientAvatar } from "./Avatar";
 import { StatusBadge } from "./Badge";
 import { ChatModal } from "./ChatModal";
@@ -133,7 +133,7 @@ export function BuddiesPage() {
             aria-label="Messages"
             className="relative flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card shadow-soft transition hover:shadow-card"
           >
-            <MessageCircle className="h-4.5 w-4.5 text-foreground" />
+            <MessageSquare className="h-4 w-4 text-foreground" />
             {unreadCount > 0 && (
               <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-primary-foreground">
                 {unreadCount}
