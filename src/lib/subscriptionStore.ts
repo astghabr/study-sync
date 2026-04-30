@@ -72,7 +72,7 @@ export const PLAN_PRICING = {
 
 export const PRO_FEATURES = [
   "Ad-free experience across the app",
-  "Advanced Focus mode (custom timers, group sessions, full history)",
+  "Advanced Focus mode (custom timers & full history)",
   "Spot reservations 24h+ in advance",
   "Spot insights: busy-time forecasts & student menu perks",
   "Priority support",
