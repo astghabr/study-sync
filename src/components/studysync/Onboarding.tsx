@@ -105,7 +105,7 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
         </motion.div>
 
         {step === 0 && (
-          <motion.div key="step0" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-6 flex flex-1 flex-col">
+          <motion.div key="step0" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-2 flex flex-1 flex-col">
             <h1 className="font-display text-4xl font-semibold leading-[1.05] text-primary-foreground">
               Study sessions that actually happen.
             </h1>
