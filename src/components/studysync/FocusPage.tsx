@@ -168,7 +168,10 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
     return () => window.removeEventListener("beforeunload", beforeUnload);
   }, [running]);
 
-  const startSession = () => {
+  const [blockPermAsked, setBlockPermAsked] = useState(false);
+  const [blockPermOpen, setBlockPermOpen] = useState(false);
+
+  const beginSession = () => {
     setElapsed(0);
     setTotalFocus(0);
     setPhase("focus");
@@ -176,6 +179,14 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
     setPaused(false);
     startedAtRef.current = Date.now();
     setRunning(true);
+  };
+
+  const startSession = () => {
+    if (!blockPermAsked) {
+      setBlockPermOpen(true);
+      return;
+    }
+    beginSession();
   };
 
   const finishSession = (completed: boolean) => {
