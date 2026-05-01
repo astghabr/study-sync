@@ -19,7 +19,12 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
   const [editingAnimal, setEditingAnimal] = useState(false);
   const [editingPrompts, setEditingPrompts] = useState(false);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
+  const [analyticsOpen, setAnalyticsOpen] = useState(false);
   const sub = useSubscription();
+
+  if (analyticsOpen) {
+    return <AnalyticsPage onBack={() => setAnalyticsOpen(false)} />;
+  }
 
   return (
     <div className="flex flex-col pb-6">
