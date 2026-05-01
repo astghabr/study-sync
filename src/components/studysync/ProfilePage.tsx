@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Settings, GraduationCap, BookOpen, Heart, Calendar, LogOut, ChevronRight, Pencil, X, Check, Plus, Crown, Sparkles, Flame, TrendingUp, Clock, BellOff } from "lucide-react";
+import { Settings, GraduationCap, BookOpen, Heart, Calendar, LogOut, ChevronRight, Pencil, X, Check, Plus, Crown, Sparkles, Flame, TrendingUp, Clock, BellOff, Sunrise, Users } from "lucide-react";
 import { GradientAvatar, AnimalAvatar } from "./Avatar";
 import { StatusBadge } from "./Badge";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { CURRENT_USER, ANIMALS, PROFILE_PROMPTS } from "@/data/mockData";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { AdminAnalytics } from "./AdminAnalytics";
+import { AnalyticsCard, AnalyticsPage } from "./AdminAnalytics";
 import { useSubscription, subscriptionStore } from "@/lib/subscriptionStore";
 import { useFocusStats, deriveStats } from "@/lib/focusStatsStore";
 import { UpgradeModal } from "./UpgradeModal";
@@ -19,7 +19,12 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
   const [editingAnimal, setEditingAnimal] = useState(false);
   const [editingPrompts, setEditingPrompts] = useState(false);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
+  const [analyticsOpen, setAnalyticsOpen] = useState(false);
   const sub = useSubscription();
+
+  if (analyticsOpen) {
+    return <AnalyticsPage onBack={() => setAnalyticsOpen(false)} />;
+  }
 
   return (
     <div className="flex flex-col pb-6">
@@ -119,7 +124,8 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
 
         <Section title="Study preferences">
           <Row icon={<BellOff className="h-4 w-4" />} label="Preferred noise" value="Quiet → Moderate" />
-          <Row icon={<Calendar className="h-4 w-4" />} label="Best time" value="Mornings" />
+          <Row icon={<Sunrise className="h-4 w-4" />} label="Best time" value="Mornings" />
+          <Row icon={<Users className="h-4 w-4" />} label="Group size" value="Small (2–4)" />
         </Section>
 
         <Section title="Hobbies">
@@ -195,7 +201,7 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
 
         {(CURRENT_USER.role === "admin" || CURRENT_USER.role === "moderator") && (
           <div className="mb-3">
-            <AdminAnalytics />
+            <AnalyticsCard onOpen={() => setAnalyticsOpen(true)} />
           </div>
         )}
 
