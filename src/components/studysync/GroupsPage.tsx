@@ -151,7 +151,7 @@ export function GroupsPage() {
         >
           <div className="flex items-center gap-3 text-left">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-accent">
-              <Sparkles className="h-5 w-5" />
+              <Users className="h-5 w-5" />
             </div>
             <div>
               <p className="font-display text-base font-semibold text-primary">Study match</p>
