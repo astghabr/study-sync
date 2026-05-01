@@ -201,7 +201,7 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
 
         {(CURRENT_USER.role === "admin" || CURRENT_USER.role === "moderator") && (
           <div className="mb-3">
-            <AdminAnalytics />
+            <AnalyticsCard onOpen={() => setAnalyticsOpen(true)} />
           </div>
         )}
 
