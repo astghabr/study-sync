@@ -16,6 +16,7 @@ import {
   TrendingUp,
   History,
   Lock,
+  ShieldOff,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AnimalAvatar } from "./Avatar";
@@ -24,6 +25,7 @@ import { cn } from "@/lib/utils";
 import { useSubscription } from "@/lib/subscriptionStore";
 import { focusStatsStore } from "@/lib/focusStatsStore";
 import { UpgradeModal } from "./UpgradeModal";
+import { PermissionDialog } from "./PermissionDialog";
 import { Crown } from "lucide-react";
 
 type Mode = "pomodoro" | "timer" | "stopwatch";
