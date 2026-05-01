@@ -246,7 +246,15 @@ export function GroupsPage() {
                 {isJoined ? (
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => setCancelling(g)}
+                      onClick={() => {
+                        // If you are the only person left, skip the reason modal
+                        // and don't record the cancellation in analytics.
+                        if (g.anonymousMembers <= 1) {
+                          handleCancel(g);
+                        } else {
+                          setCancelling(g);
+                        }
+                      }}
                       className="h-9 rounded-full border border-border bg-card px-3 text-xs font-semibold text-muted-foreground transition hover:border-destructive hover:text-destructive"
                     >
                       Cancel
