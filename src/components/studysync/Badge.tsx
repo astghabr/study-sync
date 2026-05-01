@@ -1,4 +1,4 @@
-import { Check, AlertTriangle, VolumeX, Sparkles } from "lucide-react";
+import { Check, AlertTriangle, VolumeX, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Variant = "verified" | "no-laptop" | "quiet" | "official" | "neutral" | "warning" | "success";
@@ -17,7 +17,7 @@ const icons: Partial<Record<Variant, React.ReactNode>> = {
   verified: <Check className="h-3 w-3" strokeWidth={3} />,
   "no-laptop": <AlertTriangle className="h-3 w-3" />,
   quiet: <VolumeX className="h-3 w-3" />,
-  official: <Sparkles className="h-3 w-3" />,
+  official: <ShieldCheck className="h-3 w-3" />,
 };
 
 export function StatusBadge({
