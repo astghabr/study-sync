@@ -20,7 +20,8 @@ type Step = 0 | 1 | 2 | 3 | 4;
 
 export function Onboarding({ onComplete }: { onComplete: () => void }) {
   const [step, setStep] = useState<Step>(0);
-  const [mode, setMode] = useState<"register" | "login">("register");
+  const [mode, setMode] = useState<"register" | "login" | "forgot">("register");
+  const [resetSent, setResetSent] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
