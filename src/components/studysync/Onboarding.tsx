@@ -92,7 +92,7 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
       {step !== 4 && <div className="absolute inset-x-0 top-0 h-[55%] gradient-hero" />}
       {step === 4 && <div className="absolute inset-0 gradient-hero" />}
 
-      <div className="relative flex flex-1 flex-col px-6 pb-8 pt-14">
+      <div className="relative flex flex-1 flex-col px-6 pb-2 pt-14">
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
