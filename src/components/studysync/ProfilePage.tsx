@@ -124,7 +124,8 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
 
         <Section title="Study preferences">
           <Row icon={<BellOff className="h-4 w-4" />} label="Preferred noise" value="Quiet → Moderate" />
-          <Row icon={<Calendar className="h-4 w-4" />} label="Best time" value="Mornings" />
+          <Row icon={<Sunrise className="h-4 w-4" />} label="Best time" value="Mornings" />
+          <Row icon={<Users className="h-4 w-4" />} label="Group size" value="Small (2–4)" />
         </Section>
 
         <Section title="Hobbies">
