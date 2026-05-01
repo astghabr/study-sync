@@ -137,37 +137,24 @@ export function SpotsPage() {
         </div>
       </header>
 
-      {/* Filters */}
-      <div className="mt-4 flex gap-2 overflow-x-auto px-6 pb-1 scrollbar-hide">
-        {TYPE_FILTERS.map((t) => (
-          <button
-            key={t}
-            onClick={() => setType(t)}
-            className={cn(
-              "shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-medium",
-              type === t ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-foreground"
-            )}
-          >
-            {t}
-          </button>
-        ))}
+      {/* Filter bar — opens the sticky filter sheet */}
+      <div className="sticky top-0 z-20 mt-4 flex items-center gap-2 bg-background/95 px-6 pb-2 pt-1 backdrop-blur supports-[backdrop-filter]:bg-background/70">
         <button
-          onClick={() => setLaptopOnly((v) => !v)}
+          onClick={() => setFiltersOpen(true)}
           className={cn(
-            "shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-medium",
-            laptopOnly ? "border-accent bg-accent text-accent-foreground" : "border-border bg-card text-foreground"
+            "inline-flex shrink-0 items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-medium transition",
+            activeFilterCount > 0
+              ? "border-primary bg-primary text-primary-foreground"
+              : "border-border bg-card text-foreground"
           )}
         >
-          💻 Laptop friendly
-        </button>
-        <button
-          onClick={() => setQuietOnly((v) => !v)}
-          className={cn(
-            "shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-medium",
-            quietOnly ? "border-accent bg-accent text-accent-foreground" : "border-border bg-card text-foreground"
+          <SlidersHorizontal className="h-3.5 w-3.5" />
+          Filters
+          {activeFilterCount > 0 && (
+            <span className="ml-0.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary-foreground/20 px-1 text-[10px] font-bold">
+              {activeFilterCount}
+            </span>
           )}
-        >
-          🤫 Quiet
         </button>
         <button
           onClick={() => setSavedOnly((v) => !v)}
@@ -178,6 +165,14 @@ export function SpotsPage() {
         >
           <Bookmark className={cn("h-3 w-3", savedOnly && "fill-current")} /> Saved ({favorites.size})
         </button>
+        {activeFilterCount > 0 && (
+          <button
+            onClick={clearAllFilters}
+            className="ml-auto shrink-0 text-[11px] font-medium text-muted-foreground underline-offset-2 hover:underline"
+          >
+            Clear
+          </button>
+        )}
       </div>
 
       <AnimatePresence mode="wait">
