@@ -135,14 +135,9 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
                 ))}
               </div>
 
-              <div className="mt-5 flex items-center gap-2">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent-soft text-primary">
-                  <ShieldCheck className="h-4 w-4" />
-                </div>
-                <p className="font-display text-2xl font-semibold text-foreground">
-                  {mode === "register" ? "Verify your university" : "Welcome back"}
-                </p>
-              </div>
+              <p className="mt-5 font-display text-2xl font-semibold text-foreground">
+                {mode === "register" ? "Verify your university" : "Welcome back"}
+              </p>
               <p className="mt-2 text-sm text-muted-foreground">
                 {mode === "register"
                   ? "We'll check your institutional email to keep things safe."
