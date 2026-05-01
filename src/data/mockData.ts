@@ -31,6 +31,7 @@ export type Spot = {
   lat: number;
   lng: number;
   hero: string;
+  photo?: string;
 };
 
 export type StudyGroup = {
