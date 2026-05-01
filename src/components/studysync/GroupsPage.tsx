@@ -248,10 +248,10 @@ export function GroupsPage() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => {
-                        // If you are the only person left, skip the reason modal
-                        // and don't record the cancellation in analytics.
+                        // If you are the only person left, confirm before
+                        // cancelling — and don't record it in analytics.
                         if (g.anonymousMembers <= 1) {
-                          handleCancel(g);
+                          setSoloCancel(g);
                         } else {
                           setCancelling(g);
                         }
