@@ -45,6 +45,15 @@ export function SpotsPage() {
   const [selected, setSelected] = useState<Spot | null>(null);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
   const [upgradeReason, setUpgradeReason] = useState<string | undefined>();
+  const [locationPermission, setLocationPermission] = useState<"pending" | "granted" | "denied">(
+    () => (sessionStorage.getItem("ss-location-perm") as any) ?? "pending"
+  );
+
+  useEffect(() => {
+    if (locationPermission !== "pending") {
+      sessionStorage.setItem("ss-location-perm", locationPermission);
+    }
+  }, [locationPermission]);
 
   const filtered = useMemo(() => {
     return SPOTS.filter((s) => {
