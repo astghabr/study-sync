@@ -269,7 +269,7 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
               Pick your animal.
             </h1>
             <p className="mt-3 text-sm text-primary-foreground/95">
-              No selfies here — just the cute creature that feels like you.
+              Select an avatar.
             </p>
 
             <div className="mt-auto rounded-3xl bg-card p-6 shadow-elevated">
