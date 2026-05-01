@@ -92,7 +92,7 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
       {step !== 4 && <div className="absolute inset-x-0 top-0 h-[55%] gradient-hero" />}
       {step === 4 && <div className="absolute inset-0 gradient-hero" />}
 
-      <div className="relative flex flex-1 flex-col px-6 pb-8 pt-14">
+      <div className="relative flex flex-1 flex-col px-6 pb-2 pt-14">
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -113,7 +113,7 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
               Verified students. Real study spots. Sessions that actually happen.
             </p>
 
-            <div className="mt-auto mb-[-1rem] rounded-3xl bg-card p-6 shadow-elevated">
+            <div className="mt-auto rounded-3xl bg-card p-6 shadow-elevated">
               {/* Login / Register switcher */}
               <div className="flex rounded-full bg-secondary p-1">
                 {(["register", "login"] as const).map((m) => (
