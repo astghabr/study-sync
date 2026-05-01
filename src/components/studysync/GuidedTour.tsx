@@ -77,8 +77,8 @@ export function GuidedTour({ onNavigate }: { onNavigate: (t: Tab) => void }) {
             </button>
           </div>
 
-          <p className="mt-4 inline-flex items-center gap-1 text-[11px] font-medium uppercase tracking-wider text-primary">
-            <Sparkles className="h-3 w-3" /> Quick tour · {step + 1}/{STEPS.length}
+          <p className="mt-4 text-[11px] font-medium uppercase tracking-wider text-primary">
+            Quick tour · {step + 1}/{STEPS.length}
           </p>
           <h3 className="mt-1 font-display text-2xl font-semibold text-foreground">
             {current.title}
