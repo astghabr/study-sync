@@ -193,7 +193,15 @@ export function SpotsPage() {
                 <Fragment key={s.id}>
                   <div className="relative overflow-hidden rounded-2xl border border-border bg-card text-left shadow-soft transition hover:shadow-card">
                     <button onClick={() => setSelected(s)} className="block w-full text-left">
-                      <div className={`relative h-28 w-full bg-gradient-to-br ${s.hero}`}>
+                      <div className={`relative h-28 w-full overflow-hidden bg-gradient-to-br ${s.hero}`}>
+                        {s.photo && (
+                          <img
+                            src={s.photo}
+                            alt={s.name}
+                            loading="lazy"
+                            className="absolute inset-0 h-full w-full object-cover"
+                          />
+                        )}
                         <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
                           {s.official && <StatusBadge variant="official">Official Hub</StatusBadge>}
                           {s.laptopPolicy === "Not Allowed" && <StatusBadge variant="no-laptop">No laptops</StatusBadge>}
