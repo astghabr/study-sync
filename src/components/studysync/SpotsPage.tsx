@@ -328,6 +328,17 @@ export function SpotsPage() {
         onClose={() => setUpgradeOpen(false)}
         highlight={upgradeReason}
       />
+
+      <PermissionDialog
+        open={locationPermission === "pending"}
+        icon={Navigation}
+        title="Allow “StudySync” to use your location?"
+        description="We use your location to show nearby study spots and accurate distances. You can change this anytime in settings."
+        allowLabel="Allow"
+        denyLabel="Don't allow"
+        onAllow={() => setLocationPermission("granted")}
+        onDeny={() => setLocationPermission("denied")}
+      />
     </div>
   );
 }
