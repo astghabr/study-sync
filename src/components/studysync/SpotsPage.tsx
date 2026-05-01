@@ -1,10 +1,11 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, MapPin, Wifi, Plug, Coffee, Volume2, VolumeX, Users, X, Calendar, Map as MapIcon, List, Sparkles, Crown, TrendingUp, Star, Bookmark, BookmarkCheck, Camera, Send, Navigation } from "lucide-react";
+import { Search, MapPin, Wifi, Plug, Coffee, Volume2, VolumeX, Users, X, Calendar, Map as MapIcon, List, Sparkles, Crown, TrendingUp, Star, Bookmark, BookmarkCheck, Camera, Send, Navigation, SlidersHorizontal, Clock as ClockIcon } from "lucide-react";
 import { PermissionDialog } from "./PermissionDialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from "@/components/ui/sheet";
 import { StatusBadge } from "./Badge";
 import { AnimalAvatar } from "./Avatar";
 import { SPOTS, type Spot, CURRENT_USER } from "@/data/mockData";
