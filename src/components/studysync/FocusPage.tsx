@@ -216,7 +216,7 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
     <div className="flex flex-col pb-6">
       {/* HEADER */}
       <div className="relative gradient-hero px-6 pb-10 pt-10 text-primary-foreground">
-        <p className="text-xs uppercase tracking-[0.18em] text-primary-foreground/85">Deep work hub</p>
+        <p className="text-xs uppercase tracking-[0.18em] text-primary-foreground/85">Deep work</p>
         <h1 className="mt-2 font-display text-3xl font-semibold leading-tight">
           Focus, together or solo.
         </h1>
