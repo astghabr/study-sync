@@ -154,7 +154,7 @@ export function GroupsPage() {
               <Sparkles className="h-5 w-5" />
             </div>
             <div>
-              <p className="font-display text-base font-semibold text-primary">Smart Study match</p>
+              <p className="font-display text-base font-semibold text-primary">Study match</p>
               <p className="text-xs text-primary/80">Pick your noise level — we'll seat you</p>
             </div>
           </div>
