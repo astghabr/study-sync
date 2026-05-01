@@ -16,6 +16,7 @@ import {
   TrendingUp,
   History,
   Lock,
+  ShieldOff,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AnimalAvatar } from "./Avatar";
@@ -24,6 +25,7 @@ import { cn } from "@/lib/utils";
 import { useSubscription } from "@/lib/subscriptionStore";
 import { focusStatsStore } from "@/lib/focusStatsStore";
 import { UpgradeModal } from "./UpgradeModal";
+import { PermissionDialog } from "./PermissionDialog";
 import { Crown } from "lucide-react";
 
 type Mode = "pomodoro" | "timer" | "stopwatch";
@@ -166,7 +168,10 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
     return () => window.removeEventListener("beforeunload", beforeUnload);
   }, [running]);
 
-  const startSession = () => {
+  const [blockPermAsked, setBlockPermAsked] = useState(false);
+  const [blockPermOpen, setBlockPermOpen] = useState(false);
+
+  const beginSession = () => {
     setElapsed(0);
     setTotalFocus(0);
     setPhase("focus");
@@ -174,6 +179,14 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
     setPaused(false);
     startedAtRef.current = Date.now();
     setRunning(true);
+  };
+
+  const startSession = () => {
+    if (!blockPermAsked) {
+      setBlockPermOpen(true);
+      return;
+    }
+    beginSession();
   };
 
   const finishSession = (completed: boolean) => {
@@ -406,6 +419,25 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
         open={upgradeOpen}
         onClose={() => setUpgradeOpen(false)}
         highlight={upgradeReason}
+      />
+
+      <PermissionDialog
+        open={blockPermOpen}
+        icon={ShieldOff}
+        title="Block other apps during Focus?"
+        description="StudySync wants to silence notifications and pause access to other apps on your phone while your focus session is running. This helps you stay on task."
+        allowLabel="Block apps"
+        denyLabel="Not now"
+        onAllow={() => {
+          setBlockPermAsked(true);
+          setBlockPermOpen(false);
+          beginSession();
+        }}
+        onDeny={() => {
+          setBlockPermAsked(true);
+          setBlockPermOpen(false);
+          beginSession();
+        }}
       />
     </div>
   );

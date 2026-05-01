@@ -1,6 +1,7 @@
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, MapPin, Wifi, Plug, Coffee, Volume2, VolumeX, Users, X, Calendar, Map as MapIcon, List, Sparkles, Crown, TrendingUp, Star, Bookmark, BookmarkCheck, Camera, Send } from "lucide-react";
+import { Search, MapPin, Wifi, Plug, Coffee, Volume2, VolumeX, Users, X, Calendar, Map as MapIcon, List, Sparkles, Crown, TrendingUp, Star, Bookmark, BookmarkCheck, Camera, Send, Navigation } from "lucide-react";
+import { PermissionDialog } from "./PermissionDialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -44,6 +45,15 @@ export function SpotsPage() {
   const [selected, setSelected] = useState<Spot | null>(null);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
   const [upgradeReason, setUpgradeReason] = useState<string | undefined>();
+  const [locationPermission, setLocationPermission] = useState<"pending" | "granted" | "denied">(
+    () => (sessionStorage.getItem("ss-location-perm") as any) ?? "pending"
+  );
+
+  useEffect(() => {
+    if (locationPermission !== "pending") {
+      sessionStorage.setItem("ss-location-perm", locationPermission);
+    }
+  }, [locationPermission]);
 
   const filtered = useMemo(() => {
     return SPOTS.filter((s) => {
@@ -317,6 +327,17 @@ export function SpotsPage() {
         open={upgradeOpen}
         onClose={() => setUpgradeOpen(false)}
         highlight={upgradeReason}
+      />
+
+      <PermissionDialog
+        open={locationPermission === "pending"}
+        icon={Navigation}
+        title="Allow “StudySync” to use your location?"
+        description="We use your location to show nearby study spots and accurate distances. You can change this anytime in settings."
+        allowLabel="Allow"
+        denyLabel="Don't allow"
+        onAllow={() => setLocationPermission("granted")}
+        onDeny={() => setLocationPermission("denied")}
       />
     </div>
   );
