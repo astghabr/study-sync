@@ -1,6 +1,7 @@
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, MapPin, Wifi, Plug, Coffee, Volume2, VolumeX, Users, X, Calendar, Map as MapIcon, List, Sparkles, Crown, TrendingUp, Star, Bookmark, BookmarkCheck, Camera, Send } from "lucide-react";
+import { Search, MapPin, Wifi, Plug, Coffee, Volume2, VolumeX, Users, X, Calendar, Map as MapIcon, List, Sparkles, Crown, TrendingUp, Star, Bookmark, BookmarkCheck, Camera, Send, Navigation } from "lucide-react";
+import { PermissionDialog } from "./PermissionDialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
