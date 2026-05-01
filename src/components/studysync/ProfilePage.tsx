@@ -391,7 +391,7 @@ function AnimalPickerModal({
             </button>
             <h3 className="font-display text-xl font-semibold">Pick your animal</h3>
             <p className="mt-1 text-sm text-muted-foreground">
-              Choose the cute creature that resonates with you most.
+              Select an avatar.
             </p>
 
             <div className="mt-5 grid grid-cols-4 gap-3">
