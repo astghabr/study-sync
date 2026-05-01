@@ -287,7 +287,7 @@ export function GroupsPage() {
                 >
                   <div className="flex items-center gap-2">
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-foreground/15">
-                      <Sparkles className="h-4 w-4" />
+                      <Search className="h-4 w-4" />
                     </div>
                     <div>
                       <p className="text-sm font-semibold">Find new people for this session</p>
