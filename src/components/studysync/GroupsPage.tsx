@@ -336,6 +336,57 @@ export function GroupsPage() {
       </AnimatePresence>
 
       <AnimatePresence>
+        {soloCancel && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-end justify-center bg-primary/40 backdrop-blur-sm md:items-center"
+            onClick={() => setSoloCancel(null)}
+          >
+            <motion.div
+              initial={{ y: 60, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 60, opacity: 0 }}
+              transition={{ type: "spring", damping: 28, stiffness: 280 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-sm rounded-t-3xl bg-card p-6 shadow-elevated md:rounded-3xl"
+            >
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-soft text-primary">
+                <AlertTriangle className="h-6 w-6" />
+              </div>
+              <h2 className="mt-4 font-display text-xl font-semibold">Cancel solo session?</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                You're the only person left in <span className="font-medium text-foreground">{soloCancel.spotName}</span>.
+              </p>
+              <ul className="mt-3 space-y-1.5 rounded-2xl bg-secondary/60 p-3 text-xs text-muted-foreground">
+                <li>• No reason needed — nobody else is affected.</li>
+                <li>• This cancellation won't appear on the cancel stats page.</li>
+              </ul>
+              <div className="mt-5 flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setSoloCancel(null)}
+                  className="h-12 flex-1 rounded-xl"
+                >
+                  Keep my seat
+                </Button>
+                <Button
+                  onClick={() => {
+                    handleCancel(soloCancel);
+                    setSoloCancel(null);
+                  }}
+                  className="h-12 flex-1 rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
+                  Cancel anyway
+                </Button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
         {confirming && (
           <motion.div
             initial={{ opacity: 0 }}
