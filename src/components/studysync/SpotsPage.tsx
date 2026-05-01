@@ -485,7 +485,15 @@ function SpotDetail({
         onClick={(e) => e.stopPropagation()}
         className="relative max-h-[88vh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-card shadow-elevated md:rounded-3xl"
       >
-        <div className={`relative h-40 w-full bg-gradient-to-br ${spot.hero}`}>
+        <div className={`relative h-40 w-full overflow-hidden bg-gradient-to-br ${spot.hero}`}>
+          {spot.photo && (
+            <img
+              src={spot.photo}
+              alt={spot.name}
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          )}
           <button
             onClick={onClose}
             className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-card/90 backdrop-blur"
