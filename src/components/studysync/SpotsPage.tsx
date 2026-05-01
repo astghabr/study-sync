@@ -1,10 +1,11 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, MapPin, Wifi, Plug, Coffee, Volume2, VolumeX, Users, X, Calendar, Map as MapIcon, List, Sparkles, Crown, TrendingUp, Star, Bookmark, BookmarkCheck, Camera, Send, Navigation } from "lucide-react";
+import { Search, MapPin, Wifi, Plug, Coffee, Volume2, VolumeX, Users, X, Calendar, Map as MapIcon, List, Sparkles, Crown, TrendingUp, Star, Bookmark, BookmarkCheck, Camera, Send, Navigation, SlidersHorizontal, Clock as ClockIcon } from "lucide-react";
 import { PermissionDialog } from "./PermissionDialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from "@/components/ui/sheet";
 import { StatusBadge } from "./Badge";
 import { AnimalAvatar } from "./Avatar";
 import { SPOTS, type Spot, CURRENT_USER } from "@/data/mockData";
@@ -42,6 +43,11 @@ export function SpotsPage() {
   const [laptopOnly, setLaptopOnly] = useState(false);
   const [quietOnly, setQuietOnly] = useState(false);
   const [savedOnly, setSavedOnly] = useState(false);
+  const [powerOnly, setPowerOnly] = useState(false);
+  const [foodOnly, setFoodOnly] = useState(false);
+  const [groupOnly, setGroupOnly] = useState(false);
+  const [openNowOnly, setOpenNowOnly] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [selected, setSelected] = useState<Spot | null>(null);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
   const [upgradeReason, setUpgradeReason] = useState<string | undefined>();
@@ -55,16 +61,39 @@ export function SpotsPage() {
     }
   }, [locationPermission]);
 
+  const activeFilterCount =
+    (type !== "All" ? 1 : 0) +
+    (laptopOnly ? 1 : 0) +
+    (quietOnly ? 1 : 0) +
+    (powerOnly ? 1 : 0) +
+    (foodOnly ? 1 : 0) +
+    (groupOnly ? 1 : 0) +
+    (openNowOnly ? 1 : 0);
+
+  const clearAllFilters = () => {
+    setType("All");
+    setLaptopOnly(false);
+    setQuietOnly(false);
+    setPowerOnly(false);
+    setFoodOnly(false);
+    setGroupOnly(false);
+    setOpenNowOnly(false);
+  };
+
   const filtered = useMemo(() => {
     return SPOTS.filter((s) => {
       if (query && !s.name.toLowerCase().includes(query.toLowerCase())) return false;
       if (type !== "All" && s.type !== type) return false;
       if (laptopOnly && s.laptopPolicy !== "Allowed") return false;
       if (quietOnly && s.noise !== "Quiet") return false;
+      if (powerOnly && !s.amenities.includes("power")) return false;
+      if (foodOnly && !(s.amenities.includes("food") || s.amenities.includes("coffee"))) return false;
+      if (groupOnly && !s.amenities.includes("groups")) return false;
+      if (openNowOnly && s.status === "Closing soon") return false;
       if (savedOnly && !favorites.has(s.id)) return false;
       return true;
     });
-  }, [query, type, laptopOnly, quietOnly, savedOnly, favorites]);
+  }, [query, type, laptopOnly, quietOnly, powerOnly, foodOnly, groupOnly, openNowOnly, savedOnly, favorites]);
 
   return (
     <div className="flex flex-col pb-6">
@@ -108,37 +137,24 @@ export function SpotsPage() {
         </div>
       </header>
 
-      {/* Filters */}
-      <div className="mt-4 flex gap-2 overflow-x-auto px-6 pb-1 scrollbar-hide">
-        {TYPE_FILTERS.map((t) => (
-          <button
-            key={t}
-            onClick={() => setType(t)}
-            className={cn(
-              "shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-medium",
-              type === t ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-foreground"
-            )}
-          >
-            {t}
-          </button>
-        ))}
+      {/* Filter bar — opens the sticky filter sheet */}
+      <div className="sticky top-0 z-20 mt-4 flex items-center gap-2 bg-background/95 px-6 pb-2 pt-1 backdrop-blur supports-[backdrop-filter]:bg-background/70">
         <button
-          onClick={() => setLaptopOnly((v) => !v)}
+          onClick={() => setFiltersOpen(true)}
           className={cn(
-            "shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-medium",
-            laptopOnly ? "border-accent bg-accent text-accent-foreground" : "border-border bg-card text-foreground"
+            "inline-flex shrink-0 items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-medium transition",
+            activeFilterCount > 0
+              ? "border-primary bg-primary text-primary-foreground"
+              : "border-border bg-card text-foreground"
           )}
         >
-          💻 Laptop friendly
-        </button>
-        <button
-          onClick={() => setQuietOnly((v) => !v)}
-          className={cn(
-            "shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-medium",
-            quietOnly ? "border-accent bg-accent text-accent-foreground" : "border-border bg-card text-foreground"
+          <SlidersHorizontal className="h-3.5 w-3.5" />
+          Filters
+          {activeFilterCount > 0 && (
+            <span className="ml-0.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary-foreground/20 px-1 text-[10px] font-bold">
+              {activeFilterCount}
+            </span>
           )}
-        >
-          🤫 Quiet
         </button>
         <button
           onClick={() => setSavedOnly((v) => !v)}
@@ -149,6 +165,14 @@ export function SpotsPage() {
         >
           <Bookmark className={cn("h-3 w-3", savedOnly && "fill-current")} /> Saved ({favorites.size})
         </button>
+        {activeFilterCount > 0 && (
+          <button
+            onClick={clearAllFilters}
+            className="ml-auto shrink-0 text-[11px] font-medium text-muted-foreground underline-offset-2 hover:underline"
+          >
+            Clear
+          </button>
+        )}
       </div>
 
       <AnimatePresence mode="wait">
@@ -328,6 +352,87 @@ export function SpotsPage() {
         onClose={() => setUpgradeOpen(false)}
         highlight={upgradeReason}
       />
+
+      <Sheet open={filtersOpen} onOpenChange={setFiltersOpen}>
+        <SheetContent side="bottom" className="max-h-[85vh] overflow-y-auto rounded-t-3xl">
+          <SheetHeader className="text-left">
+            <SheetTitle className="font-display text-xl">Filter spots</SheetTitle>
+            <SheetDescription>Narrow down the list to spots that match how you want to work.</SheetDescription>
+          </SheetHeader>
+
+          <div className="mt-5 flex flex-col gap-6">
+            {/* Type */}
+            <div>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Spot type</p>
+              <div className="flex flex-wrap gap-2">
+                {TYPE_FILTERS.map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => setType(t)}
+                    className={cn(
+                      "rounded-full border px-3.5 py-1.5 text-xs font-medium transition",
+                      type === t
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-card text-foreground"
+                    )}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Quick toggles */}
+            <div>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Vibe & policy</p>
+              <div className="flex flex-wrap gap-2">
+                <FilterChip active={quietOnly} onClick={() => setQuietOnly((v) => !v)} icon={<VolumeX className="h-3.5 w-3.5" />}>
+                  Quiet
+                </FilterChip>
+                <FilterChip active={laptopOnly} onClick={() => setLaptopOnly((v) => !v)} icon={<span>💻</span>}>
+                  Laptop friendly
+                </FilterChip>
+                <FilterChip active={openNowOnly} onClick={() => setOpenNowOnly((v) => !v)} icon={<ClockIcon className="h-3.5 w-3.5" />}>
+                  Open now
+                </FilterChip>
+              </div>
+            </div>
+
+            {/* Amenities */}
+            <div>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Amenities</p>
+              <div className="flex flex-wrap gap-2">
+                <FilterChip active={powerOnly} onClick={() => setPowerOnly((v) => !v)} icon={<Plug className="h-3.5 w-3.5" />}>
+                  Power outlets
+                </FilterChip>
+                <FilterChip active={foodOnly} onClick={() => setFoodOnly((v) => !v)} icon={<Coffee className="h-3.5 w-3.5" />}>
+                  Food / coffee
+                </FilterChip>
+                <FilterChip active={groupOnly} onClick={() => setGroupOnly((v) => !v)} icon={<Users className="h-3.5 w-3.5" />}>
+                  Group-friendly
+                </FilterChip>
+              </div>
+            </div>
+          </div>
+
+          <SheetFooter className="mt-6 flex-row gap-2 sm:justify-between">
+            <Button
+              variant="outline"
+              onClick={clearAllFilters}
+              disabled={activeFilterCount === 0}
+              className="h-11 flex-1 rounded-xl"
+            >
+              Clear all
+            </Button>
+            <Button
+              onClick={() => setFiltersOpen(false)}
+              className="h-11 flex-1 rounded-xl"
+            >
+              Show {filtered.length} spot{filtered.length === 1 ? "" : "s"}
+            </Button>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
 
       <PermissionDialog
         open={locationPermission === "pending"}
@@ -764,4 +869,31 @@ function timeAgo(ms: number) {
   const days = Math.floor(diff / day);
   if (days < 7) return `${days}d ago`;
   return `${Math.floor(days / 7)}w ago`;
+}
+
+function FilterChip({
+  active,
+  onClick,
+  icon,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon?: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-medium transition",
+        active
+          ? "border-accent bg-accent text-accent-foreground"
+          : "border-border bg-card text-foreground hover:border-primary/40"
+      )}
+    >
+      {icon}
+      {children}
+    </button>
+  );
 }
