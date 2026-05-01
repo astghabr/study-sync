@@ -43,6 +43,11 @@ export function SpotsPage() {
   const [laptopOnly, setLaptopOnly] = useState(false);
   const [quietOnly, setQuietOnly] = useState(false);
   const [savedOnly, setSavedOnly] = useState(false);
+  const [powerOnly, setPowerOnly] = useState(false);
+  const [foodOnly, setFoodOnly] = useState(false);
+  const [groupOnly, setGroupOnly] = useState(false);
+  const [openNowOnly, setOpenNowOnly] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [selected, setSelected] = useState<Spot | null>(null);
   const [upgradeOpen, setUpgradeOpen] = useState(false);
   const [upgradeReason, setUpgradeReason] = useState<string | undefined>();
@@ -56,16 +61,39 @@ export function SpotsPage() {
     }
   }, [locationPermission]);
 
+  const activeFilterCount =
+    (type !== "All" ? 1 : 0) +
+    (laptopOnly ? 1 : 0) +
+    (quietOnly ? 1 : 0) +
+    (powerOnly ? 1 : 0) +
+    (foodOnly ? 1 : 0) +
+    (groupOnly ? 1 : 0) +
+    (openNowOnly ? 1 : 0);
+
+  const clearAllFilters = () => {
+    setType("All");
+    setLaptopOnly(false);
+    setQuietOnly(false);
+    setPowerOnly(false);
+    setFoodOnly(false);
+    setGroupOnly(false);
+    setOpenNowOnly(false);
+  };
+
   const filtered = useMemo(() => {
     return SPOTS.filter((s) => {
       if (query && !s.name.toLowerCase().includes(query.toLowerCase())) return false;
       if (type !== "All" && s.type !== type) return false;
       if (laptopOnly && s.laptopPolicy !== "Allowed") return false;
       if (quietOnly && s.noise !== "Quiet") return false;
+      if (powerOnly && !s.amenities.includes("power")) return false;
+      if (foodOnly && !(s.amenities.includes("food") || s.amenities.includes("coffee"))) return false;
+      if (groupOnly && !s.amenities.includes("groups")) return false;
+      if (openNowOnly && s.status === "Closing soon") return false;
       if (savedOnly && !favorites.has(s.id)) return false;
       return true;
     });
-  }, [query, type, laptopOnly, quietOnly, savedOnly, favorites]);
+  }, [query, type, laptopOnly, quietOnly, powerOnly, foodOnly, groupOnly, openNowOnly, savedOnly, favorites]);
 
   return (
     <div className="flex flex-col pb-6">
