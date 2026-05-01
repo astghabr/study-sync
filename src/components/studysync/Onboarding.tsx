@@ -113,7 +113,7 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
               Verified students. Real study spots. Sessions that actually happen.
             </p>
 
-            <div className="mt-auto rounded-3xl bg-card p-6 shadow-elevated">
+            <div className="mt-auto mb-[-1rem] rounded-3xl bg-card p-6 shadow-elevated">
               {/* Login / Register switcher */}
               <div className="flex rounded-full bg-secondary p-1">
                 {(["register", "login"] as const).map((m) => (
