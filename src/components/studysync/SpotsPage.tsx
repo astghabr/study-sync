@@ -353,6 +353,87 @@ export function SpotsPage() {
         highlight={upgradeReason}
       />
 
+      <Sheet open={filtersOpen} onOpenChange={setFiltersOpen}>
+        <SheetContent side="bottom" className="max-h-[85vh] overflow-y-auto rounded-t-3xl">
+          <SheetHeader className="text-left">
+            <SheetTitle className="font-display text-xl">Filter spots</SheetTitle>
+            <SheetDescription>Narrow down the list to spots that match how you want to work.</SheetDescription>
+          </SheetHeader>
+
+          <div className="mt-5 flex flex-col gap-6">
+            {/* Type */}
+            <div>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Spot type</p>
+              <div className="flex flex-wrap gap-2">
+                {TYPE_FILTERS.map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => setType(t)}
+                    className={cn(
+                      "rounded-full border px-3.5 py-1.5 text-xs font-medium transition",
+                      type === t
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-card text-foreground"
+                    )}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Quick toggles */}
+            <div>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Vibe & policy</p>
+              <div className="flex flex-wrap gap-2">
+                <FilterChip active={quietOnly} onClick={() => setQuietOnly((v) => !v)} icon={<VolumeX className="h-3.5 w-3.5" />}>
+                  Quiet
+                </FilterChip>
+                <FilterChip active={laptopOnly} onClick={() => setLaptopOnly((v) => !v)} icon={<span>💻</span>}>
+                  Laptop friendly
+                </FilterChip>
+                <FilterChip active={openNowOnly} onClick={() => setOpenNowOnly((v) => !v)} icon={<ClockIcon className="h-3.5 w-3.5" />}>
+                  Open now
+                </FilterChip>
+              </div>
+            </div>
+
+            {/* Amenities */}
+            <div>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Amenities</p>
+              <div className="flex flex-wrap gap-2">
+                <FilterChip active={powerOnly} onClick={() => setPowerOnly((v) => !v)} icon={<Plug className="h-3.5 w-3.5" />}>
+                  Power outlets
+                </FilterChip>
+                <FilterChip active={foodOnly} onClick={() => setFoodOnly((v) => !v)} icon={<Coffee className="h-3.5 w-3.5" />}>
+                  Food / coffee
+                </FilterChip>
+                <FilterChip active={groupOnly} onClick={() => setGroupOnly((v) => !v)} icon={<Users className="h-3.5 w-3.5" />}>
+                  Group-friendly
+                </FilterChip>
+              </div>
+            </div>
+          </div>
+
+          <SheetFooter className="mt-6 flex-row gap-2 sm:justify-between">
+            <Button
+              variant="outline"
+              onClick={clearAllFilters}
+              disabled={activeFilterCount === 0}
+              className="h-11 flex-1 rounded-xl"
+            >
+              Clear all
+            </Button>
+            <Button
+              onClick={() => setFiltersOpen(false)}
+              className="h-11 flex-1 rounded-xl"
+            >
+              Show {filtered.length} spot{filtered.length === 1 ? "" : "s"}
+            </Button>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
+
       <PermissionDialog
         open={locationPermission === "pending"}
         icon={Navigation}
