@@ -20,7 +20,8 @@ type Step = 0 | 1 | 2 | 3 | 4;
 
 export function Onboarding({ onComplete }: { onComplete: () => void }) {
   const [step, setStep] = useState<Step>(0);
-  const [mode, setMode] = useState<"register" | "login">("register");
+  const [mode, setMode] = useState<"register" | "login" | "forgot">("register");
+  const [resetSent, setResetSent] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -114,68 +115,95 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
             </p>
 
             <div className="mt-10 rounded-3xl bg-card p-6 shadow-elevated">
-              {/* Login / Register switcher */}
-              <div className="flex rounded-full bg-secondary p-1">
-                {(["register", "login"] as const).map((m) => (
-                  <button
-                    key={m}
-                    onClick={() => {
-                      setMode(m);
-                      setError("");
-                    }}
-                    className={cn(
-                      "flex-1 rounded-full px-3 py-2 text-xs font-semibold transition-colors",
-                      mode === m
-                        ? "bg-card text-foreground shadow-soft"
-                        : "text-muted-foreground hover:text-foreground"
-                    )}
-                  >
-                    {m === "register" ? "Create account" : "Log in"}
-                  </button>
-                ))}
-              </div>
+              {/* Login / Register switcher (hidden in forgot mode) */}
+              {mode !== "forgot" && (
+                <div className="flex rounded-full bg-secondary p-1">
+                  {(["register", "login"] as const).map((m) => (
+                    <button
+                      key={m}
+                      onClick={() => {
+                        setMode(m);
+                        setError("");
+                      }}
+                      className={cn(
+                        "flex-1 rounded-full px-3 py-2 text-xs font-semibold transition-colors",
+                        mode === m
+                          ? "bg-card text-foreground shadow-soft"
+                          : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      {m === "register" ? "Create account" : "Log in"}
+                    </button>
+                  ))}
+                </div>
+              )}
 
               <p className="mt-5 font-display text-2xl font-semibold text-foreground">
-                {mode === "register" ? "Verify your university" : "Welcome back"}
+                {mode === "register" && "Verify your university"}
+                {mode === "login" && "Welcome back"}
+                {mode === "forgot" && (resetSent ? "Check your email" : "Reset your password")}
               </p>
               <p className="mt-2 text-sm text-muted-foreground">
-                {mode === "register"
-                  ? "We'll check your institutional email to keep things safe."
-                  : "Sign in with your university email to pick up where you left off."}
+                {mode === "register" && "We'll check your institutional email to keep things safe."}
+                {mode === "login" && "Sign in with your university email to pick up where you left off."}
+                {mode === "forgot" && !resetSent && "Enter your university email and we'll send you a reset link."}
+                {mode === "forgot" && resetSent && `If an account exists for ${email}, a reset link is on its way. The link expires in 30 minutes.`}
               </p>
 
-              <div className="relative mt-5">
-                <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              {!(mode === "forgot" && resetSent) && (
+                <div className="relative mt-5">
+                  <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (error) setError("");
+                    }}
+                    placeholder="you@kuleuven.be"
+                    className="h-12 rounded-xl pl-9 text-sm"
+                    type="email"
+                    autoComplete="email"
+                    disabled={verifying || verified}
+                  />
+                  {verified && (
+                    <Check className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-success" strokeWidth={3} />
+                  )}
+                </div>
+              )}
+
+              {mode !== "forgot" && (
                 <Input
-                  value={email}
+                  value={password}
                   onChange={(e) => {
-                    setEmail(e.target.value);
+                    setPassword(e.target.value);
                     if (error) setError("");
                   }}
-                  placeholder="you@kuleuven.be"
-                  className="h-12 rounded-xl pl-9 text-sm"
-                  type="email"
-                  autoComplete="email"
+                  placeholder={mode === "register" ? "Create a password (min 8 chars)" : "Password"}
+                  className="mt-2 h-12 rounded-xl text-sm"
+                  type="password"
+                  autoComplete={mode === "register" ? "new-password" : "current-password"}
+                  maxLength={72}
                   disabled={verifying || verified}
                 />
-                {verified && (
-                  <Check className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-success" strokeWidth={3} />
-                )}
-              </div>
+              )}
 
-              <Input
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  if (error) setError("");
-                }}
-                placeholder={mode === "register" ? "Create a password (min 8 chars)" : "Password"}
-                className="mt-2 h-12 rounded-xl text-sm"
-                type="password"
-                autoComplete={mode === "register" ? "new-password" : "current-password"}
-                maxLength={72}
-                disabled={verifying || verified}
-              />
+              {mode === "login" && (
+                <div className="mt-2 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMode("forgot");
+                      setError("");
+                      setPassword("");
+                      setConfirmPassword("");
+                      setResetSent(false);
+                    }}
+                    className="text-[11px] font-medium text-primary underline-offset-2 hover:underline"
+                  >
+                    Forgot password?
+                  </button>
+                </div>
+              )}
 
               {mode === "register" && (
                 <Input
@@ -200,23 +228,81 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
                 </p>
               )}
 
-              <Button
-                onClick={handleVerify}
-                disabled={verifying || verified}
-                className="mt-4 h-12 w-full rounded-xl text-sm font-semibold"
-              >
-                {verifying ? (
-                  <><Loader2 className="mr-1 h-4 w-4 animate-spin" /> {mode === "login" ? "Signing in…" : "Verifying…"}</>
-                ) : verified ? (
-                  <><Check className="mr-1 h-4 w-4" strokeWidth={3} /> {mode === "login" ? "Signed in" : "Verified"}</>
-                ) : (
-                  <>{mode === "login" ? "Log in" : "Verify email"} <ArrowRight className="ml-1 h-4 w-4" /></>
-                )}
-              </Button>
+              {mode !== "forgot" && (
+                <Button
+                  onClick={handleVerify}
+                  disabled={verifying || verified}
+                  className="mt-4 h-12 w-full rounded-xl text-sm font-semibold"
+                >
+                  {verifying ? (
+                    <><Loader2 className="mr-1 h-4 w-4 animate-spin" /> {mode === "login" ? "Signing in…" : "Verifying…"}</>
+                  ) : verified ? (
+                    <><Check className="mr-1 h-4 w-4" strokeWidth={3} /> {mode === "login" ? "Signed in" : "Verified"}</>
+                  ) : (
+                    <>{mode === "login" ? "Log in" : "Verify email"} <ArrowRight className="ml-1 h-4 w-4" /></>
+                  )}
+                </Button>
+              )}
 
-              <p className="mt-4 text-center text-[11px] text-muted-foreground">
-                Try <button onClick={() => setEmail("marie.dubois@kuleuven.be")} className="underline underline-offset-2">marie.dubois@kuleuven.be</button>
-              </p>
+              {mode === "forgot" && !resetSent && (
+                <Button
+                  onClick={() => {
+                    const check = validEmail(email);
+                    if (!check.ok) {
+                      setError(check.reason ?? "Invalid email.");
+                      return;
+                    }
+                    setError("");
+                    setVerifying(true);
+                    window.setTimeout(() => {
+                      setVerifying(false);
+                      setResetSent(true);
+                    }, 900);
+                  }}
+                  disabled={verifying}
+                  className="mt-4 h-12 w-full rounded-xl text-sm font-semibold"
+                >
+                  {verifying ? (
+                    <><Loader2 className="mr-1 h-4 w-4 animate-spin" /> Sending…</>
+                  ) : (
+                    <>Send reset link <ArrowRight className="ml-1 h-4 w-4" /></>
+                  )}
+                </Button>
+              )}
+
+              {mode === "forgot" && resetSent && (
+                <Button
+                  onClick={() => {
+                    setMode("login");
+                    setResetSent(false);
+                    setError("");
+                  }}
+                  className="mt-4 h-12 w-full rounded-xl text-sm font-semibold"
+                >
+                  Back to log in
+                </Button>
+              )}
+
+              {mode === "forgot" && !resetSent && (
+                <p className="mt-4 text-center text-[11px] text-muted-foreground">
+                  Remembered it?{" "}
+                  <button
+                    onClick={() => {
+                      setMode("login");
+                      setError("");
+                    }}
+                    className="font-medium text-primary underline underline-offset-2"
+                  >
+                    Back to log in
+                  </button>
+                </p>
+              )}
+
+              {mode !== "forgot" && (
+                <p className="mt-4 text-center text-[11px] text-muted-foreground">
+                  Try <button onClick={() => setEmail("marie.dubois@kuleuven.be")} className="underline underline-offset-2">marie.dubois@kuleuven.be</button>
+                </p>
+              )}
             </div>
           </motion.div>
         )}
