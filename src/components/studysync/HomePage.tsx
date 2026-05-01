@@ -240,7 +240,16 @@ export function HomePage({ onNavigate }: { onNavigate: (t: Tab) => void }) {
         <div className="flex flex-col gap-3 px-6">
           {featured.map((s) => (
             <div key={s.id} className="flex items-center gap-3 rounded-2xl border border-border bg-card p-3 shadow-soft">
-              <div className={`h-14 w-14 shrink-0 rounded-xl bg-gradient-to-br ${s.hero}`} />
+              <div className={`relative h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br ${s.hero}`}>
+                {s.photo && (
+                  <img
+                    src={s.photo}
+                    alt={s.name}
+                    loading="lazy"
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                )}
+              </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <p className="truncate font-display text-sm font-semibold">{s.name}</p>
