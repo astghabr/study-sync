@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, ArrowRight, X, MapPin, Users, Timer, CalendarCheck, Home } from "lucide-react";
+import { ArrowRight, X, MapPin, Users, Timer, CalendarCheck, Home } from "lucide-react";
 import { tourStore, useTourSeen } from "@/lib/tourStore";
 import type { Tab } from "./BottomNav";
 
