@@ -80,12 +80,15 @@ export function GroupsPage() {
     });
   };
 
-  const handleCancel = (group: StudyGroup, reasonId: CancelReasonId, note?: string) => {
-    // 1. Persist cancellation reason for analytics.
-    cancellationStore.add(
-      { groupId: group.id, reasonId, note },
-      group.spotName,
-    );
+  const handleCancel = (group: StudyGroup, reasonId?: CancelReasonId, note?: string) => {
+    // 1. Persist cancellation reason for analytics — but only if a reason was given.
+    //    Solo cancellations (last person left) are not recorded on the stats page.
+    if (reasonId) {
+      cancellationStore.add(
+        { groupId: group.id, reasonId, note },
+        group.spotName,
+      );
+    }
 
     // 2. Update group state: remove user, mark at-risk if too thin.
     let becameAtRisk = false;
@@ -243,7 +246,15 @@ export function GroupsPage() {
                 {isJoined ? (
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => setCancelling(g)}
+                      onClick={() => {
+                        // If you are the only person left, skip the reason modal
+                        // and don't record the cancellation in analytics.
+                        if (g.anonymousMembers <= 1) {
+                          handleCancel(g);
+                        } else {
+                          setCancelling(g);
+                        }
+                      }}
                       className="h-9 rounded-full border border-border bg-card px-3 text-xs font-semibold text-muted-foreground transition hover:border-destructive hover:text-destructive"
                     >
                       Cancel
