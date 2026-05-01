@@ -870,3 +870,30 @@ function timeAgo(ms: number) {
   if (days < 7) return `${days}d ago`;
   return `${Math.floor(days / 7)}w ago`;
 }
+
+function FilterChip({
+  active,
+  onClick,
+  icon,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon?: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-medium transition",
+        active
+          ? "border-accent bg-accent text-accent-foreground"
+          : "border-border bg-card text-foreground hover:border-primary/40"
+      )}
+    >
+      {icon}
+      {children}
+    </button>
+  );
+}
