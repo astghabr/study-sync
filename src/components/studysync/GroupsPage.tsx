@@ -16,6 +16,7 @@ import {
   Clock,
   Wifi,
   Plus,
+  Search,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
