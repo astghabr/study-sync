@@ -420,6 +420,25 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
         onClose={() => setUpgradeOpen(false)}
         highlight={upgradeReason}
       />
+
+      <PermissionDialog
+        open={blockPermOpen}
+        icon={ShieldOff}
+        title="Block other apps during Focus?"
+        description="StudySync wants to silence notifications and pause access to other apps on your phone while your focus session is running. This helps you stay on task."
+        allowLabel="Block apps"
+        denyLabel="Not now"
+        onAllow={() => {
+          setBlockPermAsked(true);
+          setBlockPermOpen(false);
+          beginSession();
+        }}
+        onDeny={() => {
+          setBlockPermAsked(true);
+          setBlockPermOpen(false);
+          beginSession();
+        }}
+      />
     </div>
   );
 }
