@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { CURRENT_USER, ANIMALS, PROFILE_PROMPTS } from "@/data/mockData";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { AdminAnalytics } from "./AdminAnalytics";
+import { AnalyticsCard, AnalyticsPage } from "./AdminAnalytics";
 import { useSubscription, subscriptionStore } from "@/lib/subscriptionStore";
 import { useFocusStats, deriveStats } from "@/lib/focusStatsStore";
 import { UpgradeModal } from "./UpgradeModal";
