@@ -184,7 +184,7 @@ export function ProfilePage({ onSignOut }: { onSignOut: () => void }) {
               className="flex w-full items-center gap-3 p-4 text-left"
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent text-accent-foreground">
-                <Sparkles className="h-5 w-5" />
+                <Rocket className="h-5 w-5" />
               </div>
               <div className="flex-1">
                 <p className="font-display text-base font-semibold text-foreground">
