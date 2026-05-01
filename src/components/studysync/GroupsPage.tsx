@@ -80,12 +80,15 @@ export function GroupsPage() {
     });
   };
 
-  const handleCancel = (group: StudyGroup, reasonId: CancelReasonId, note?: string) => {
-    // 1. Persist cancellation reason for analytics.
-    cancellationStore.add(
-      { groupId: group.id, reasonId, note },
-      group.spotName,
-    );
+  const handleCancel = (group: StudyGroup, reasonId?: CancelReasonId, note?: string) => {
+    // 1. Persist cancellation reason for analytics — but only if a reason was given.
+    //    Solo cancellations (last person left) are not recorded on the stats page.
+    if (reasonId) {
+      cancellationStore.add(
+        { groupId: group.id, reasonId, note },
+        group.spotName,
+      );
+    }
 
     // 2. Update group state: remove user, mark at-risk if too thin.
     let becameAtRisk = false;
