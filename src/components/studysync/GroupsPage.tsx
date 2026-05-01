@@ -42,6 +42,7 @@ export function GroupsPage() {
   const [confirming, setConfirming] = useState<StudyGroup | null>(null);
   const [refilling, setRefilling] = useState<StudyGroup | null>(null);
   const [cancelling, setCancelling] = useState<StudyGroup | null>(null);
+  const [soloCancel, setSoloCancel] = useState<StudyGroup | null>(null);
 
   const handleJoin = (id: string) => {
     setGroups((prev) =>
