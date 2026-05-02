@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { GraduationCap, Mail, ArrowRight, Check, X, ShieldCheck, Loader2 } from "lucide-react";
+import { Mail, ArrowRight, Check, X, ShieldCheck, Loader2 } from "lucide-react";
+import studysyncLogo from "@/assets/studysync-logo.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -100,7 +101,7 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
           className="flex items-center gap-2 text-primary-foreground"
         >
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent">
-            <GraduationCap className="h-5 w-5 text-primary" strokeWidth={2.4} />
+            <img src={studysyncLogo} alt="StudySync logo" className="h-7 w-7 object-contain" />
           </div>
           <span className="font-display text-xl font-semibold tracking-tight">StudySync</span>
         </motion.div>
