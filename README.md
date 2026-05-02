@@ -25,6 +25,12 @@ The app utilizes a subscription model and ads (freemium).
 - The focus feature is intended to boost user-retention, as without it, the users would find study buddies and stop using the app. Some of the features (full data analytics of the focus tab, stopwatch/timer use) are paid.
 - Ad removal also comes with subscription.
 
+## Limitations
+- No mechanism to connect real users yet
+- No integration with educational institutions/venues
+- Simulated group matching and sessions
+**My prototype is mainly a conceptual design rather than a fully technical product for now.**
+
 ## Screenshots:
 ### Home page:
 <p>
