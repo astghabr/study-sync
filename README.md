@@ -1,5 +1,5 @@
 # StudySync
-StudySync is a platform for students to find study-buddies, discover study spots, and be productive.
+StudySync is a platform for students to find study-buddies, discover study spots, and stay productive.
 
 ## Problem:
 - Students, especially new ones, struggle to find study buddies who can keep them accountable, share information or generally socialize.  As a second year student, I have noticed that the best context for academic socialization - the university, is not being utilized properly. People either do not come to class, or those who do, are reluctant to talk to new people. Moreover, most universities only provide events for either social or professional purposes, NOT academic.
