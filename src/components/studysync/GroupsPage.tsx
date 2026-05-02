@@ -291,7 +291,7 @@ export function GroupsPage() {
                       <Search className="h-4 w-4" />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold">Find new people for this session</p>
+                      <p className="text-sm font-semibold">We're finding replacements now</p>
                       <p className="text-[11px] opacity-80">Auto-match in 2 mins · same place, same time</p>
                     </div>
                   </div>
