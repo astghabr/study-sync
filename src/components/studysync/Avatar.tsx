@@ -17,17 +17,23 @@ export function AnimalAvatar({
   size?: keyof typeof sizes;
   className?: string;
 }) {
-  const a = ANIMALS.find((x) => x.id === animal) ?? ANIMALS[0];
+  // Resolve: if `animal` matches a known ID, use that preset's emoji+bg.
+  // Otherwise, treat it as a raw emoji (custom user choice) and render on
+  // a neutral peach background.
+  const preset = ANIMALS.find((x) => x.id === animal);
+  const emoji = preset?.emoji ?? animal ?? ANIMALS[0].emoji;
+  const bg = preset?.bg ?? "from-accent to-accent-soft";
+  const label = preset?.label ?? "Custom emoji";
   return (
     <div
       className={cn(
         "relative flex items-center justify-center rounded-full bg-gradient-to-br ring-2 ring-background",
-        a.bg,
+        bg,
         sizes[size],
         className
       )}
     >
-      <span aria-label={a.label} className="leading-none">{a.emoji}</span>
+      <span aria-label={label} className="leading-none">{emoji}</span>
     </div>
   );
 }
