@@ -115,7 +115,7 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
               Find verified students. Discover real study spots. Get stuff done.
             </p>
 
-            <div className="mt-10 rounded-3xl bg-card p-6 shadow-elevated">
+            <div className="mt-16 rounded-3xl bg-card p-6 shadow-elevated">
               {/* Login / Register switcher (hidden in forgot mode) */}
               {mode !== "forgot" && (
                 <div className="flex rounded-full bg-secondary p-1">
