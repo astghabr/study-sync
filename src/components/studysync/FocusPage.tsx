@@ -353,6 +353,11 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
         <DailyStats history={history} />
       </div>
 
+      {/* FRIENDS */}
+      <div className="mt-6 px-6">
+        <FriendsFocus />
+      </div>
+
       {/* HISTORY */}
       <div className="mt-6 px-6">
         <SessionHistory
