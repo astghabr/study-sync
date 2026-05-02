@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Sparkles, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useSubscription } from "@/lib/subscriptionStore";
 import { UpgradeModal } from "./UpgradeModal";
 import { cn } from "@/lib/utils";
@@ -82,13 +82,6 @@ export function AdSlot({
               </button>
             </div>
           </div>
-          <button
-            onClick={() => setOpen(true)}
-            aria-label="Remove ads with Pro"
-            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-card/80 text-muted-foreground hover:text-foreground"
-          >
-            <Sparkles className="h-3.5 w-3.5" />
-          </button>
         </div>
       </div>
       <UpgradeModal
