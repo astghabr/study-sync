@@ -109,7 +109,7 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
         {step === 0 && (
           <motion.div key="step0" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-2 flex flex-1 flex-col">
             <h1 className="font-display text-4xl font-semibold leading-[1.05] text-primary-foreground">
-              Study sessions that actually happen.
+              Where studying actually happens.
             </h1>
             <p className="mt-3 max-w-xs text-sm text-primary-foreground/95">
               Find verified students. Discover real study spots. Get stuff done.
