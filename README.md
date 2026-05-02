@@ -26,7 +26,9 @@ The app utilizes a subscription model and ads (freemium).
 - Ad removal also comes with subscription.
 
 ## Screenshots:
-Homepage:
+Login page:
+![login-page](screenshots/login-page.png)
+
 
 
 
