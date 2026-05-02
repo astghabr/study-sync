@@ -353,6 +353,11 @@ export function FocusPage({ onLockChange }: { onLockChange: (locked: boolean) =>
         <DailyStats history={history} />
       </div>
 
+      {/* FRIENDS */}
+      <div className="mt-6 px-6">
+        <FriendsFocus />
+      </div>
+
       {/* HISTORY */}
       <div className="mt-6 px-6">
         <SessionHistory
@@ -983,6 +988,103 @@ function SessionHistory({
           Unlock full history ({hidden} more) with Pro
         </button>
       )}
+    </div>
+  );
+}
+
+/* ───────────────────────── Friends focus ───────────────────────── */
+
+type FriendFocus = {
+  id: string;
+  todayMinutes: number;
+  liveSince: number | null;
+};
+
+const FRIEND_FOCUS_SEED: FriendFocus[] = [
+  { id: "b1", todayMinutes: 145, liveSince: Date.now() - 32 * 60 * 1000 },
+  { id: "b2", todayMinutes: 0, liveSince: Date.now() - 8 * 60 * 1000 },
+  { id: "b3", todayMinutes: 210, liveSince: null },
+  { id: "b4", todayMinutes: 75, liveSince: null },
+  { id: "b5", todayMinutes: 50, liveSince: null },
+  { id: "b6", todayMinutes: 0, liveSince: null },
+];
+
+function FriendsFocus() {
+  const rows = FRIEND_FOCUS_SEED
+    .map((f) => {
+      const buddy = BUDDIES.find((b) => b.id === f.id);
+      if (!buddy) return null;
+      const liveMin = f.liveSince ? Math.floor((Date.now() - f.liveSince) / 60000) : 0;
+      const totalMin = f.todayMinutes + liveMin;
+      return { buddy, live: f.liveSince != null, liveMin, totalMin };
+    })
+    .filter(Boolean) as { buddy: (typeof BUDDIES)[number]; live: boolean; liveMin: number; totalMin: number }[];
+
+  rows.sort((a, b) => {
+    if (a.live !== b.live) return a.live ? -1 : 1;
+    return b.totalMin - a.totalMin;
+  });
+
+  const liveCount = rows.filter((r) => r.live).length;
+
+  return (
+    <div className="rounded-3xl bg-card p-5 shadow-card">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Users className="h-4 w-4 text-primary" />
+          <p className="text-sm font-semibold text-foreground">Friends</p>
+        </div>
+        {liveCount > 0 && (
+          <div className="flex items-center gap-1.5 rounded-full bg-accent-soft px-2.5 py-1">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-success" />
+            <span className="text-[11px] font-semibold text-foreground">
+              {liveCount} focusing now
+            </span>
+          </div>
+        )}
+      </div>
+      <p className="mt-1 text-[11px] text-muted-foreground">
+        See who's locked in today.
+      </p>
+
+      <div className="mt-3 divide-y divide-border">
+        {rows.map(({ buddy, live, liveMin, totalMin }) => (
+          <div key={buddy.id} className="flex items-center gap-3 py-3">
+            <div className="relative">
+              <AnimalAvatar animal={buddy.animal} size="md" />
+              {live && (
+                <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-card">
+                  <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-success" />
+                </span>
+              )}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-semibold text-foreground">
+                {buddy.name}
+              </p>
+              <p className="text-[11px] text-muted-foreground">
+                {live ? (
+                  <span className="font-medium text-success">
+                    In focus · {liveMin}m
+                  </span>
+                ) : totalMin > 0 ? (
+                  "Last session earlier today"
+                ) : (
+                  "No focus yet today"
+                )}
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="font-display text-sm font-semibold tabular-nums text-foreground">
+                {formatHM(totalMin * 60)}
+              </p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                today
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
