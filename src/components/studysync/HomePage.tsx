@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Bell, Calendar, MapPin, Users, ArrowRight, Sparkles, AlertTriangle } from "lucide-react";
+import { Bell, Calendar, MapPin, Users, ArrowRight, AlertTriangle } from "lucide-react";
 import { GradientAvatar } from "./Avatar";
 import { StatusBadge } from "./Badge";
 import { AdSlot } from "./AdSlot";
@@ -75,8 +75,7 @@ export function HomePage({ onNavigate }: { onNavigate: (t: Tab) => void }) {
           <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-accent/20 blur-2xl" />
           <div className="relative">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-accent">
-                <Sparkles className="h-3.5 w-3.5" />
+              <div className="text-xs font-medium uppercase tracking-wider text-accent">
                 Upcoming session
               </div>
               {upcomingNotice && (
