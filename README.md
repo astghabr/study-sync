@@ -28,8 +28,9 @@ The app utilizes a subscription model and ads (freemium).
 ## Screenshots:
 ### Home page:
 <p>
-  <img src="screenshots/home.png" width="300"/>
-  <img src="screenshots/notifications-home.png" width="300"/>
+  <img src="screenshots/home.png" width="200"/>
+  <img src="screenshots/group.png" width="200"/>
+  <img src="screenshots/notifications-home.png" width="200"/>
 </p>
 
 Inside the home page, profile page:
@@ -41,7 +42,6 @@ Inside the home page, profile page:
 ### Study spots:
 <p>
   <img src="screenshots/studyspots1.png" width="200"/>
-  <img src="screenshots/studyspots2.png" width="200"/>
   <img src="screenshots/studyspots-filter.png" width="200"/>
 </p>
 
