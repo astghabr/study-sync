@@ -124,7 +124,7 @@ export function BuddiesPage() {
     <div className="flex flex-col pb-6">
       <header className="relative px-6 pt-8">
         <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Discover</p>
-        <h1 className="mt-1 font-display text-[28px] font-semibold leading-tight">Find buddies</h1>
+        <h1 className="mt-1 font-display text-[28px] font-semibold leading-tight">Match to study</h1>
 
         {/* Messages corner */}
         <div ref={inboxRef} className="absolute right-6 top-8">

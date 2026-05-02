@@ -185,7 +185,7 @@ export function HomePage({ onNavigate }: { onNavigate: (t: Tab) => void }) {
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-soft">
             <Users className="h-5 w-5 text-primary" />
           </div>
-          <p className="font-display text-base font-semibold">Find buddies</p>
+          <p className="font-display text-base font-semibold">Match to study</p>
           <p className="text-xs text-muted-foreground">12 new matches</p>
         </button>
         <button
