@@ -112,7 +112,7 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
               Study sessions that actually happen.
             </h1>
             <p className="mt-3 max-w-xs text-sm text-primary-foreground/95">
-              Verified students. Real study spots. Sessions that actually happen.
+              Find verified students. Discover real study spots. Get stuff done.
             </p>
 
             <div className="mt-10 rounded-3xl bg-card p-6 shadow-elevated">
