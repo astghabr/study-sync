@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { AnimalAvatar } from "./Avatar";
+import { EmojiPicker } from "./EmojiPicker";
 import { ANIMALS, PROFILE_PROMPTS } from "@/data/mockData";
 import { tourStore } from "@/lib/tourStore";
 import { cn } from "@/lib/utils";
@@ -353,10 +354,10 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
         {step === 2 && (
           <motion.div key="step2" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-12 flex flex-1 flex-col">
             <h1 className="font-display text-4xl font-semibold leading-[1.05] text-primary-foreground">
-              Pick your animal.
+              Pick your emoji.
             </h1>
             <p className="mt-3 text-sm text-primary-foreground/95">
-              Select an avatar.
+              This becomes your avatar.
             </p>
 
             <div className="mt-auto rounded-3xl bg-card p-6 shadow-elevated">
@@ -365,28 +366,16 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
                 <div>
                   <p className="text-[11px] uppercase tracking-wider text-muted-foreground">Selected</p>
                   <p className="font-display text-lg font-semibold">
-                    {ANIMALS.find((a) => a.id === animal)?.label}
+                    {ANIMALS.find((a) => a.id === animal)?.label ?? "Custom emoji"}
                   </p>
                 </div>
               </div>
 
-              <div className="mt-5 grid grid-cols-4 gap-3">
-                {ANIMALS.map((a) => (
-                  <button
-                    key={a.id}
-                    onClick={() => setAnimal(a.id)}
-                    className={cn(
-                      "flex flex-col items-center gap-1.5 rounded-2xl border p-2.5 transition",
-                      animal === a.id
-                        ? "border-primary bg-accent-soft"
-                        : "border-border bg-card hover:border-primary/40"
-                    )}
-                  >
-                    <AnimalAvatar animal={a.id} size="sm" />
-                    <span className="text-[10px] font-medium text-muted-foreground">{a.label}</span>
-                  </button>
-                ))}
-              </div>
+              <EmojiPicker
+                value={animal}
+                onChange={setAnimal}
+                className="mt-5"
+              />
 
               <Button onClick={() => setStep(3)} className="mt-6 h-12 w-full rounded-xl text-sm font-semibold">
                 Continue <ArrowRight className="ml-1 h-4 w-4" />

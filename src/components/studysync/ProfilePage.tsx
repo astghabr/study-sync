@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Settings, GraduationCap, BookOpen, Heart, Calendar, LogOut, ChevronRight, Pencil, X, Check, Plus, Crown, Sparkles, Flame, TrendingUp, Clock, BellOff, Sunrise, Users, Rocket } from "lucide-react";
 import { GradientAvatar, AnimalAvatar } from "./Avatar";
+import { EmojiPicker } from "./EmojiPicker";
 import { StatusBadge } from "./Badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -389,28 +390,22 @@ function AnimalPickerModal({
             >
               <X className="h-4 w-4" />
             </button>
-            <h3 className="font-display text-xl font-semibold">Pick your animal</h3>
+            <h3 className="font-display text-xl font-semibold">Pick your emoji</h3>
             <p className="mt-1 text-sm text-muted-foreground">
-              Select an avatar.
+              This becomes your avatar.
             </p>
 
-            <div className="mt-5 grid grid-cols-4 gap-3">
-              {ANIMALS.map((a) => (
-                <button
-                  key={a.id}
-                  onClick={() => onPick(a.id)}
-                  className={cn(
-                    "flex flex-col items-center gap-1.5 rounded-2xl border p-3 transition",
-                    current === a.id
-                      ? "border-primary bg-accent-soft"
-                      : "border-border bg-card hover:border-primary/40"
-                  )}
-                >
-                  <AnimalAvatar animal={a.id} size="md" />
-                  <span className="text-[10px] font-medium text-muted-foreground">{a.label}</span>
-                </button>
-              ))}
+            <div className="mt-5 flex items-center gap-4">
+              <AnimalAvatar animal={current} size="lg" />
+              <div>
+                <p className="text-[11px] uppercase tracking-wider text-muted-foreground">Selected</p>
+                <p className="font-display text-lg font-semibold">
+                  {ANIMALS.find((a) => a.id === current)?.label ?? "Custom emoji"}
+                </p>
+              </div>
             </div>
+
+            <EmojiPicker value={current} onChange={onPick} className="mt-5" />
           </motion.div>
         </motion.div>
       )}
