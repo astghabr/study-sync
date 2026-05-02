@@ -93,7 +93,7 @@ export function HomePage({ onNavigate }: { onNavigate: (t: Tab) => void }) {
               </span>
             </div>
             <div className="mt-1 flex items-center gap-1.5 text-sm text-primary-foreground/95">
-              <MapPin className="h-4 w-4" /> {upcoming.noisePreference} vibe · anonymous group
+              <MapPin className="h-4 w-4" /> {upcoming.noisePreference} · anonymous group
             </div>
 
             {upcomingNotice && (
