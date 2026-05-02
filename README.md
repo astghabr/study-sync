@@ -29,6 +29,8 @@ The app utilizes a subscription model and ads (freemium).
 - No mechanism to connect real users yet
 - No integration with educational institutions/venues
 - Simulated group matching and sessions
+
+
 **My prototype is mainly a conceptual design rather than a fully technical product for now.**
 
 ## Screenshots:
