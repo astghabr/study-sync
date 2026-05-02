@@ -31,11 +31,19 @@ Login page:
 ![Creating an account](screenshots/create-account1.png)
 ![Creating an account](screenshots/create-account2.png)
 ![Creating an account](screenshots/create-account3.png)
+
 Home page:
-![Home](screenshots/home.png)
-![Notifications](screenshots/notifications-home.png)
-![Profile](screenshots/myprofile1.png)
-![Profile](screenshots/myprofile2.png)
+
+<p>
+  <img src="screenshots/home.png" width="300"/>
+  <img src="screenshots/notifications-home.png" width="300"/>
+</p>
+
+<p>
+  <img src="screenshots/myprofile1.png" width="300"/>
+  <img src="screenshots/myprofile2.png" width="300"/>
+</p>
+
 Buddies:
 ![Buddies](screenshots/buddies.png)
 ![Messages](screenshots/messages-buddies.png)
