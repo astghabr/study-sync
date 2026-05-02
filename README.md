@@ -27,11 +27,31 @@ The app utilizes a subscription model and ads (freemium).
 
 ## Screenshots:
 Login page:
-![login-page](screenshots/login-page.png)
-
-
-
-
+![Log in](screenshots/login-page.png)
+![Creating an account](screenshots/create-account1.png)
+![Creating an account](screenshots/create-account2.png)
+![Creating an account](screenshots/create-account3.png)
+Home page:
+![Home](screenshots/home.png)
+![Notifications](screenshots/notifications-home.png)
+![Profile](screenshots/myprofile1.png)
+![Profile](screenshots/myprofile2.png)
+Buddies:
+![Buddies](screenshots/buddies.png)
+![Messages](screenshots/messages-buddies.png)
+Study Spots:
+![Study Spots](screenshots/studyspots1.png)
+![Study Spots](screenshots/studyspots2.png)
+![Filter](screenshots/studyspots-filter.png)
+Focus:
+![Focus](screenshots/focus1.png)
+![Focus](screenshots/focus2.png)
+Group finder:
+![Group](screenshots/group.png)
+![Cancellation](screenshots/cancel-confirm.png)
+Subscription window:
+![Monthly](screenshots/subscription-monthly.png)
+![Yearly](screenshots/subscription-yearly.png)
 
 ## Feedback:
 This is a very early prototype. Any feedback would not only be welcomed, but also necessary!:)
