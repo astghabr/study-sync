@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { chatOpener, useAllMessages, type ChatMessage } from "@/lib/messagesStore";
 import { cn } from "@/lib/utils";
+import { containsProfanity } from "@/lib/profanityFilter";
 
 function formatRelative(ts: number): string {
   const diff = Date.now() - ts;
@@ -440,7 +441,8 @@ function ReportModal({ target, onClose }: { target: Buddy | null; onClose: () =>
   };
 
   const trimmed = details.trim();
-  const isValid = !!reason && trimmed.length >= 10 && trimmed.length <= 500;
+  const hasProfanity = containsProfanity(trimmed);
+  const isValid = !!reason && trimmed.length >= 10 && trimmed.length <= 500 && !hasProfanity;
 
   const handleSubmit = () => {
     if (!isValid) return;
@@ -520,7 +522,13 @@ function ReportModal({ target, onClose }: { target: Buddy | null; onClose: () =>
                 maxLength={500}
               />
               <div className="mt-1 flex items-center justify-between text-[11px] text-muted-foreground">
-                <span>{trimmed.length < 10 ? "At least 10 characters required" : "Looks good"}</span>
+                <span className={cn(hasProfanity && "text-destructive")}>
+                  {hasProfanity
+                    ? "Please remove offensive language before submitting."
+                    : trimmed.length < 10
+                    ? "At least 10 characters required"
+                    : "Looks good"}
+                </span>
                 <span>{details.length}/500</span>
               </div>
             </div>
