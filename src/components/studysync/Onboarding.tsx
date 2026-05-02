@@ -98,12 +98,12 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col items-center gap-3 text-primary-foreground"
+          className="flex items-center gap-2 text-primary-foreground"
         >
-          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-accent shadow-peach">
-            <img src={studysyncLogo} alt="StudySync logo" className="h-14 w-14 object-contain" />
+          <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl bg-accent">
+            <img src={studysyncLogo} alt="StudySync logo" className="h-9 w-9 object-cover" />
           </div>
-          <span className="font-display text-2xl font-semibold tracking-tight">StudySync</span>
+          <span className="font-display text-xl font-semibold tracking-tight">StudySync</span>
         </motion.div>
 
         {step === 0 && (
